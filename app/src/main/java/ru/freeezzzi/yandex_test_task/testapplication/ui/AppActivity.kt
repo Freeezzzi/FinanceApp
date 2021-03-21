@@ -19,9 +19,6 @@ class AppActivity : AppCompatActivity() {
     @Inject
     lateinit var router: Router
 
-    // @Inject
-    // lateinit var authRepository: AuthRepository
-
     private val navigator = AppNavigator(this, R.id.container)
 
     private val currentFragment: BaseFragment?

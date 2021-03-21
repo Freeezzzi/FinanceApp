@@ -55,15 +55,14 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
     fun updateAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
         when (companies) {
             is ViewState.Success -> {
-                // TODO спрятать загрузку
-                Log.d("Adaptercount", companies.result.size.toString())
                 quotesAdapter.submitList(companies.result)
+                binding.tradesSwipeRefreshLayout.isRefreshing = false
             }
-            // is ViewState.Loading TODO показать загрузку
+            is ViewState.Loading -> binding.tradesSwipeRefreshLayout.isRefreshing = true
             is ViewState.Error -> {
-                Log.d("Adaptercount", companies.result ?: "Error msg")
                 quotesAdapter.submitList(companies.oldvalue)
                 showError(companies.result ?: "Couldn't load companies")
+                binding.tradesSwipeRefreshLayout.isRefreshing = false
             }
         }
     }

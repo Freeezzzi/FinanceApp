@@ -74,7 +74,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2"
     implementation "androidx.room:room-runtime:2.2.6"
     implementation "androidx.room:room-ktx:2.2.6"
-    kapt "androidx.room:room-compiler:2.2.6"
+    kapt ( "androidx.room:room-compiler:2.2.6")
     implementation "com.github.terrakok:cicerone:6.6"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:1.11.0"
     implementation "com.squareup.retrofit2:retrofit:2.9.0"

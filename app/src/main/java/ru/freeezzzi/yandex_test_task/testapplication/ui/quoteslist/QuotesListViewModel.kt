@@ -7,16 +7,18 @@ import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
 import ru.freeezzzi.yandex_test_task.testapplication.BuildConfig
+import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompaniesDatabase
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
+import ru.freeezzzi.yandex_test_task.testapplication.domain.models.toCompanyProfileEntity
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
-import java.lang.Error
 import javax.inject.Inject
 
 class QuotesListViewModel @Inject constructor(
     private val router: Router,
-    private val companiesRepository: CompaniesRepository
+    private val companiesRepository: CompaniesRepository,
+    private val database: FavoriteCompaniesDatabase
 ) : ViewModel() {
     private val mutableCompanies = MutableLiveData<ViewState<MutableList<CompanyProfile>, String?>>()
 
@@ -28,6 +30,18 @@ class QuotesListViewModel @Inject constructor(
     private var companiesCount = 0
 
     fun addToFavorites(companyProfile: CompanyProfile) {
+        viewModelScope.launch {
+            when (companyProfile.isFavorite) {
+                true -> { // Нужно удалить
+                    database.companyProfileDao().delete(companyProfile.toCompanyProfileEntity())
+                    companyProfile.isFavorite = false
+                }
+                false -> {
+                    companyProfile.isFavorite = true
+                    database.companyProfileDao().insert(companyProfile.toCompanyProfileEntity())
+                }
+            }
+        }
         // TODO
     }
 

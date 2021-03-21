@@ -6,8 +6,8 @@ import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.Router
 import dagger.Module
 import dagger.Provides
-import ru.freeezzzi.yandex_test_task.testapplication.data.local.SampleDatabase
-import ru.freeezzzi.yandex_test_task.testapplication.ui.AppActivity
+import kotlinx.coroutines.InternalCoroutinesApi
+import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompaniesDatabase
 import timber.log.Timber
 import javax.inject.Singleton
 
@@ -30,8 +30,9 @@ internal class AppModule {
     fun provideTimberTree(): Timber.Tree =
         Timber.DebugTree()
 
+    @InternalCoroutinesApi
     @Provides
     @Singleton
-    fun provideDatabase(appContext: Context): SampleDatabase =
-        SampleDatabase.getInstance(appContext)
+    fun provideDatabase(appContext: Context): FavoriteCompaniesDatabase =
+        FavoriteCompaniesDatabase.getInstance(appContext)
 }

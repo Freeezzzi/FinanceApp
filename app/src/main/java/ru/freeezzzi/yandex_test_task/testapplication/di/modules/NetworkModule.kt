@@ -3,7 +3,6 @@ package ru.freeezzzi.yandex_test_task.testapplication.di.modules
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
-import okhttp3.Authenticator
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

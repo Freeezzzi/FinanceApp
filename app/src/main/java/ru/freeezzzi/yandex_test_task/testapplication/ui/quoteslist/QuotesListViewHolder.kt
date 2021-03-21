@@ -96,7 +96,7 @@ class QuotesListViewHolder(
         // set clicklisteners
         itemView.setOnClickListener { clickListener(companyProfile) }
         binding.quoteItemStar.setOnClickListener {
-            if (!companyProfile.isFavorite) { // если сейчас не в favorites то стави значок
+            if (!companyProfile.isFavorite) {
                 ImageViewCompat.setImageTintList(
                     binding.quoteItemStar,
                     ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Yellow))

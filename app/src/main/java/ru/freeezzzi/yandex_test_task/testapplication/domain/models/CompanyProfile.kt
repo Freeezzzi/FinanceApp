@@ -1,5 +1,7 @@
 package ru.freeezzzi.yandex_test_task.testapplication.domain.models
 
+import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.CompanyProfileEntity
+
 /**
  *
  * @param country Country of company's headquarter.
@@ -30,6 +32,17 @@ data class CompanyProfile(
     val phone: String? = null,
     val weburl: String? = null,
     val finnhubIndustry: String? = null,
-    val isFavorite: Boolean = false,
+    var isFavorite: Boolean = false,
     var quote: Quote? = null
 )
+
+fun CompanyProfile.toCompanyProfileEntity(): CompanyProfileEntity =
+    CompanyProfileEntity(
+        currency = currency,
+        name = name,
+        ticker = ticker!!,
+        logo = logo,
+        isFavorite = isFavorite,
+        currentPrice = (quote?.c ?: "0F") as Float,
+        previousPrice = (quote?.pc ?: "0F") as Float,
+        )
