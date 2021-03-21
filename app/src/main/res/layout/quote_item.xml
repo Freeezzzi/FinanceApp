@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/standard_margin"
+    android:layout_marginTop="@dimen/small_margin"
+    android:layout_marginRight="@dimen/standard_margin"
+    android:elevation="@dimen/corner_rad"
+    app:cardCornerRadius="@dimen/corner_rad">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/quote_item_image"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="@dimen/small_margin"
+            android:layout_marginTop="@dimen/small_margin"
+            android:layout_marginBottom="@dimen/small_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/quote_item_ticker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/image_text_margin"
+            android:layout_marginTop="14dp"
+            android:text="@string/ticker"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/quote_item_image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/quote_item_star"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="14dp"
+            app:layout_constraintStart_toEndOf="@+id/quote_item_ticker"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_round_star_24"
+            app:tint="@color/Grey" />
+
+        <TextView
+            android:id="@+id/quote_item_company_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="@string/company_name"
+            app:layout_constraintStart_toEndOf="@+id/quote_item_image"
+            app:layout_constraintTop_toBottomOf="@+id/quote_item_ticker" />
+
+        <TextView
+            android:id="@+id/quote_item_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="17dp"
+            android:text="@string/last_bid_price"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/quote_item_pricechange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:text="@string/price_change"
+            android:textAllCaps="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/quote_item_price" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
