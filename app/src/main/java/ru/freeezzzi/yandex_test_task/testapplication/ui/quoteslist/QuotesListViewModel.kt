@@ -1,6 +1,5 @@
 package ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -70,6 +69,9 @@ class QuotesListViewModel @Inject constructor(
                         when (val companiesResult = companiesRepository.getCompanyProfile(ticker)) {
                             is OperationResult.Success -> { // Если удачно, то добавляем компанию в
                                 val companyProfile = companiesResult.data
+                                if (companyProfile.ticker == null) { // Если с сервера пришел невалидный ответ, то пропускаем эту компанию
+                                    continue
+                                }
 
                                 // getQuote(companyProfile)
                                 when (val quoteResult = companiesRepository.getCompanyQuote(companyProfile.ticker ?: "")) {
@@ -80,7 +82,6 @@ class QuotesListViewModel @Inject constructor(
                                 companiesList.add(companyProfile)
                                 state = ViewState.success(companiesList)
                                 companiesCount++
-                                Log.d("count", companiesCount.toString())
                             }
                             is OperationResult.Error -> state = ViewState.Error(companiesList, companiesResult.data)
                         }
@@ -103,6 +104,11 @@ class QuotesListViewModel @Inject constructor(
                 is OperationResult.Error -> companyProfile.quote = null
             }
         }
+    }
+
+    fun clearCompaniesList() {
+        companiesCount = 0
+        mutableCompanies.value = ViewState.loading()
     }
 
     fun exitFragment() {

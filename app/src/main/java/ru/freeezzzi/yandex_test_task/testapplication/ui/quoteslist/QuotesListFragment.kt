@@ -43,6 +43,10 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
         binding.tradesRecyclerview.layoutManager = layoutManager
         binding.tradesRecyclerview.adapter = quotesAdapter
         binding.tradesRecyclerview.addOnScrollListener(this.OnVerticalScrollListener(layoutManager = layoutManager!!))
+        binding.tradesSwipeRefreshLayout.setOnRefreshListener {
+            viewModel.getTickers()
+            binding.tradesSwipeRefreshLayout.isRefreshing = false
+        }
 
         viewModel.companies.observe(viewLifecycleOwner, this::updateAdapter)
         viewModel.tickersList.observe(viewLifecycleOwner, this::updateTickers)
@@ -57,20 +61,32 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
             }
             // is ViewState.Loading TODO показать загрузку
             is ViewState.Error -> {
-                Log.d("Adaptercount", companies.oldvalue.size.toString())
+                Log.d("Adaptercount", companies.result ?: "Error msg")
                 quotesAdapter.submitList(companies.oldvalue)
-                showError()
+                showError(companies.result ?: "Couldn't load companies")
             }
         }
     }
 
     fun updateTickers(tickers: ViewState<List<String>, String?>) {
-        //TODO показать анимацию при загрузке
-        viewModel.getCompanies(10) //В первый раз загружаем 10 компаний
+        when(tickers){
+            is ViewState.Success -> {
+                viewModel.clearCompaniesList()
+                viewModel.getCompanies(10) // В первый раз загружаем 10 компаний
+            }
+            is ViewState.Error -> {
+                showError(tickers.result?:"Couldn't load tickers")
+            }
+        }
     }
 
-    private fun showError() {
-        Toast.makeText(requireContext(), "Couldn't load companies...", Toast.LENGTH_SHORT)
+    private fun showError(msg: String) {
+        var errorMsg = msg
+        when (errorMsg) {
+            "HTTP 429 " -> errorMsg = getString(R.string.limit_error)
+            "Tickers loading.Try again!" -> return // В этом случае просто ждем
+        }
+        Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT)
                 .show()
     }
 
@@ -101,7 +117,7 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
         fun onScrolledDown() {}
 
         fun onScrolledToTop() {
-            viewModel.getTickers()
+            // viewModel.getTickers()
         }
 
         fun onScrolledToBottom() {

@@ -4,4 +4,5 @@
     <string name="company_name">Company name</string>
     <string name="last_bid_price">Price</string>
     <string name="price_change">Price change</string>
+    <string name="limit_error">Api limit reached.Please try again later</string>
 </resources>
