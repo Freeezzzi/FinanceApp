@@ -1,6 +1,5 @@
 package ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist
 
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.freeezzzi.yandex_test_task.testapplication.App
 import ru.freeezzzi.yandex_test_task.testapplication.R
@@ -30,19 +28,15 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
     private val viewModel: QuotesListViewModel by viewModels(
             factoryProducer = { QuotesListViewModelFactory() })
 
-    private var layoutManager: LinearLayoutManager? = null
-
     override fun initViews(view: View) {
         super.initViews(view)
         (activity as AppCompatActivity)?.supportActionBar?.hide()
 
         viewModel.getTickers()
 
-        layoutManager = LinearLayoutManager(requireContext())
-
-        binding.tradesRecyclerview.layoutManager = layoutManager
+        binding.tradesRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         binding.tradesRecyclerview.adapter = quotesAdapter
-        binding.tradesRecyclerview.addOnScrollListener(this.OnVerticalScrollListener(layoutManager = layoutManager!!))
+        binding.tradesRecyclerview.addOnScrollListener(this.OnVerticalScrollListener())
         binding.tradesSwipeRefreshLayout.setOnRefreshListener {
             viewModel.getTickers()
             binding.tradesSwipeRefreshLayout.isRefreshing = false
@@ -68,13 +62,13 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
     }
 
     fun updateTickers(tickers: ViewState<List<String>, String?>) {
-        when(tickers){
+        when (tickers) {
             is ViewState.Success -> {
                 viewModel.clearCompaniesList()
                 viewModel.getCompanies(10) // В первый раз загружаем 10 компаний
             }
             is ViewState.Error -> {
-                showError(tickers.result?:"Couldn't load tickers")
+                showError(tickers.result ?: "Couldn't load tickers")
             }
         }
     }
@@ -93,9 +87,7 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
         viewModel.exitFragment()
     }
 
-    inner class OnVerticalScrollListener(
-        val layoutManager: LinearLayoutManager,
-    ) : RecyclerView.OnScrollListener() {
+    inner class OnVerticalScrollListener : RecyclerView.OnScrollListener() {
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
@@ -116,7 +108,6 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
         fun onScrolledDown() {}
 
         fun onScrolledToTop() {
-            // viewModel.getTickers()
         }
 
         fun onScrolledToBottom() {

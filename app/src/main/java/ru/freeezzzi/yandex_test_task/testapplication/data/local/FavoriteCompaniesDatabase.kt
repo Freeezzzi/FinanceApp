@@ -18,7 +18,6 @@ abstract class FavoriteCompaniesDatabase : RoomDatabase() {
         @Volatile
         private var instance: FavoriteCompaniesDatabase? = null
 
-        // May be redundant since we are using Dagger
         fun getInstance(context: Context): FavoriteCompaniesDatabase =
             instance ?: synchronized(this) { instance ?: build(context) }
 
