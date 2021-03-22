@@ -14,5 +14,5 @@ interface CompanyProfileDao {
     suspend fun delete(companyProfileEntity: CompanyProfileEntity): Unit
 
     @Query("SELECT * FROM Favorite_companies")
-    fun getFavoriteCompanies(): List<CompanyProfileEntity>
+    suspend fun getFavoriteCompanies(): List<CompanyProfileEntity>
 }

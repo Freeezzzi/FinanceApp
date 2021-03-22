@@ -20,7 +20,6 @@ class QuotesListAdapter(
     }
 
     override fun onBindViewHolder(holder: QuotesListViewHolder, position: Int) {
-        //Log.d("listAdapterPosition", "$position = ${getItem(position)}")
         holder.bind(
             getItem(position),
             clickListener = clickListener,

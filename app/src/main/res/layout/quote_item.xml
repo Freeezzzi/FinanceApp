@@ -33,6 +33,7 @@
             android:layout_marginStart="@dimen/image_text_margin"
             android:layout_marginTop="14dp"
             android:text="@string/ticker"
+            android:textColor="@color/font_black"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/quote_item_image"
@@ -55,6 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="@string/company_name"
+            android:textColor="@color/font_black"
             app:layout_constraintStart_toEndOf="@+id/quote_item_image"
             app:layout_constraintTop_toBottomOf="@+id/quote_item_ticker" />
 
@@ -65,6 +67,7 @@
             android:layout_marginTop="14dp"
             android:layout_marginEnd="17dp"
             android:text="@string/last_bid_price"
+            android:textColor="@color/font_black"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -77,6 +80,7 @@
             android:layout_marginEnd="12dp"
             android:text="@string/price_change"
             android:textAllCaps="false"
+            android:textColor="@color/font_black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/quote_item_price" />
     </androidx.constraintlayout.widget.ConstraintLayout>

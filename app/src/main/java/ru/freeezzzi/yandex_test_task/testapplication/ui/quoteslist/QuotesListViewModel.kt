@@ -8,6 +8,7 @@ import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
 import ru.freeezzzi.yandex_test_task.testapplication.BuildConfig
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompaniesDatabase
+import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.toCompanyProfile
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.toCompanyProfileEntity
@@ -18,7 +19,7 @@ import javax.inject.Inject
 class QuotesListViewModel @Inject constructor(
     private val router: Router,
     private val companiesRepository: CompaniesRepository,
-    private val database: FavoriteCompaniesDatabase
+    val database: FavoriteCompaniesDatabase
 ) : ViewModel() {
     private val mutableCompanies = MutableLiveData<ViewState<MutableList<CompanyProfile>, String?>>()
 
@@ -42,7 +43,6 @@ class QuotesListViewModel @Inject constructor(
                 }
             }
         }
-        // TODO
     }
 
     fun itemOnClickAction(companyProfile: CompanyProfile) {
@@ -123,6 +123,16 @@ class QuotesListViewModel @Inject constructor(
     fun clearCompaniesList() {
         companiesCount = 0
         mutableCompanies.value = ViewState.loading()
+    }
+
+    fun showFavourites(){
+        viewModelScope.launch {
+            mutableCompanies.value = ViewState.loading()
+            val localCompanies = database.companyProfileDao().getFavoriteCompanies().map {
+                it.toCompanyProfile()
+            }
+            mutableCompanies.value = ViewState.success(localCompanies.toMutableList())
+        }
     }
 
     fun exitFragment() {

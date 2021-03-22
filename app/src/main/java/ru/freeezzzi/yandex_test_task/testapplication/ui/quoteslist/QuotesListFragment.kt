@@ -41,6 +41,7 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
             viewModel.getTickers()
             binding.tradesSwipeRefreshLayout.isRefreshing = false
         }
+        binding.quoteListFavorite.setOnClickListener { viewModel.showFavourites() }
 
         viewModel.companies.observe(viewLifecycleOwner, this::updateAdapter)
         viewModel.tickersList.observe(viewLifecycleOwner, this::updateTickers)
