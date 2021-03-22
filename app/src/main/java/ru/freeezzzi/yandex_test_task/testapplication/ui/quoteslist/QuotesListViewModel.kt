@@ -25,10 +25,18 @@ class QuotesListViewModel @Inject constructor(
 
     val companies: LiveData<ViewState<MutableList<CompanyProfile>, String?>> get() = mutableCompanies
 
+    private val mutableLocalCompanies = MutableLiveData<ViewState<MutableList<CompanyProfile>, String?>>()
+
+    val localCompanies: LiveData<ViewState<MutableList<CompanyProfile>, String?>> get() = mutableLocalCompanies
+
     private var mutableTickersList: MutableLiveData<ViewState<List<String>, String?>> = MutableLiveData<ViewState<List<String>, String?>>()
     val tickersList: LiveData<ViewState<List<String>, String?>> get() = mutableTickersList
 
     private var companiesCount = 0
+
+    fun searchAction(symbols:String){
+
+    }
 
     fun addToFavorites(companyProfile: CompanyProfile) {
         viewModelScope.launch {
@@ -42,6 +50,7 @@ class QuotesListViewModel @Inject constructor(
                     database.companyProfileDao().insert(companyProfile.toCompanyProfileEntity())
                 }
             }
+            showFavourites()
         }
     }
 
@@ -125,13 +134,13 @@ class QuotesListViewModel @Inject constructor(
         mutableCompanies.value = ViewState.loading()
     }
 
-    fun showFavourites(){
+    fun showFavourites() {
         viewModelScope.launch {
-            mutableCompanies.value = ViewState.loading()
-            val localCompanies = database.companyProfileDao().getFavoriteCompanies().map {
+            mutableLocalCompanies.value = ViewState.loading()
+            val localCompaniesQuery = database.companyProfileDao().getFavoriteCompanies().map {
                 it.toCompanyProfile()
             }
-            mutableCompanies.value = ViewState.success(localCompanies.toMutableList())
+            mutableLocalCompanies.value = ViewState.success(localCompaniesQuery.toMutableList())
         }
     }
 
