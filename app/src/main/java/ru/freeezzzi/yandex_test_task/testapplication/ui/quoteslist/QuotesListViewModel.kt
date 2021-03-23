@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
 import ru.freeezzzi.yandex_test_task.testapplication.BuildConfig
+import ru.freeezzzi.yandex_test_task.testapplication.Screens
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompaniesDatabase
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.toCompanyProfile
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
@@ -34,8 +35,8 @@ class QuotesListViewModel @Inject constructor(
 
     private var companiesCount = 0
 
-    fun searchAction(symbols:String){
-
+    fun searchAction(){
+        router.navigateTo(Screens.searchFragment(), true)
     }
 
     fun addToFavorites(companyProfile: CompanyProfile) {

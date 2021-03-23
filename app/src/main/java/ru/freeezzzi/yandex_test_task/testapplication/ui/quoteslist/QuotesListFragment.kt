@@ -1,6 +1,7 @@
 package ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist
 
 import android.graphics.Typeface
+import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -75,6 +76,8 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
             binding.tradesViewpager.setCurrentItem(1, true)
         }
         // set click listener on searchView
+        binding.searchCardview.setOnClickListener { viewModel.searchAction() }
+        binding.tradesListEdittext.setOnClickListener { viewModel.searchAction() }
 
         // observe
         viewModel.companies.observe(viewLifecycleOwner, this::updateAllAdapter)

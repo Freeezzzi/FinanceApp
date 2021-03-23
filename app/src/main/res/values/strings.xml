@@ -7,4 +7,5 @@
     <string name="limit_error">Api limit reached.Please try again later</string>
     <string name="stocks_name">Stocks</string>
     <string name="favorite_name">Favourite</string>
+    <string name="query_label">Enter ticker, name, isin, or cusip</string>
 </resources>

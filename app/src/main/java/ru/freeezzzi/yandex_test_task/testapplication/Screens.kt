@@ -5,11 +5,17 @@ import androidx.fragment.app.FragmentFactory
 import com.github.terrakok.cicerone.androidx.Creator
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListFragment
+import ru.freeezzzi.yandex_test_task.testapplication.ui.searchfragment.SearchFragment
 
 object Screens {
     fun tradesListFragment() : FragmentScreen =
             FragmentScreen(
                     fragmentCreator = FragmentCreator(QuotesListFragment.newInstance())
+            )
+
+    fun searchFragment() : FragmentScreen =
+            FragmentScreen(
+                    fragmentCreator = FragmentCreator(SearchFragment.newInstance())
             )
 
     class FragmentCreator(private val fragment: Fragment) : Creator<FragmentFactory, Fragment> {
