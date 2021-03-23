@@ -1,9 +1,11 @@
-package ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.tabs
+package ru.freeezzzi.yandex_test_task.testapplication.ui.tabs
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import ru.freeezzzi.yandex_test_task.testapplication.R
 import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAdapter
 
@@ -25,7 +27,7 @@ class AllTabViewHodler(itemView: View) : ViewPagerViewHodler(itemView) {
         refreshLayout?.setOnRefreshListener(refreshListener)
     }
 
-    fun setRefreshing(condition: Boolean){
+    fun setRefreshing(condition: Boolean) {
         refreshLayout?.isRefreshing = condition
     }
 }
@@ -39,5 +41,26 @@ class FavouritesTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
     ) {
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = layoutManager
+    }
+}
+
+class ChipsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
+    private val popularChipGroup: ChipGroup = itemView.findViewById(R.id.popular_search_chip_group)
+    private val recentChipGroup: ChipGroup = itemView.findViewById(R.id.recent_search_chip_group)
+
+    fun onBind(
+        poplarQueries: List<String>,
+        recentQueries: List<String>
+    ) {
+        poplarQueries.forEach {
+            val chip = Chip(itemView.context)
+            chip.setText(it)
+            popularChipGroup.addView(chip)
+        }
+        recentQueries.forEach {
+            val chip = Chip(itemView.context)
+            chip.setText(it)
+            recentChipGroup.addView(chip)
+        }
     }
 }

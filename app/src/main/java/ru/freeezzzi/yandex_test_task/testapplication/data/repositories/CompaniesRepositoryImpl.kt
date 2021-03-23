@@ -34,4 +34,21 @@ class CompaniesRepositoryImpl @Inject constructor(
             } catch (e: Throwable) {
                 OperationResult.Error(e.message)
             }
+
+    override suspend fun symbolLookup(symbol: String): OperationResult<List<String>, String?> =
+        try {
+            val list = (finnhabApi.symbolLookup(symbol).result ?: emptyList())
+            //Проверим что такой компании еще нет. Если описания совпадают то это разные подразделенрия одной компании, а акции у них одни => можем взять только одну
+            val descriptionsList: MutableList<String> = mutableListOf()
+            val tickersList : MutableList<String> = mutableListOf()
+            list.forEach {
+                if (!descriptionsList.contains(it?.description)){
+                    tickersList.add(it?.symbol ?: "")
+                    descriptionsList.add(it?.description ?: "")
+                }
+            }
+            OperationResult.Success(tickersList)
+        } catch (e: Throwable) {
+            OperationResult.Error(e.message)
+        }
 }

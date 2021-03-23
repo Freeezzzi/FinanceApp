@@ -6,6 +6,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.BuildConfig
 import ru.freeezzzi.yandex_test_task.testapplication.data.network.models.CompanyProfileDTO
 import ru.freeezzzi.yandex_test_task.testapplication.data.network.models.IndicesConstituentsDTO
 import ru.freeezzzi.yandex_test_task.testapplication.data.network.models.QuoteDTO
+import ru.freeezzzi.yandex_test_task.testapplication.data.network.models.SymbolLookupDTO
 
 interface FinnhubApi {
 
@@ -26,4 +27,10 @@ interface FinnhubApi {
         @Query(value = "symbol", encoded = true) symbol: String,
         @Query(value = "token") token: String = BuildConfig.API_KEY
     ): IndicesConstituentsDTO
+
+    @GET("search")
+    suspend fun symbolLookup(
+        @Query(value = "q", encoded = true) symbol: String,
+        @Query(value = "token") token: String = BuildConfig.API_KEY
+    ): SymbolLookupDTO
 }

@@ -11,4 +11,6 @@ interface CompaniesRepository {
     suspend fun getCompanyQuote(symbol: String): OperationResult<Quote, String?>
 
     suspend fun getCompaniesTop500(symbol: String): OperationResult<List<String>, String?>
+
+    suspend fun symbolLookup(symbol: String): OperationResult<List<String>, String?>
 }

@@ -38,11 +38,12 @@ data class CompanyProfile(
 
 fun CompanyProfile.toCompanyProfileEntity(): CompanyProfileEntity =
     CompanyProfileEntity(
+        //id = null, //генерируется само
         currency = currency,
         name = name,
         ticker = ticker!!,
         logo = logo,
         isFavorite = isFavorite,
-        currentPrice = (quote?.c ?: "0F") as Float,
-        previousPrice = (quote?.pc ?: "0F") as Float,
+        currentPrice = (quote?.c ?: 0F),
+        previousPrice = (quote?.pc ?: 0F),
         )

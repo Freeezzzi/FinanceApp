@@ -6,8 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.dao.CompanyProfileDao
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.CompanyProfileEntity
+import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.RecentQueryEntity
 
-@Database(entities = [CompanyProfileEntity::class], version = 1, exportSchema = false)
+@Database(entities = [CompanyProfileEntity::class, RecentQueryEntity::class], version = 5, exportSchema = false)
 abstract class FavoriteCompaniesDatabase : RoomDatabase() {
 
     abstract fun companyProfileDao(): CompanyProfileDao

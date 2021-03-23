@@ -103,6 +103,11 @@ class QuotesListViewModel @Inject constructor(
                                     is OperationResult.Error -> companyProfile.quote = null
                                 }
 
+                                if (database.companyProfileDao().isCompanyInFavorite(companyProfile.ticker)){
+                                    companyProfile.isFavorite = true
+                                    database.companyProfileDao().update(companyProfile.toCompanyProfileEntity())
+                                }
+
                                 companiesList.add(companyProfile)
                                 state = ViewState.success(companiesList)
                                 companiesCount++

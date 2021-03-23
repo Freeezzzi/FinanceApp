@@ -1,7 +1,6 @@
 package ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist
 
 import android.graphics.Typeface
-import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -20,7 +19,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.di.viewmodels.quoteslist.Da
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
 import ru.freeezzzi.yandex_test_task.testapplication.ui.BaseFragment
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
-import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.tabs.ViewPagerAdapter
+import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ViewPagerAdapter
 
 class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
     private val binding by viewBinding(QuotesListFragmentBinding::bind)
@@ -102,13 +101,13 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
         when (companies) {
             is ViewState.Success -> {
                 quotesAllAdapter.submitList(companies.result)
-                viewPagerAdapter.setRefrashing(false)
+                viewPagerAdapter.setRefreshing(false)
             }
-            is ViewState.Loading -> viewPagerAdapter.setRefrashing(true)
+            is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
             is ViewState.Error -> {
                 quotesAllAdapter.submitList(companies.oldvalue)
                 showError(companies.result ?: "Couldn't load companies")
-                viewPagerAdapter.setRefrashing(false)
+                viewPagerAdapter.setRefreshing(false)
             }
         }
     }
@@ -119,10 +118,10 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
                 viewModel.clearCompaniesList()
                 viewModel.getCompanies(10) // В первый раз загружаем 10 компаний
             }
-            is ViewState.Loading -> viewPagerAdapter.setRefrashing(true)
+            is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
             is ViewState.Error -> {
                 showError(tickers.result ?: "Couldn't load tickers")
-                viewPagerAdapter.setRefrashing(false)
+                viewPagerAdapter.setRefreshing(false)
             }
         }
     }

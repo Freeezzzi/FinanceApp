@@ -5,7 +5,6 @@ import android.content.res.Resources
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 
-
 val Int.toDp: Int
     get() = (this / Resources.getSystem().displayMetrics.density).toInt()
 

@@ -1,4 +1,4 @@
-package ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.tabs
+package ru.freeezzzi.yandex_test_task.testapplication.ui.tabs
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -46,7 +46,7 @@ class ViewPagerAdapter(
             else -> throw IllegalArgumentException("Wrong position")
         }
 
-    fun setRefrashing(condition: Boolean) {
+    fun setRefreshing(condition: Boolean) {
         allTab?.setRefreshing(condition)
     }
 
