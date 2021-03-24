@@ -8,7 +8,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.data.local.dao.CompanyProfi
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.CompanyProfileEntity
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.RecentQueryEntity
 
-@Database(entities = [CompanyProfileEntity::class, RecentQueryEntity::class], version = 5, exportSchema = false)
+@Database(entities = [CompanyProfileEntity::class, RecentQueryEntity::class], version = 6, exportSchema = false)
 abstract class FavoriteCompaniesDatabase : RoomDatabase() {
 
     abstract fun companyProfileDao(): CompanyProfileDao

@@ -2,6 +2,7 @@ package ru.freeezzzi.yandex_test_task.testapplication.ui.searchfragment
 
 import android.app.Activity
 import android.graphics.Typeface
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
@@ -53,8 +54,18 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
         scrollListener = this.OnVerticalScrollListener()
     )
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.searchBarEditText.requestFocus()
+        val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(binding.searchBarEditText, InputMethodManager.SHOW_IMPLICIT)
+    }
+
     override fun initViews(view: View) {
         super.initViews(view)
+
+        viewModel.getRecentQueries()
 
         // cardview bindings
         binding.searchBarArrowIcon.setOnClickListener { onBackPressed() }
@@ -151,6 +162,7 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
         when (tickers) {
             is ViewState.Success -> {
                 viewModel.clearCompaniesList()
+                viewPagerAdapter.setRefreshing(false)
                 viewModel.getCompanies(10) // В первый раз загружаем 10 компаний
             }
             is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)

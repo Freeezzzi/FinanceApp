@@ -6,6 +6,5 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Queries")
 data class RecentQueryEntity(
-    @ColumnInfo(name = "Query") var query: String = "",
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") val id : Long?
+        @PrimaryKey @ColumnInfo(name = "Query") var query: String = "",
 )

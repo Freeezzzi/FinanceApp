@@ -1,6 +1,7 @@
 package ru.freeezzzi.yandex_test_task.testapplication.ui.tabs
 
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -50,17 +51,24 @@ class ChipsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
 
     fun onBind(
         poplarQueries: List<String>,
-        recentQueries: List<String>
+        recentQueries: List<String>,
     ) {
+        val backgroundColor = ContextCompat.getColor(itemView.context,R.color.light_blue)
         poplarQueries.forEach {
             val chip = Chip(itemView.context)
             chip.setText(it)
+            chip.setBackgroundColor(backgroundColor)
             popularChipGroup.addView(chip)
         }
-        recentQueries.forEach {
+        //TODO в chipgroup постоянно завново записываются все чипы, а старые не удаляются
+        //TODO сделать отображение нового чипа и удаление старых в этом методе
+        recentQueries.asReversed().forEach {
             val chip = Chip(itemView.context)
+            chip.setBackgroundColor(backgroundColor)
+            chip.setEnsureMinTouchTargetSize(false)
             chip.setText(it)
             recentChipGroup.addView(chip)
         }
+        recentChipGroup
     }
 }

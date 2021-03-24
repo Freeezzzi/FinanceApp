@@ -75,7 +75,7 @@ class SearchViewPagerAdapter(
 
     fun submitQueries(list: List<String>) {
         recentQueries = list
-        onBindViewHolder(chipsTab!!, 0)
+        chipsTab?.onBind(popularQueries,recentQueries)
     }
 
     companion object {

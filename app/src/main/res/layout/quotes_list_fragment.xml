@@ -14,7 +14,9 @@
             android:id="@+id/search_cardview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/standard_margin"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/standard_margin"
             app:cardCornerRadius="48dp"
             app:layout_scrollFlags="snap|scroll">
 
@@ -57,6 +59,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/standard_margin"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:orientation="horizontal">
