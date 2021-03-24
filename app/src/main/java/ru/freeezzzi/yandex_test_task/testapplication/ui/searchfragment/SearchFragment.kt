@@ -26,6 +26,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.ui.BaseFragment
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
 import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAdapter
 
+//TODO прятать клавиатуру при прокрутке или при нажатии
 class SearchFragment : BaseFragment(R.layout.search_fragment) {
     private val binding by viewBinding(SearchFragmentBinding::bind)
 

@@ -2,6 +2,7 @@ package ru.freeezzzi.yandex_test_task.testapplication.ui.tabs
 
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources.getColorStateList
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -49,7 +50,6 @@ class FavouritesTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
 class ChipsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
     private val popularChipGroup: ChipGroup = itemView.findViewById(R.id.popular_search_chip_group)
     private val recentChipGroup: ChipGroup = itemView.findViewById(R.id.recent_search_chip_group)
-    val backgroundColor = ContextCompat.getColor(itemView.context,R.color.light_blue)
 
     fun onBind(
         poplarQueries: List<String>,
@@ -59,7 +59,7 @@ class ChipsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         poplarQueries.forEach {
             val chip = Chip(itemView.context)
             chip.setText(it)
-            chip.setBackgroundColor(backgroundColor)
+            chip.setChipBackgroundColorResource(R.color.light_blue)
             chip.setEnsureMinTouchTargetSize(false)
             chip.setOnClickListener {
                 chipClickListener((it as TextView).text.toString())  }
@@ -67,7 +67,7 @@ class ChipsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         }
         recentQueries.asReversed().forEach {
             val chip = Chip(itemView.context)
-            chip.setBackgroundColor(backgroundColor)
+            chip.setChipBackgroundColorResource(R.color.light_blue)
             chip.setEnsureMinTouchTargetSize(false)
             chip.setText(it)
             chip.setOnClickListener {
@@ -86,7 +86,7 @@ class ChipsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         recentChipGroup.removeAllViews()
         recentQueries.asReversed().forEach {
             val chip = Chip(itemView.context)
-            chip.setBackgroundColor(backgroundColor)
+            chip.setChipBackgroundColorResource(R.color.light_blue)
             chip.setEnsureMinTouchTargetSize(false)
             chip.setText(it)
             chip.setOnClickListener {

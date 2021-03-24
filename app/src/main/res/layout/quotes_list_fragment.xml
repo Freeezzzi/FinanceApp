@@ -20,7 +20,7 @@
             app:strokeColor="@color/font_black"
             app:strokeWidth="1dp"
             app:cardCornerRadius="48dp"
-            app:layout_scrollFlags="snap|scroll">
+            app:layout_scrollFlags="enterAlways|scroll|snap">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -80,7 +80,7 @@
                 android:id="@+id/favourites_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="32dp"
                 android:layout_weight="0"
                 android:text="@string/favorite_name"
                 android:textColor="@color/font_black"

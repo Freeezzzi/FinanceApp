@@ -75,6 +75,7 @@ class SearchFragmentViewModel @Inject constructor(
 
     fun getCompanies(howManyCompanies: Int) {
         var lastCompanyToDownload = tickersCount + howManyCompanies
+        if (numberOfCompanies == 0) mutableCompanies.value = ViewState.success(mutableListOf())
         if (tickersCount == numberOfCompanies) return // если загрузили все компании
         if (lastCompanyToDownload > numberOfCompanies) {
             lastCompanyToDownload = numberOfCompanies
