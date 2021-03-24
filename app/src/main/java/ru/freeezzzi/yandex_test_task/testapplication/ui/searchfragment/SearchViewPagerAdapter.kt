@@ -7,7 +7,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.freeezzzi.yandex_test_task.testapplication.R
 import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAdapter
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.AllTabViewHodler
-import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ChipsTabViewHolder
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.FavouritesTabViewHolder
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ViewPagerViewHodler
 import java.lang.IllegalArgumentException
@@ -22,7 +21,7 @@ class SearchViewPagerAdapter(
     private var recentQueries: List<String>,
     private val refreshListener: SwipeRefreshLayout.OnRefreshListener,
     private val scrollListener: RecyclerView.OnScrollListener,
-    private val chipClickListener : (String)-> Unit
+    private val chipClickListener: (String) -> Unit
 ) : RecyclerView.Adapter<ViewPagerViewHodler>() {
     // Храним viewHodler чтобы можно было прятать анимацию загрузки когда потребуется через функцтю setRefreshing
     private var allTab: AllTabViewHodler? = null

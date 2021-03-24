@@ -4,19 +4,25 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.github.terrakok.cicerone.androidx.Creator
 import com.github.terrakok.cicerone.androidx.FragmentScreen
+import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.CompanyProfileFragment
 import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListFragment
 import ru.freeezzzi.yandex_test_task.testapplication.ui.searchfragment.SearchFragment
 
 object Screens {
-    fun tradesListFragment() : FragmentScreen =
+    fun tradesListFragment(): FragmentScreen =
             FragmentScreen(
                     fragmentCreator = FragmentCreator(QuotesListFragment.newInstance())
             )
 
-    fun searchFragment() : FragmentScreen =
+    fun searchFragment(): FragmentScreen =
             FragmentScreen(
                     fragmentCreator = FragmentCreator(SearchFragment.newInstance())
             )
+
+    fun companyProfileFragment(): FragmentScreen =
+        FragmentScreen(
+            fragmentCreator = FragmentCreator(CompanyProfileFragment.newInstance())
+        )
 
     class FragmentCreator(private val fragment: Fragment) : Creator<FragmentFactory, Fragment> {
         override fun create(argument: FragmentFactory): Fragment =

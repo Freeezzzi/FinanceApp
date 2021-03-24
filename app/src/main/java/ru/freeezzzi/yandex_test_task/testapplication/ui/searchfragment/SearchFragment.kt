@@ -26,11 +26,13 @@ import ru.freeezzzi.yandex_test_task.testapplication.ui.BaseFragment
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
 import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAdapter
 
-//TODO прятать клавиатуру при прокрутке или при нажатии
+// TODO прятать клавиатуру при нажатии
+// TODO сделать кнопки больше, а иконки оставить того же размера
+// TODO переделать сообщения в snackbar
 class SearchFragment : BaseFragment(R.layout.search_fragment) {
     private val binding by viewBinding(SearchFragmentBinding::bind)
 
-    private var popularQueries: List<String> = listOf("Nvidia", "Apple", "Amazon","Google", "Tesla", "Alibaba", "Facebook","Visa")
+    private var popularQueries: List<String> = listOf("Nvidia", "Apple", "Amazon", "Google", "Tesla", "Alibaba", "Facebook", "Visa")
 
     private val viewModel: SearchFragmentViewModel by viewModels(
             factoryProducer = { SearchFragmentViewModelFactory() }
@@ -65,7 +67,7 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //Открывается клавиатуру с фокусом на edittext в строке поиска
+        // Открывается клавиатуру с фокусом на edittext в строке поиска
         binding.searchBarEditText.requestFocus()
         val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(binding.searchBarEditText, InputMethodManager.SHOW_IMPLICIT)
@@ -119,8 +121,8 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
             binding.searchViewpager.setCurrentItem(2, true)
         }
         binding.searchBarEditText.setOnKeyListener { view, i, keyEvent ->
-            if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN)
-                    && (i == KeyEvent.KEYCODE_ENTER)
+            if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (i == KeyEvent.KEYCODE_ENTER)
             ) {
                 // Perform action on key press
                     performSearch()
@@ -211,10 +213,10 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
         anotherTextView2.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18F)
     }
 
-    fun performSearch(){
+    fun performSearch() {
         hideKeybord()
         val symbol = binding.searchBarEditText.text.toString()
-        if (symbol.isBlank()){
+        if (symbol.isBlank()) {
             binding.searchBarEditText.setText("")
             return
         }

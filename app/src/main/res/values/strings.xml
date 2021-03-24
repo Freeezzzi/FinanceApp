@@ -8,6 +8,10 @@
     <string name="stocks_name">Stocks</string>
     <string name="favorite_name">Favourite</string>
     <string name="queries_name">Queries</string>
+    <string name="summary_name">Summary</string>
+    <string name="chart_name">Chart</string>
+    <string name="news_name">News</string>
+    <string name="forecasts_name">Forecasts</string>
     <string name="query_label">Enter ticker, name, isin, or cusip</string>
     <string name="popular_requests">Popular requests</string>
     <string name="recent_requests">You\'ve searched for this</string>

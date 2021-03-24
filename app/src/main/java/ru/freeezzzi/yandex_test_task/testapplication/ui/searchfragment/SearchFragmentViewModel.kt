@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
+import ru.freeezzzi.yandex_test_task.testapplication.Screens
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompaniesDatabase
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.RecentQueryEntity
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.toCompanyProfile
@@ -21,12 +22,11 @@ class SearchFragmentViewModel @Inject constructor(
     private val database: FavoriteCompaniesDatabase,
     private val companiesRepository: CompaniesRepository
 ) : ViewModel() {
-    private val mutableCompanies = MutableLiveData<ViewState<MutableList<CompanyProfile>, String?>>()
 
+    private val mutableCompanies = MutableLiveData<ViewState<MutableList<CompanyProfile>, String?>>()
     val companies: LiveData<ViewState<MutableList<CompanyProfile>, String?>> get() = mutableCompanies
 
     private val mutableLocalCompanies = MutableLiveData<ViewState<MutableList<CompanyProfile>, String?>>()
-
     val localCompanies: LiveData<ViewState<MutableList<CompanyProfile>, String?>> get() = mutableLocalCompanies
 
     private var mutableTickersList: MutableLiveData<ViewState<List<String>, String?>> = MutableLiveData<ViewState<List<String>, String?>>()
@@ -35,12 +35,12 @@ class SearchFragmentViewModel @Inject constructor(
     private var mutableQueriesList: MutableLiveData<ViewState<List<String>, String?>> = MutableLiveData<ViewState<List<String>, String?>>()
     val queriesList: LiveData<ViewState<List<String>, String?>> get() = mutableQueriesList
 
-    private var tickersCount = 0 //сколько уже загрузили(некоторые могут быть не валдины и не отображаться)
+    private var tickersCount = 0 // сколько уже загрузили(некоторые могут быть не валдины и не отображаться)
 
-    private var numberOfCompanies = 0 //сколько компаний получили с сервера
+    private var numberOfCompanies = 0 // сколько компаний получили с сервера
 
     fun searchAction(symbol: String) {
-        if(symbol == "") return
+        if (symbol == "") return
         viewModelScope.launch {
             mutableTickersList.value = ViewState.loading()
             when (val tickersResult = companiesRepository.symbolLookup(symbol)) {
@@ -70,14 +70,14 @@ class SearchFragmentViewModel @Inject constructor(
     }
 
     fun itemOnClickAction(companyProfile: CompanyProfile) {
-        // TODO
+        router.navigateTo(Screens.companyProfileFragment(), true)
     }
 
     fun getCompanies(howManyCompanies: Int) {
         var lastCompanyToDownload = tickersCount + howManyCompanies
-        if (numberOfCompanies == 0) mutableCompanies.value = ViewState.success(mutableListOf()) //Если найдено 0 компаний, то удалим старые данные
+        if (numberOfCompanies == 0) mutableCompanies.value = ViewState.success(mutableListOf()) // Если найдено 0 компаний, то удалим старые данные
         if (tickersCount == numberOfCompanies) return // если загрузили все компании
-        if (lastCompanyToDownload > numberOfCompanies) { //если хотим загрузить больше компаний чем осталось
+        if (lastCompanyToDownload > numberOfCompanies) { // если хотим загрузить больше компаний чем осталось
             lastCompanyToDownload = numberOfCompanies
         }
         if (mutableCompanies.value is ViewState.Loading && tickersCount != 0) return
@@ -104,7 +104,7 @@ class SearchFragmentViewModel @Inject constructor(
                                 val companyProfile = companiesResult.data
                                 if (companyProfile.ticker == null) { // Если с сервера пришел невалидный ответ, то пропускаем эту компанию
                                     tickersCount++
-                                    state = ViewState.success(companiesList) //если у нас все компании не валдины, то нужно сообщить что мы все успешно обработали
+                                    state = ViewState.success(companiesList) // если у нас все компании не валдины, то нужно сообщить что мы все успешно обработали
                                     continue
                                 }
 

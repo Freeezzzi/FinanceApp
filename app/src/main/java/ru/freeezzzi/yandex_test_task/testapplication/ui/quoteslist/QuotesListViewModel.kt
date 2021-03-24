@@ -20,7 +20,7 @@ import javax.inject.Inject
 class QuotesListViewModel @Inject constructor(
     private val router: Router,
     private val companiesRepository: CompaniesRepository,
-    val database: FavoriteCompaniesDatabase
+    private val database: FavoriteCompaniesDatabase
 ) : ViewModel() {
     private val mutableCompanies = MutableLiveData<ViewState<MutableList<CompanyProfile>, String?>>()
 
@@ -56,7 +56,7 @@ class QuotesListViewModel @Inject constructor(
     }
 
     fun itemOnClickAction(companyProfile: CompanyProfile) {
-        // TODO 
+        router.navigateTo(Screens.companyProfileFragment(), true)
     }
 
     fun getTickers() {
