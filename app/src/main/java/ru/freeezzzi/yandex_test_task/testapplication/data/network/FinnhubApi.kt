@@ -3,10 +3,7 @@ package ru.freeezzzi.yandex_test_task.testapplication.data.network
 import retrofit2.http.GET
 import retrofit2.http.Query
 import ru.freeezzzi.yandex_test_task.testapplication.BuildConfig
-import ru.freeezzzi.yandex_test_task.testapplication.data.network.models.CompanyProfileDTO
-import ru.freeezzzi.yandex_test_task.testapplication.data.network.models.IndicesConstituentsDTO
-import ru.freeezzzi.yandex_test_task.testapplication.data.network.models.QuoteDTO
-import ru.freeezzzi.yandex_test_task.testapplication.data.network.models.SymbolLookupDTO
+import ru.freeezzzi.yandex_test_task.testapplication.data.network.models.*
 
 interface FinnhubApi {
 
@@ -33,4 +30,13 @@ interface FinnhubApi {
         @Query(value = "q", encoded = true) symbol: String,
         @Query(value = "token") token: String = BuildConfig.API_KEY
     ): SymbolLookupDTO
+
+    @GET("stock/candle")
+    suspend fun getStockCandle(
+        @Query(value = "symbol", encoded = true) symbol: String,
+        @Query(value = "resolution") resolution: String,
+        @Query(value = "from") from: Long,
+        @Query(value = "to") to: Long,
+        @Query(value = "token") token: String = BuildConfig.API_KEY
+    ): StockCandleDTO
 }

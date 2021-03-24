@@ -13,4 +13,6 @@
     <color name="light_blue">#F0F4F7</color>
     <color name="green">#24B25D</color>
     <color name="red">#B22424</color>
+    <color name="accent_color">#FFFFFF</color>
+    <color name="light_grey">#d3d3d3</color>
 </resources>

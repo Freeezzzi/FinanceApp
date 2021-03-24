@@ -1,6 +1,7 @@
 package ru.freeezzzi.yandex_test_task.testapplication.domain.models
 
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.CompanyProfileEntity
+import java.io.Serializable
 
 /**
  *
@@ -33,8 +34,8 @@ data class CompanyProfile(
     val weburl: String? = null,
     val finnhubIndustry: String? = null,
     var isFavorite: Boolean = false,
-    var quote: Quote? = null
-)
+    @Transient var quote: Quote? = null
+) : Serializable
 
 fun CompanyProfile.toCompanyProfileEntity(): CompanyProfileEntity =
     CompanyProfileEntity(

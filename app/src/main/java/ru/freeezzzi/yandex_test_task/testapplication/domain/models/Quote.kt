@@ -1,6 +1,8 @@
 package ru.freeezzzi.yandex_test_task.testapplication.domain.models
 
 import com.squareup.moshi.Json
+import java.io.Serializable
+
 /**
  *
  * @param o Open price of the day
@@ -21,4 +23,4 @@ data class Quote (
     val c: Float? = null,
     /* Previous close price */
     val pc: Float? = null
-)
+) : Serializable

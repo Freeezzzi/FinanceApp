@@ -56,7 +56,7 @@ class QuotesListViewModel @Inject constructor(
     }
 
     fun itemOnClickAction(companyProfile: CompanyProfile) {
-        router.navigateTo(Screens.companyProfileFragment(), true)
+        router.navigateTo(Screens.companyProfileFragment(companyProfile!!), true)
     }
 
     fun getTickers() {

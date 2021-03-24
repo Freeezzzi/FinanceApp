@@ -70,7 +70,7 @@ class SearchFragmentViewModel @Inject constructor(
     }
 
     fun itemOnClickAction(companyProfile: CompanyProfile) {
-        router.navigateTo(Screens.companyProfileFragment(), true)
+        router.navigateTo(Screens.companyProfileFragment(companyProfile!!), true)
     }
 
     fun getCompanies(howManyCompanies: Int) {
