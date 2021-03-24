@@ -35,11 +35,12 @@ class SearchFragmentViewModel @Inject constructor(
     private var mutableQueriesList: MutableLiveData<ViewState<List<String>, String?>> = MutableLiveData<ViewState<List<String>, String?>>()
     val queriesList: LiveData<ViewState<List<String>, String?>> get() = mutableQueriesList
 
-    private var tickersCount = 0
+    private var tickersCount = 0 //сколько уже загрузили(некоторые могут быть не валдины и не отображаться)
 
-    private var numberOfCompanies = 0
+    private var numberOfCompanies = 0 //сколько компаний получили с сервера
 
     fun searchAction(symbol: String) {
+        if(symbol == "") return
         viewModelScope.launch {
             mutableTickersList.value = ViewState.loading()
             when (val tickersResult = companiesRepository.symbolLookup(symbol)) {
@@ -102,6 +103,7 @@ class SearchFragmentViewModel @Inject constructor(
                                 val companyProfile = companiesResult.data
                                 if (companyProfile.ticker == null) { // Если с сервера пришел невалидный ответ, то пропускаем эту компанию
                                     tickersCount++
+                                    state = ViewState.success(companiesList) //если у нас все компании не валдины, то нужно сообщить что мы все успешно обработали
                                     continue
                                 }
 

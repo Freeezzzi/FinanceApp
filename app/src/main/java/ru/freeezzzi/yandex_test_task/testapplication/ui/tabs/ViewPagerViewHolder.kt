@@ -1,6 +1,7 @@
 package ru.freeezzzi.yandex_test_task.testapplication.ui.tabs
 
 import android.view.View
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -48,27 +49,49 @@ class FavouritesTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
 class ChipsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
     private val popularChipGroup: ChipGroup = itemView.findViewById(R.id.popular_search_chip_group)
     private val recentChipGroup: ChipGroup = itemView.findViewById(R.id.recent_search_chip_group)
+    val backgroundColor = ContextCompat.getColor(itemView.context,R.color.light_blue)
 
     fun onBind(
         poplarQueries: List<String>,
         recentQueries: List<String>,
+        chipClickListener : (String)->Unit
     ) {
-        val backgroundColor = ContextCompat.getColor(itemView.context,R.color.light_blue)
         poplarQueries.forEach {
             val chip = Chip(itemView.context)
             chip.setText(it)
             chip.setBackgroundColor(backgroundColor)
+            chip.setEnsureMinTouchTargetSize(false)
+            chip.setOnClickListener {
+                chipClickListener((it as TextView).text.toString())  }
             popularChipGroup.addView(chip)
         }
-        //TODO в chipgroup постоянно завново записываются все чипы, а старые не удаляются
-        //TODO сделать отображение нового чипа и удаление старых в этом методе
         recentQueries.asReversed().forEach {
             val chip = Chip(itemView.context)
             chip.setBackgroundColor(backgroundColor)
             chip.setEnsureMinTouchTargetSize(false)
             chip.setText(it)
+            chip.setOnClickListener {
+                chipClickListener((it as TextView).text.toString())  }
             recentChipGroup.addView(chip)
         }
-        recentChipGroup
+    }
+
+    /**
+     * Обновляет chipGroup недавних запросов
+     */
+    fun updateLayout(
+            recentQueries: List<String>,
+            chipClickListener : (String)->Unit
+    ){
+        recentChipGroup.removeAllViews()
+        recentQueries.asReversed().forEach {
+            val chip = Chip(itemView.context)
+            chip.setBackgroundColor(backgroundColor)
+            chip.setEnsureMinTouchTargetSize(false)
+            chip.setText(it)
+            chip.setOnClickListener {
+                chipClickListener((it as TextView).text.toString())  }
+            recentChipGroup.addView(chip)
+        }
     }
 }

@@ -29,6 +29,8 @@ import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAda
 class SearchFragment : BaseFragment(R.layout.search_fragment) {
     private val binding by viewBinding(SearchFragmentBinding::bind)
 
+    private var popularQueries: List<String> = listOf("Nvidia", "Apple", "Amazon","Google", "Tesla", "Alibaba", "Facebook","Visa")
+
     private val viewModel: SearchFragmentViewModel by viewModels(
             factoryProducer = { SearchFragmentViewModelFactory() }
     )
@@ -46,17 +48,23 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
     private val viewPagerAdapter = SearchViewPagerAdapter(
         allTabAdapter = quotesAllAdapter,
         favouritesAdapter = quotesFavouritesAdapter,
-        popularQueries = emptyList(),
+        popularQueries = popularQueries,
         recentQueries = emptyList(),
         refreshListener = {
             viewModel.searchAction(binding.searchBarEditText.text.toString())
         },
-        scrollListener = this.OnVerticalScrollListener()
+        scrollListener = this.OnVerticalScrollListener(),
+            chipClickListener = {
+                binding.searchBarEditText.setText(it)
+                binding.searchBarEditText.clearFocus()
+                performSearch()
+            }
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //Открывается клавиатуру с фокусом на edittext в строке поиска
         binding.searchBarEditText.requestFocus()
         val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(binding.searchBarEditText, InputMethodManager.SHOW_IMPLICIT)
@@ -110,14 +118,11 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
             binding.searchViewpager.setCurrentItem(2, true)
         }
         binding.searchBarEditText.setOnKeyListener { view, i, keyEvent ->
-            if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
-                (i == KeyEvent.KEYCODE_ENTER)) {
+            if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+                    && (i == KeyEvent.KEYCODE_ENTER)
+            ) {
                 // Perform action on key press
-                    viewModel.searchAction(binding.searchBarEditText.text.toString()) // отправим запрос на сервер
-                    viewModel.showFavourites(binding.searchBarEditText.text.toString()) // найдем такой тикер в favourites
-                    binding.searchViewpager.setCurrentItem(1, true) // переключим вкладку на список компаний
-                    viewModel.saveToRecentQueries(binding.searchBarEditText.text.toString())
-                    hideKeybord()
+                    performSearch()
                     true
             }
             false
@@ -205,7 +210,16 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
         anotherTextView2.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18F)
     }
 
-    fun hideKeybord() {
+    fun performSearch(){
+        hideKeybord()
+        val symbol = binding.searchBarEditText.text.toString()
+        if (symbol.isBlank()) return
+        viewModel.searchAction(symbol) // отправим запрос на сервер
+        viewModel.showFavourites(symbol) // найдем такой тикер в favourites
+        binding.searchViewpager.setCurrentItem(1, true) // переключим вкладку на список компаний
+        viewModel.saveToRecentQueries(symbol)
+    }
+    private fun hideKeybord() {
         val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }

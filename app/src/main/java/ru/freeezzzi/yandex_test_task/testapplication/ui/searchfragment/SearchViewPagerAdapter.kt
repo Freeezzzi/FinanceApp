@@ -21,7 +21,8 @@ class SearchViewPagerAdapter(
     private val popularQueries: List<String>,
     private var recentQueries: List<String>,
     private val refreshListener: SwipeRefreshLayout.OnRefreshListener,
-    private val scrollListener: RecyclerView.OnScrollListener
+    private val scrollListener: RecyclerView.OnScrollListener,
+    private val chipClickListener : (String)-> Unit
 ) : RecyclerView.Adapter<ViewPagerViewHodler>() {
     // Храним viewHodler чтобы можно было прятать анимацию загрузки когда потребуется через функцтю setRefreshing
     private var allTab: AllTabViewHodler? = null
@@ -54,7 +55,8 @@ class SearchViewPagerAdapter(
             is FavouritesTabViewHolder -> { holder.onBind(favouritesAdapter) }
             is ChipsTabViewHolder -> holder.onBind(
                 popularQueries,
-                recentQueries
+                recentQueries,
+                    chipClickListener
             )
         }
     }
@@ -75,7 +77,7 @@ class SearchViewPagerAdapter(
 
     fun submitQueries(list: List<String>) {
         recentQueries = list
-        chipsTab?.onBind(popularQueries,recentQueries)
+        chipsTab?.updateLayout(recentQueries, chipClickListener)
     }
 
     companion object {

@@ -7,6 +7,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.RecentQ
 @Dao
 interface CompanyProfileDao {
     // TODO добавить решулярное выражение в поиск по локальной бд
+    //TODO добавить поиск не толкьо по тикеру
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(recentQueryEntity: RecentQueryEntity): Unit
 
