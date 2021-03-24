@@ -214,7 +214,10 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
     fun performSearch(){
         hideKeybord()
         val symbol = binding.searchBarEditText.text.toString()
-        if (symbol.isBlank()) return
+        if (symbol.isBlank()){
+            binding.searchBarEditText.setText("")
+            return
+        }
         viewModel.searchAction(symbol) // отправим запрос на сервер
         viewModel.showFavourites(symbol) // найдем такой тикер в favourites
         binding.searchViewpager.setCurrentItem(1, true) // переключим вкладку на список компаний
