@@ -80,14 +80,6 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
         setText()
         setStar()
 
-        var to: Long = System.currentTimeMillis() / 1000
-        var oneMonth: Long = 60L * 60 * 24 * 30
-        var from: Long = to - oneMonth
-        viewModel.getStockCandle(
-            resolution = CompanyProfileViewModel.DAY_RESOLUTION,
-            from = from,
-            to = to
-        )
         viewModel.getNews("2021-02-22", "2021-03-22")
 
         viewModel.stockCandle.observe(viewLifecycleOwner, this::updateCandleData)
@@ -98,9 +90,12 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
         when (candle) {
             is ViewState.Success -> {
                 companyProfileAdapter.setCandleData(candle.result)
+                companyProfileAdapter.candleSetRefreshing(false)
             }
+            is ViewState.Loading -> companyProfileAdapter.candleSetRefreshing(true)
             is ViewState.Error -> {
                 showError(candle.result ?: "Couldn't load candle data")
+                companyProfileAdapter.candleSetRefreshing(false)
             }
         }
     }

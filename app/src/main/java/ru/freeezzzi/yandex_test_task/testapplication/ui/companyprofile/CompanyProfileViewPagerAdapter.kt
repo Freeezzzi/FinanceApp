@@ -72,6 +72,10 @@ class CompanyProfileViewPagerAdapter(
         candleTab?.setCandleValues(candle)
     }
 
+    fun candleSetRefreshing(state: Boolean){
+        candleTab?.setRefreshable(state)
+    }
+
     fun newsSetRefreshing(state:Boolean) {
         newsTab?.setRefreshing(state)
     }

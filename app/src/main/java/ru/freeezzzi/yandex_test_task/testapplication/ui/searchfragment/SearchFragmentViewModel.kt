@@ -70,7 +70,7 @@ class SearchFragmentViewModel @Inject constructor(
     }
 
     fun itemOnClickAction(companyProfile: CompanyProfile) {
-        router.navigateTo(Screens.companyProfileFragment(companyProfile!!), true)
+        router.navigateTo(Screens.companyProfileFragment(companyProfile), true)
     }
 
     fun getCompanies(howManyCompanies: Int) {
@@ -142,7 +142,7 @@ class SearchFragmentViewModel @Inject constructor(
     fun showFavourites(symbol: String) {
         viewModelScope.launch {
             mutableLocalCompanies.value = ViewState.loading()
-            val localCompaniesQuery = database.companyProfileDao().findInFavouritesCompanies(symbol).map {
+            val localCompaniesQuery = database.companyProfileDao().findInFavouritesCompanies("%$symbol%").map {
                 it.toCompanyProfile()
             }
             mutableLocalCompanies.value = ViewState.success(localCompaniesQuery.toMutableList())

@@ -11,7 +11,7 @@ interface CompanyProfileDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(recentQueryEntity: RecentQueryEntity): Unit
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(companyProfileEntity: CompanyProfileEntity): Unit
 
     @Delete
@@ -29,6 +29,9 @@ interface CompanyProfileDao {
     @Query("SELECT * FROM Favorite_companies WHERE ticker LIKE :symbol")
     suspend fun findInFavouritesCompanies(symbol: String): List<CompanyProfileEntity>
 
-    @Query("SELECT EXISTS (SELECT 1 FROM FAVORITE_COMPANIES WHERE ticker = :symbol)")
+    /**
+     * @param symbol для поиска частичного совпадения(например символ внутри тикера компании, а не весь тикер) при передаче аргумента передать %symbol%
+     */
+    @Query("SELECT EXISTS (SELECT 1 FROM FAVORITE_COMPANIES WHERE ticker = :symbol OR name = :symbol)")
     suspend fun isCompanyInFavorite(symbol: String): Boolean
 }
