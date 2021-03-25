@@ -24,4 +24,5 @@
     <string name="news_summary">News summary</string>
     <string name="news_source">News source</string>
     <string name="news_time">Recently</string>
+    <string name="choose_news_opener">Choose where open news</string>
 </resources>

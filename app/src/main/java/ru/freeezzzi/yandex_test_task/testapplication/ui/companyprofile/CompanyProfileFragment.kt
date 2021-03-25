@@ -1,9 +1,12 @@
 package ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile
 
+import android.content.Intent
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -27,7 +30,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
     private val viewModel: CompanyProfileViewModel by viewModels(
         factoryProducer = { CompanyProfileViewModelFactory() })
 
-    private val newsListAdapter = NewsListAdapter {viewModel.newsClickedAction(it)}
+    private val newsListAdapter = NewsListAdapter { newsClickedAction(it) }
 
     private val companyProfileAdapter = CompanyProfileViewPagerAdapter(
         getCandleListener = { resolution, from, to -> viewModel.getStockCandle(
@@ -166,6 +169,19 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
         } else {
             binding.profileStar.foreground = context?.getDrawable(R.drawable.ic_star_outline_24px)
         }
+    }
+
+    private fun newsClickedAction(news: News) {
+        val newsIntent: Intent = Intent(Intent.ACTION_VIEW)
+        newsIntent.setData(Uri.parse(news.url))
+        ContextCompat.startActivity(
+            binding.root.context,
+            Intent.createChooser(
+                newsIntent,
+                binding.root.context.getString(R.string.choose_news_opener)
+            ),
+            null
+        )
     }
 
     override fun onBackPressed() {

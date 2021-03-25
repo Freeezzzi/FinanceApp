@@ -29,10 +29,6 @@ class CompanyProfileViewModel @Inject constructor(
 
     var companyProfile: CompanyProfile? = null
 
-    fun newsClickedAction(news: News) {
-        // TODO
-    }
-
     fun getNews(from: String, to: String) {
         viewModelScope.launch {
             mutableNewsList.value = ViewState.loading()

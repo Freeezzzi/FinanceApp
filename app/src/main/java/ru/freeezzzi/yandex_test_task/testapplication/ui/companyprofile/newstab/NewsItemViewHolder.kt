@@ -14,7 +14,7 @@ class NewsItemViewHolder(
         news: News,
         clickListener: (News) -> Unit
     ) {
-        binding.newsCardview.setOnClickListener { clickListener }
+        binding.newsCardview.setOnClickListener { clickListener(news)}
         setText(news)
         setPicture(news)
     }
