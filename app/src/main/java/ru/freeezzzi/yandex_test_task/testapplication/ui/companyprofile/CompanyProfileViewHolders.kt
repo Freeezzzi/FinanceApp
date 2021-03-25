@@ -94,6 +94,7 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         val data = CandleData(set1)
         candleStickChart?.data = data
         candleStickChart?.invalidate()
+        candleStickChart?.visibility = View.VISIBLE
     }
 
     /**

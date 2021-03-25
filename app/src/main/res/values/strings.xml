@@ -5,6 +5,7 @@
     <string name="last_bid_price">Price</string>
     <string name="price_change">Price change</string>
     <string name="limit_error">Api limit reached.Please try again later</string>
+    <string name="access_denied">Access denied</string>
     <string name="stocks_name">Stocks</string>
     <string name="favorite_name">Favourite</string>
     <string name="queries_name">Queries</string>

@@ -126,16 +126,6 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
         }
     }
 
-    private fun showError(msg: String) {
-        var errorMsg = msg
-        when (errorMsg) {
-            "HTTP 429 " -> errorMsg = getString(R.string.limit_error)
-            "Tickers loading.Try again!" -> return // В этом случае просто ждем
-        }
-        Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT)
-                .show()
-    }
-
     fun setTextInTitles(currentTextView: TextView, anotherTextView: TextView) {
         currentTextView.setTypeface(Typeface.DEFAULT_BOLD)
         currentTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 28F)
