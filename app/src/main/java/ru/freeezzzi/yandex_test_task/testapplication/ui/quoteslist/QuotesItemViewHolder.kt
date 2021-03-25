@@ -11,7 +11,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.R
 import ru.freeezzzi.yandex_test_task.testapplication.databinding.QuoteItemBinding
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
 
-class QuotesListViewHolder(
+class QuotesItemViewHolder(
     private val binding: QuoteItemBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 

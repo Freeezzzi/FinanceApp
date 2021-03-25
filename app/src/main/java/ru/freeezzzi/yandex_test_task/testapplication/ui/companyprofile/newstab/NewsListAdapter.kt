@@ -9,15 +9,15 @@ import ru.freeezzzi.yandex_test_task.testapplication.domain.models.News
 
 class NewsListAdapter(
     private val clickListener: (News) -> Unit
-) : ListAdapter<News, NewsViewHolder>(NewsListAdapter.DIFF_CALLBACK) {
+) : ListAdapter<News, NewsItemViewHolder>(NewsListAdapter.DIFF_CALLBACK) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsItemViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = NewsItemBinding.inflate(layoutInflater, parent, false)
-        return NewsViewHolder(binding)
+        return NewsItemViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: NewsItemViewHolder, position: Int) {
         holder.onBind(
             getItem(position),
             clickListener

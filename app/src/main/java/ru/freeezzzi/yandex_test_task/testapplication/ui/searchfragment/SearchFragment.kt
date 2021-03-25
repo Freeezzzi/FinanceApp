@@ -38,20 +38,30 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
             factoryProducer = { SearchFragmentViewModelFactory() }
     )
 
+    private val quotesAllAdapter = QuotesListAdapter(
+        clickListener = { viewModel.itemOnClickAction(it) },
+        starClickListener = { viewModel.addToFavorites(it) }
+    )
+
+    private val quotesFavouritesAdapter = QuotesListAdapter(
+        clickListener = { viewModel.itemOnClickAction(it) },
+        starClickListener = { viewModel.addToFavorites(it) }
+    )
+
     private val viewPagerAdapter = SearchViewPagerAdapter(
+        allTabAdapter = quotesAllAdapter,
+        favouritesAdapter = quotesFavouritesAdapter,
         popularQueries = popularQueries,
         recentQueries = emptyList(),
         refreshListener = {
             viewModel.searchAction(binding.searchBarEditText.text.toString())
         },
         scrollListener = this.OnVerticalScrollListener(),
-            chipClickListener = {
-                binding.searchBarEditText.setText(it)
-                binding.searchBarEditText.clearFocus()
-                performSearch()
-            },
-        clickListener = { viewModel.itemOnClickAction(it) },
-        starClickListener = { viewModel.addToFavorites(it) }
+        chipClickListener = {
+            binding.searchBarEditText.setText(it)
+            binding.searchBarEditText.clearFocus()
+            performSearch()
+        }
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -131,11 +141,11 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
     fun updateFavouritesAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
         when (companies) {
             is ViewState.Success -> {
-                viewPagerAdapter.submitFavorites(companies.result)
+                quotesFavouritesAdapter.submitList(companies.result)
             }
             // is ViewState.Loading ->
             is ViewState.Error -> {
-                viewPagerAdapter.submitFavorites(companies.oldvalue)
+                quotesFavouritesAdapter.submitList(companies.oldvalue)
                 showError(companies.result ?: "Couldn't load companies from local storage")
             }
         }
@@ -144,12 +154,12 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
     fun updateAllAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
         when (companies) {
             is ViewState.Success -> {
-                viewPagerAdapter.submitAll(companies.result)
+                quotesAllAdapter.submitList(companies.result)
                 viewPagerAdapter.setRefreshing(false)
             }
             is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
             is ViewState.Error -> {
-                viewPagerAdapter.submitAll(companies.oldvalue)
+                quotesAllAdapter.submitList(companies.oldvalue)
                 showError(companies.result ?: "Couldn't load companies")
                 viewPagerAdapter.setRefreshing(false)
             }

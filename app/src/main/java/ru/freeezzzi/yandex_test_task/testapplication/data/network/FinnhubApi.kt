@@ -44,6 +44,7 @@ interface FinnhubApi {
     suspend fun getCompanyNews(
         @Query(value = "symbol", encoded = true) symbol: String,
         @Query(value = "from") from: String, // YYYY-MM-DD
-        @Query(value = "to") to: String // YYYY-MM-DD
+        @Query(value = "to") to: String, // YYYY-MM-DD
+        @Query(value = "token") token: String = BuildConfig.API_KEY
     ): List<NewsDTO>
 }

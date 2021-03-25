@@ -10,14 +10,14 @@ import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAda
 import java.lang.IllegalArgumentException
 
 class ViewPagerAdapter(
-    private val clickListener: (CompanyProfile) -> Unit,
-    private val starClickListener: (CompanyProfile) -> Unit,
+    private val allTabAdapter: QuotesListAdapter,
+    private val favouritesAdapter: QuotesListAdapter,
     private val refreshListener: SwipeRefreshLayout.OnRefreshListener,
     private val scrollListener: RecyclerView.OnScrollListener,
 ) : RecyclerView.Adapter<ViewPagerViewHodler>() {
     // Храним viewHodler чтобы можно было прятать анимацию загрузки когда потребуется через функцтю setRefreshing
     private var allTab: AllTabViewHodler? = null
-    private var favoritesTab : FavouritesTabViewHolder? = null
+    private var favoritesTab: FavouritesTabViewHolder? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewPagerViewHodler =
         when (viewType) {
@@ -34,14 +34,12 @@ class ViewPagerAdapter(
     override fun onBindViewHolder(holder: ViewPagerViewHodler, position: Int) {
         when (holder) {
             is AllTabViewHodler -> { holder.onBind(
-                clickListener = clickListener,
-                starClickListener = starClickListener,
+                adapter = allTabAdapter,
                 refreshListener = refreshListener,
                 scrollListener = scrollListener
             ) }
             is FavouritesTabViewHolder -> { holder.onBind(
-                clickListener,
-                starClickListener
+                favouritesAdapter
             ) }
         }
     }
@@ -57,14 +55,6 @@ class ViewPagerAdapter(
 
     fun setRefreshing(condition: Boolean) {
         allTab?.setRefreshing(condition)
-    }
-
-    fun submitFavorites(companyProfiles : List< CompanyProfile>){
-        favoritesTab?.submitData(companyProfiles)
-    }
-
-    fun submitAll(companyProfiles: List<CompanyProfile>){
-        allTab?.submitData(companyProfiles)
     }
 
     companion object {

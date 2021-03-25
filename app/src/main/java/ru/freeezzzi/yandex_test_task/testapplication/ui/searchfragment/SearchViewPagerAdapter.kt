@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.freeezzzi.yandex_test_task.testapplication.R
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
+import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAdapter
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.AllTabViewHodler
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.FavouritesTabViewHolder
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ViewPagerViewHodler
@@ -15,27 +16,23 @@ import java.lang.IllegalArgumentException
  * Класс по функциональности похож на tabs.ViewPagerAdapter, но потребовалось добавить 3 вкладку в начало, поэтому создан другой класс
  */
 class SearchViewPagerAdapter(
+    private val allTabAdapter: QuotesListAdapter,
+    private val favouritesAdapter: QuotesListAdapter,
     private val popularQueries: List<String>,
     private var recentQueries: List<String>,
     private val refreshListener: SwipeRefreshLayout.OnRefreshListener,
     private val scrollListener: RecyclerView.OnScrollListener,
-    private val chipClickListener: (String) -> Unit,
-    private val clickListener: (CompanyProfile) -> Unit,
-    private val starClickListener: (CompanyProfile) -> Unit
+    private val chipClickListener: (String) -> Unit
 ) : RecyclerView.Adapter<ViewPagerViewHodler>() {
     // Храним viewHodler чтобы можно было прятать анимацию загрузки когда потребуется через функцтю setRefreshing
     private var allTab: AllTabViewHodler? = null
-    private var favoritesTab: FavouritesTabViewHolder? = null
     private var chipsTab: ChipsTabViewHolder? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewPagerViewHodler =
         when (viewType) {
-            VIEW_TYPE_FAVOURITES -> {
-                favoritesTab = FavouritesTabViewHolder(
+            VIEW_TYPE_FAVOURITES -> FavouritesTabViewHolder(
                     LayoutInflater.from(parent.context).inflate(
                         R.layout.quotes_fragment_favouritestab, parent, false))
-                favoritesTab as FavouritesTabViewHolder
-            }
             VIEW_TYPE_ALL -> {
                 allTab = AllTabViewHodler(LayoutInflater.from(parent.context).inflate(R.layout.quotes_fragment_alltab, parent, false))
                 allTab as AllTabViewHodler
@@ -51,19 +48,17 @@ class SearchViewPagerAdapter(
     override fun onBindViewHolder(holder: ViewPagerViewHodler, position: Int) {
         when (holder) {
             is AllTabViewHodler -> { holder.onBind(
-                clickListener = clickListener,
-                starClickListener = starClickListener,
+                allTabAdapter,
                 refreshListener,
                 scrollListener
             ) }
             is FavouritesTabViewHolder -> { holder.onBind(
-                clickListener = clickListener,
-                starClickListener = starClickListener
+                favouritesAdapter
             ) }
             is ChipsTabViewHolder -> holder.onBind(
                 popularQueries,
                 recentQueries,
-                    chipClickListener
+                chipClickListener
             )
         }
     }
@@ -80,14 +75,6 @@ class SearchViewPagerAdapter(
 
     fun setRefreshing(condition: Boolean) {
         allTab?.setRefreshing(condition)
-    }
-
-    fun submitFavorites(companyProfiles: List< CompanyProfile>) {
-        favoritesTab?.submitData(companyProfiles)
-    }
-
-    fun submitAll(companyProfiles: List<CompanyProfile>) {
-        allTab?.submitData(companyProfiles)
     }
 
     fun submitQueries(list: List<String>) {

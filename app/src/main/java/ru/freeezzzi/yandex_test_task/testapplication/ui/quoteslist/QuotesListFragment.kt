@@ -4,7 +4,6 @@ import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
@@ -24,9 +23,21 @@ import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ViewPagerAdapter
 class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
     private val binding by viewBinding(QuotesListFragmentBinding::bind)
 
-    private val viewPagerAdapter = ViewPagerAdapter(
+    // Он инициализируется здесь, т.к. вкладка favourites создается после того как туда передается лист
+    // по-хорошему его надо создавать в viewholder вкладки
+    private val quotesAllAdapter = QuotesListAdapter(
         clickListener = { viewModel.itemOnClickAction(it) },
-        starClickListener = { viewModel.addToFavorites(it) },
+        starClickListener = { viewModel.addToFavorites(it) }
+    )
+
+    private val quotesFavouritesAdapter = QuotesListAdapter(
+        clickListener = { viewModel.itemOnClickAction(it) },
+        starClickListener = { viewModel.addToFavorites(it) }
+    )
+
+    private val viewPagerAdapter = ViewPagerAdapter(
+        allTabAdapter = quotesAllAdapter,
+        favouritesAdapter = quotesFavouritesAdapter,
         refreshListener = {
             viewModel.getTickers()
         },
@@ -77,11 +88,10 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
     fun updateFavouritesAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
         when (companies) {
             is ViewState.Success -> {
-                viewPagerAdapter.submitFavorites(companies.result)
-            }
+                quotesFavouritesAdapter.submitList(companies.result)            }
             // is ViewState.Loading ->
             is ViewState.Error -> {
-                viewPagerAdapter.submitFavorites(companies.oldvalue)
+                quotesFavouritesAdapter.submitList(companies.oldvalue)
                 showError(companies.result ?: "Couldn't load companies")
             }
         }
@@ -90,12 +100,12 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
     fun updateAllAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
         when (companies) {
             is ViewState.Success -> {
-                viewPagerAdapter.submitAll(companies.result)
+                quotesAllAdapter.submitList(companies.result)
                 viewPagerAdapter.setRefreshing(false)
             }
             is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
             is ViewState.Error -> {
-                viewPagerAdapter.submitAll(companies.oldvalue)
+                quotesAllAdapter.submitList(companies.oldvalue)
                 showError(companies.result ?: "Couldn't load companies")
                 viewPagerAdapter.setRefreshing(false)
             }

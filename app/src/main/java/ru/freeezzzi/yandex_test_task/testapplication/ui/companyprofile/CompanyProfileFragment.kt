@@ -14,6 +14,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.R
 import ru.freeezzzi.yandex_test_task.testapplication.databinding.CompanyProfileFragmentBinding
 import ru.freeezzzi.yandex_test_task.testapplication.di.viewmodels.companyprofile.DaggerCompanyProfileViewModelComponent
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
+import ru.freeezzzi.yandex_test_task.testapplication.domain.models.News
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
 import ru.freeezzzi.yandex_test_task.testapplication.ui.BaseFragment
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
@@ -25,7 +26,15 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
     private val viewModel: CompanyProfileViewModel by viewModels(
         factoryProducer = { CompanyProfileViewModelFactory() })
 
-    private val companyProfileAdapter = CompanyProfileViewPagerAdapter()
+    private val companyProfileAdapter = CompanyProfileViewPagerAdapter(
+        getCandleListener = { resolution, from, to -> viewModel.getStockCandle(
+            resolution = resolution,
+            from = from,
+            to = to
+        ) },
+        newsClickListener = { viewModel.newsClickedAction(it) },
+        getNewsListener = { from, to -> viewModel.getNews(from, to) }
+    )
 
     override fun initViews(view: View) {
         super.initViews(view)
@@ -68,9 +77,15 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
         var to: Long = System.currentTimeMillis() / 1000
         var oneMonth: Long = 60L * 60 * 24 * 30
         var from: Long = to - oneMonth
-        viewModel.getStockCandle(resolution = CompanyProfileViewModel.DAY_RESOLUTION, from = from, to = to)
+        viewModel.getStockCandle(
+            resolution = CompanyProfileViewModel.DAY_RESOLUTION,
+            from = from,
+            to = to
+        )
+        viewModel.getNews("2021-02-22", "2021-03-22")
 
         viewModel.stockCandle.observe(viewLifecycleOwner, this::updateCandleData)
+        viewModel.newsList.observe(viewLifecycleOwner, this::updateNewsList)
     }
 
     fun updateCandleData(candle: ViewState<StockCandle, String?>) {
@@ -80,6 +95,18 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             }
             is ViewState.Error -> {
                 showError(candle.result ?: "Couldn't load candle data")
+            }
+        }
+    }
+
+    fun updateNewsList(news: ViewState<List<News>, String?>) {
+        when (news) {
+            is ViewState.Success -> {
+                companyProfileAdapter.setNews(news.result)
+            }
+            is ViewState.Error -> {
+                companyProfileAdapter.setNews(news.oldvalue)
+                showError(news.result ?: "Couldn't load candle data")
             }
         }
     }

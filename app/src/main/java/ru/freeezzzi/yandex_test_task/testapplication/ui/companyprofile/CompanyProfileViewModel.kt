@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompaniesDatabase
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
+import ru.freeezzzi.yandex_test_task.testapplication.domain.models.News
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.toCompanyProfileEntity
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
@@ -23,7 +24,24 @@ class CompanyProfileViewModel @Inject constructor(
     private var mutableStockCandle: MutableLiveData<ViewState<StockCandle, String?>> = MutableLiveData<ViewState<StockCandle, String?>>()
     val stockCandle: LiveData<ViewState<StockCandle, String?>> get() = mutableStockCandle
 
+    private var mutableNewsList: MutableLiveData<ViewState<List<News>, String?>> = MutableLiveData<ViewState<List<News>, String?>>()
+    val newsList: LiveData<ViewState<List<News>, String?>> get() = mutableNewsList
+
     var companyProfile: CompanyProfile? = null
+
+    fun newsClickedAction(news: News) {
+        // TODO
+    }
+
+    fun getNews(from: String, to: String) {
+        viewModelScope.launch {
+            mutableNewsList.value = ViewState.loading()
+            when (val tickersResult = companiesRepository.getCompanyNews(companyProfile?.ticker ?: " ", from, to)) {
+                is OperationResult.Success -> mutableNewsList.value = ViewState.success(tickersResult.data)
+                is OperationResult.Error -> mutableNewsList.value = ViewState.error(emptyList(), tickersResult.data)
+            }
+        }
+    }
 
     fun addToFavorites() {
         viewModelScope.launch {
@@ -41,14 +59,13 @@ class CompanyProfileViewModel @Inject constructor(
     }
 
     fun getStockCandle(
-        ticker: String = companyProfile?.ticker ?: "",
         resolution: String,
         from: Long,
         to: Long
     ) {
         viewModelScope.launch {
             mutableStockCandle.value = ViewState.loading()
-            when (val tickersResult = companiesRepository.getStockCandle(ticker, resolution, from, to)) {
+            when (val tickersResult = companiesRepository.getStockCandle(companyProfile?.ticker ?: "", resolution, from, to)) {
                 is OperationResult.Success -> mutableStockCandle.value = ViewState.success(tickersResult.data)
                 is OperationResult.Error -> mutableStockCandle.value = ViewState.error(StockCandle(), tickersResult.data)
             }
@@ -59,7 +76,7 @@ class CompanyProfileViewModel @Inject constructor(
         router.exit()
     }
 
-    companion object{
+    companion object {
         const val ONE_DAY_RESOLUTION = "1"
         const val FIVE_DAYS_RESOLUTION = "5"
         const val FIFTEEN_DAYS_RESOLUTION = "15"

@@ -4,26 +4,39 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.freeezzzi.yandex_test_task.testapplication.R
+import ru.freeezzzi.yandex_test_task.testapplication.domain.models.News
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
+import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.newstab.NewsTabViewHolder
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ViewPagerViewHodler
 import java.lang.IllegalArgumentException
 
-class CompanyProfileViewPagerAdapter() : RecyclerView.Adapter<ViewPagerViewHodler>() {
+// TODO добавить в candle и news свои scroll listener RecyclerView.OnScrollListener и SwipeRefreshLayout.OnRefreshListener
+class CompanyProfileViewPagerAdapter(
+    // Candle tab
+    private val getCandleListener: (resolution: String, from: Long, to: Long) -> Unit,
+    // news tab
+    private val newsClickListener: (news: News) -> Unit,
+    private val getNewsListener: (from: String, to: String) -> Unit // TODO переделать под параметры поиска
+) : RecyclerView.Adapter<ViewPagerViewHodler>() {
     private var candleTab: CandleViewHolder? = null
+    private var newsTab: NewsTabViewHolder? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewPagerViewHodler =
         when (viewType) {
             VIEW_TYPE_CHART -> { candleTab = CandleViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.chart_fragment, parent, false))
+                    R.layout.candle_fragment, parent, false))
                 candleTab as CandleViewHolder
             }
             VIEW_TYPE_SUMMARY -> SummaryViewHolder(
                 LayoutInflater.from(parent.context).inflate(
                     R.layout.summary_fragment, parent, false))
-            VIEW_TYPE_NEWS -> NewsTabViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.news_fragment, parent, false))
+            VIEW_TYPE_NEWS -> {
+                newsTab = NewsTabViewHolder(
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.news_fragment, parent, false))
+                newsTab as NewsTabViewHolder
+            }
             VIEW_TYPE_FORECASTS -> ForecastsViewHolder(
                 LayoutInflater.from(parent.context).inflate(
                     R.layout.forecasts_fragment, parent, false))
@@ -34,9 +47,12 @@ class CompanyProfileViewPagerAdapter() : RecyclerView.Adapter<ViewPagerViewHodle
 
     override fun onBindViewHolder(holder: ViewPagerViewHodler, position: Int) {
         when (holder) {
-            is CandleViewHolder -> holder.onBind()
+            is CandleViewHolder -> holder.onBind(getCandleListener)
             is SummaryViewHolder -> holder.onBind()
-            is NewsTabViewHolder -> holder.onBind()
+            is NewsTabViewHolder -> holder.onBind(
+                newsClickListener,
+                getNewsListener
+            )
             is ForecastsViewHolder -> holder.onBind()
         }
     }
@@ -54,6 +70,10 @@ class CompanyProfileViewPagerAdapter() : RecyclerView.Adapter<ViewPagerViewHodle
 
     fun setCandleData(candle: StockCandle) {
         candleTab?.setCandleValues(candle)
+    }
+
+    fun setNews(news: List<News>) {
+        newsTab?.submitData(news)
     }
 
     companion object {
