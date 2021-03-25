@@ -5,6 +5,9 @@
     android:id="@+id/news_cardview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/standard_margin"
+    android:layout_marginTop="@dimen/small_margin"
+    android:layout_marginRight="@dimen/standard_margin"
     android:elevation="@dimen/corner_rad"
     app:cardCornerRadius="@dimen/corner_rad">
 

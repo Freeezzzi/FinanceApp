@@ -18,9 +18,9 @@
     <string name="recent_requests">You\'ve searched for this</string>
     <string name="day_chip">&#160;D&#160;</string>
     <string name="week_chip">&#160;W&#160;</string>
-    <string name="two_weeks_chip">&#160;2W&#160;</string>
+    <string name="two_weeks_chip">2W</string>
     <string name="month_chip">&#160;M&#160;</string>
-    <string name="six_month_chip">&#160;6M&#160;</string>
+    <string name="six_month_chip">6M</string>
     <string name="year_chip">&#160;Y&#160;</string>
     <string name="news_title">News title</string>
     <string name="news_summary">News summary</string>
