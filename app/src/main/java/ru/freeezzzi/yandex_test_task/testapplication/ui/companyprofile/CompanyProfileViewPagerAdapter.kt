@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.freeezzzi.yandex_test_task.testapplication.R
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.News
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
+import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.newstab.NewsListAdapter
 import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.newstab.NewsTabViewHolder
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ViewPagerViewHodler
 import java.lang.IllegalArgumentException
@@ -15,7 +15,7 @@ class CompanyProfileViewPagerAdapter(
     // Candle tab
     private val getCandleListener: (resolution: String, from: Long, to: Long) -> Unit,
     // news tab
-    private val newsClickListener: (news: News) -> Unit,
+    private val newsListAdapter: NewsListAdapter,
     private val getNewsListener: (from: String, to: String) -> Unit // TODO переделать под параметры поиска
 ) : RecyclerView.Adapter<ViewPagerViewHodler>() {
     private var candleTab: CandleViewHolder? = null
@@ -50,7 +50,7 @@ class CompanyProfileViewPagerAdapter(
             is CandleViewHolder -> holder.onBind(getCandleListener)
             is SummaryViewHolder -> holder.onBind()
             is NewsTabViewHolder -> holder.onBind(
-                newsClickListener,
+                newsListAdapter,
                 getNewsListener
             )
             is ForecastsViewHolder -> holder.onBind()
@@ -72,8 +72,8 @@ class CompanyProfileViewPagerAdapter(
         candleTab?.setCandleValues(candle)
     }
 
-    fun setNews(news: List<News>) {
-        newsTab?.submitData(news)
+    fun newsSetRefreshing(state:Boolean) {
+        newsTab?.setRefreshing(state)
     }
 
     companion object {

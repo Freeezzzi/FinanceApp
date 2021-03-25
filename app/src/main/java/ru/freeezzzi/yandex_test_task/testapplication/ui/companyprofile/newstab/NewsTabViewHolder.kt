@@ -18,23 +18,17 @@ class NewsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
     private var getNewsListener: ((String, String) -> Unit)? = null
 
     fun onBind(
-        clickListener: (news: News) -> Unit,
+        adapter: NewsListAdapter,
         getNewsListener: (from: String, to: String) -> Unit
     ) {
         this.getNewsListener = getNewsListener
-        adapter = NewsListAdapter { clickListener }
+        this.adapter = adapter
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapter
         recyclerView?.addOnScrollListener(this.OnVerticalScrollListener())
         refreshLayout?.setOnRefreshListener {
-            setRefreshing(true)
             getNewsListener("2021-02-22", "2021-03-22")
         }
-    }
-
-    fun submitData(news: List<News>) {
-        adapter?.submitList(news)
-        setRefreshing(false)
     }
 
     fun setRefreshing(state: Boolean) {
@@ -65,7 +59,6 @@ class NewsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         }
 
         fun onScrolledToBottom() {
-            setRefreshing(true)
             getNewsListener?.invoke("2021-02-22", "2021-03-22")
         }
     }

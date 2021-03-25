@@ -18,6 +18,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.domain.models.News
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
 import ru.freeezzzi.yandex_test_task.testapplication.ui.BaseFragment
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
+import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.newstab.NewsListAdapter
 
 // TODO переделать все imageView в imagebutton
 class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
@@ -26,13 +27,15 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
     private val viewModel: CompanyProfileViewModel by viewModels(
         factoryProducer = { CompanyProfileViewModelFactory() })
 
+    private val newsListAdapter = NewsListAdapter {viewModel.newsClickedAction(it)}
+
     private val companyProfileAdapter = CompanyProfileViewPagerAdapter(
         getCandleListener = { resolution, from, to -> viewModel.getStockCandle(
             resolution = resolution,
             from = from,
             to = to
         ) },
-        newsClickListener = { viewModel.newsClickedAction(it) },
+        newsListAdapter,
         getNewsListener = { from, to -> viewModel.getNews(from, to) }
     )
 
@@ -102,11 +105,14 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
     fun updateNewsList(news: ViewState<List<News>, String?>) {
         when (news) {
             is ViewState.Success -> {
-                companyProfileAdapter.setNews(news.result)
+                newsListAdapter.submitList(news.result)
+                companyProfileAdapter.newsSetRefreshing(false)
             }
+            is ViewState.Loading -> companyProfileAdapter.newsSetRefreshing(true)
             is ViewState.Error -> {
-                companyProfileAdapter.setNews(news.oldvalue)
-                showError(news.result ?: "Couldn't load candle data")
+                newsListAdapter.submitList(news.oldvalue)
+                showError(news.result ?: "Couldn't load news")
+                companyProfileAdapter.newsSetRefreshing(false)
             }
         }
     }
