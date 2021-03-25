@@ -210,9 +210,9 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
             binding.searchBarEditText.setText("")
             return
         }
+        binding.searchViewpager.setCurrentItem(1, true) // переключим вкладку на список компаний
         viewModel.searchAction(symbol) // отправим запрос на сервер
         viewModel.showFavourites(symbol) // найдем такой тикер в favourites
-        binding.searchViewpager.setCurrentItem(1, true) // переключим вкладку на список компаний
         viewModel.saveToRecentQueries(symbol)
     }
     private fun hideKeybord() {
