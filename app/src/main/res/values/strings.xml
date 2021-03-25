@@ -15,4 +15,8 @@
     <string name="query_label">Enter ticker, name, isin, or cusip</string>
     <string name="popular_requests">Popular requests</string>
     <string name="recent_requests">You\'ve searched for this</string>
+    <string name="hour_chip">H</string>
+    <string name="day_chip">D</string>
+    <string name="week_chip">W</string>
+    <string name="month_chip">M</string>
 </resources>

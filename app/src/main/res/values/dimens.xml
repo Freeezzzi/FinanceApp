@@ -8,4 +8,5 @@
     <dimen name="small_margin">8dp</dimen>
     <dimen name="large_margin">64dp</dimen>
     <dimen name="corner_rad">16dp</dimen>
+    <dimen name="chip_size">46dp</dimen>
 </resources>

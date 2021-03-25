@@ -27,7 +27,6 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
             timeDifference = stockCandle.t?.get(1) ?: 0 - (stockCandle.t?.get(0) ?: 0)
             firstMeasure = stockCandle.t?.get(0) ?: 0
         }
-        // TODO customization
         // scalling and dragging
         candleStickChart?.isDragEnabled = false
         candleStickChart?.setScaleEnabled(false)
@@ -46,14 +45,19 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         yAxis?.setDrawLabels(false)
         rightAxis?.setDrawLabels(false)
 
+        //hide frame
+        xAxis?.setDrawAxisLine(false)
+        yAxis?.setDrawAxisLine(false)
+        rightAxis?.setDrawAxisLine(false)
+
         /*xAxis?.granularity = 1f
         xAxis?.isGranularityEnabled = true
         xAxis?.setAvoidFirstLastClipping(true)*/
 
-        //чтобы можно было листать recyclerview
+        // чтобы можно было листать recyclerview
         candleStickChart?.isHighlightPerDragEnabled = false
 
-        // candleStickChart?.requestDisallowInterceptTouchEvent(true)
+        candleStickChart?.requestDisallowInterceptTouchEvent(true)
 
         // disable legend
         candleStickChart?.legend?.isEnabled = false
@@ -79,11 +83,11 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         val set1 = CandleDataSet(valsCandleStick, "Company")
         set1.setColor(Color.rgb(80, 80, 80))
         set1.shadowColor = ContextCompat.getColor(itemView.context, R.color.Grey)
-        set1.shadowWidth = 0.0f
+        set1.shadowWidth = 1f
         set1.decreasingColor = ContextCompat.getColor(itemView.context, R.color.red)
         set1.decreasingPaintStyle = Paint.Style.FILL
         set1.increasingColor = ContextCompat.getColor(itemView.context, R.color.green)
-        set1.increasingPaintStyle = Paint.Style.FILL_AND_STROKE
+        set1.increasingPaintStyle = Paint.Style.FILL
         set1.neutralColor = ContextCompat.getColor(itemView.context, R.color.light_grey)
         set1.setDrawValues(false)
 
