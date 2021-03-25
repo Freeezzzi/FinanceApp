@@ -57,6 +57,8 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
                 when (position) {
                     0 -> {
                         setTextInTitles(binding.chartTextview, binding.summaryTextview, binding.newsTextview, binding.forecastsTextview)
+                        // appbar Раскрывается, т.к. у constraint layout(который внутри этого фрагмента) нет возможности прокрутки => нет возможности прокручивать appbar
+                        binding.appbar.setExpanded(true, true)
                         binding.horizontalScrollView.smoothScrollTo(0, 0)
                     }
                     1 -> {
@@ -79,8 +81,6 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
         // set text and star
         setText()
         setStar()
-
-        viewModel.getNews("2021-02-22", "2021-03-22")
 
         viewModel.stockCandle.observe(viewLifecycleOwner, this::updateCandleData)
         viewModel.newsList.observe(viewLifecycleOwner, this::updateNewsList)
