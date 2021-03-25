@@ -108,7 +108,7 @@ class SummaryViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
     }
 }
 
-class NewsViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
+class NewsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
     fun onBind() {
     }
 }

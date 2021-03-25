@@ -24,19 +24,9 @@ import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ViewPagerAdapter
 class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
     private val binding by viewBinding(QuotesListFragmentBinding::bind)
 
-    private val quotesAllAdapter = QuotesListAdapter(
-            clickListener = { viewModel.itemOnClickAction(it) },
-            starClickListener = { viewModel.addToFavorites(it) }
-    )
-
-    private val quotesFavouritesAdapter = QuotesListAdapter(
-        clickListener = { viewModel.itemOnClickAction(it) },
-        starClickListener = { viewModel.addToFavorites(it) }
-    )
-
     private val viewPagerAdapter = ViewPagerAdapter(
-        allTabAdapter = quotesAllAdapter,
-        favouritesAdapter = quotesFavouritesAdapter,
+        clickListener = { viewModel.itemOnClickAction(it) },
+        starClickListener = { viewModel.addToFavorites(it) },
         refreshListener = {
             viewModel.getTickers()
         },
@@ -87,11 +77,11 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
     fun updateFavouritesAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
         when (companies) {
             is ViewState.Success -> {
-                quotesFavouritesAdapter.submitList(companies.result)
+                viewPagerAdapter.submitFavorites(companies.result)
             }
             // is ViewState.Loading ->
             is ViewState.Error -> {
-                quotesFavouritesAdapter.submitList(companies.oldvalue)
+                viewPagerAdapter.submitFavorites(companies.oldvalue)
                 showError(companies.result ?: "Couldn't load companies")
             }
         }
@@ -100,12 +90,12 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
     fun updateAllAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
         when (companies) {
             is ViewState.Success -> {
-                quotesAllAdapter.submitList(companies.result)
+                viewPagerAdapter.submitAll(companies.result)
                 viewPagerAdapter.setRefreshing(false)
             }
             is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
             is ViewState.Error -> {
-                quotesAllAdapter.submitList(companies.oldvalue)
+                viewPagerAdapter.submitAll(companies.oldvalue)
                 showError(companies.result ?: "Couldn't load companies")
                 viewPagerAdapter.setRefreshing(false)
             }

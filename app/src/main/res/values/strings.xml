@@ -20,4 +20,8 @@
     <string name="day_chip">D</string>
     <string name="week_chip">W</string>
     <string name="month_chip">M</string>
+    <string name="news_title">News title</string>
+    <string name="news_summary">News summary</string>
+    <string name="news_source">News source</string>
+    <string name="news_time">Recently</string>
 </resources>

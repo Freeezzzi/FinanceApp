@@ -1,6 +1,5 @@
 package ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil

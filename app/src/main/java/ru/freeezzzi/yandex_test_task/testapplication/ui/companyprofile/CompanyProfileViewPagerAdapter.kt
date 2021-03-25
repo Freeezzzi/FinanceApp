@@ -21,7 +21,7 @@ class CompanyProfileViewPagerAdapter() : RecyclerView.Adapter<ViewPagerViewHodle
             VIEW_TYPE_SUMMARY -> SummaryViewHolder(
                 LayoutInflater.from(parent.context).inflate(
                     R.layout.summary_fragment, parent, false))
-            VIEW_TYPE_NEWS -> NewsViewHolder(
+            VIEW_TYPE_NEWS -> NewsTabViewHolder(
                 LayoutInflater.from(parent.context).inflate(
                     R.layout.news_fragment, parent, false))
             VIEW_TYPE_FORECASTS -> ForecastsViewHolder(
@@ -36,7 +36,7 @@ class CompanyProfileViewPagerAdapter() : RecyclerView.Adapter<ViewPagerViewHodle
         when (holder) {
             is CandleViewHolder -> holder.onBind()
             is SummaryViewHolder -> holder.onBind()
-            is NewsViewHolder -> holder.onBind()
+            is NewsTabViewHolder -> holder.onBind()
             is ForecastsViewHolder -> holder.onBind()
         }
     }

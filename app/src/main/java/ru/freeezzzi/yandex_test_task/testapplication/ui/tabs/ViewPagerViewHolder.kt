@@ -1,29 +1,33 @@
 package ru.freeezzzi.yandex_test_task.testapplication.ui.tabs
 
 import android.view.View
-import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources.getColorStateList
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import ru.freeezzzi.yandex_test_task.testapplication.R
+import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
 import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAdapter
 
-abstract class ViewPagerViewHodler(itemView: View) : RecyclerView.ViewHolder(itemView)
+abstract class ViewPagerViewHodler(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    abstract fun submitData(companyProfiles: List<CompanyProfile>)
+}
 
 class AllTabViewHodler(itemView: View) : ViewPagerViewHodler(itemView) {
     private val recyclerView: RecyclerView? = itemView.findViewById(R.id.trades_recyclerview)
     private val refreshLayout: SwipeRefreshLayout? = itemView.findViewById(R.id.trades_swipeRefreshLayout)
     private val layoutManager = LinearLayoutManager(itemView.context)
+    private var adapter: QuotesListAdapter? = null
 
     fun onBind(
-        adapter: QuotesListAdapter,
+        clickListener: (CompanyProfile) -> Unit,
+        starClickListener: (CompanyProfile) -> Unit,
         refreshListener: SwipeRefreshLayout.OnRefreshListener,
         scrollListener: RecyclerView.OnScrollListener,
     ) {
+        adapter = QuotesListAdapter(
+            clickListener = clickListener,
+            starClickListener = starClickListener
+        )
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapter
         recyclerView?.addOnScrollListener(scrollListener)
@@ -33,16 +37,30 @@ class AllTabViewHodler(itemView: View) : ViewPagerViewHodler(itemView) {
     fun setRefreshing(condition: Boolean) {
         refreshLayout?.isRefreshing = condition
     }
+
+    override fun submitData(companyProfiles: List<CompanyProfile>) {
+        adapter?.submitList(companyProfiles)
+    }
 }
 
 class FavouritesTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
     private val recyclerView: RecyclerView? = itemView.findViewById(R.id.favourites_recyclerview)
     private val layoutManager = LinearLayoutManager(itemView.context)
+    private var adapter: QuotesListAdapter? = null
 
     fun onBind(
-        adapter: QuotesListAdapter
+        clickListener: (CompanyProfile) -> Unit,
+        starClickListener: (CompanyProfile) -> Unit
     ) {
+        adapter = QuotesListAdapter(
+            clickListener = clickListener,
+            starClickListener = starClickListener
+        )
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = layoutManager
+    }
+
+    override fun submitData(companyProfiles: List<CompanyProfile>) {
+        adapter?.submitList(companyProfiles)
     }
 }

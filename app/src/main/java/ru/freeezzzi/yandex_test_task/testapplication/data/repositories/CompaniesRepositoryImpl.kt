@@ -3,6 +3,7 @@ package ru.freeezzzi.yandex_test_task.testapplication.data.repositories
 import ru.freeezzzi.yandex_test_task.testapplication.data.network.FinnhubApi
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
+import ru.freeezzzi.yandex_test_task.testapplication.domain.models.News
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.Quote
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
@@ -62,6 +63,20 @@ class CompaniesRepositoryImpl @Inject constructor(
         try {
             val stockCandle = finnhabApi.getStockCandle(symbol, resolution, from, to).toStockCandle()
             OperationResult.Success(stockCandle)
+        } catch (e: Throwable) {
+            OperationResult.Error(e.message)
+        }
+
+    override suspend fun getCompanyNews(
+        symbol: String,
+        from: String, // YYYY-MM_DD
+        to: String // YYYY-MM-DD
+    ): OperationResult<List<News>, String?> =
+        try {
+            val companyNews = finnhabApi.getCompanyNews(symbol, from, to).map {
+                it.toNews()
+            }
+            OperationResult.Success(companyNews)
         } catch (e: Throwable) {
             OperationResult.Error(e.message)
         }
