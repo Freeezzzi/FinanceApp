@@ -11,6 +11,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompanie
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.*
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
+import ru.freeezzzi.yandex_test_task.testapplication.ui.SingleLiveEvent
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
 import javax.inject.Inject
 
@@ -43,7 +44,11 @@ class CompanyProfileViewModel @Inject constructor(
     private var mutablePeersList: MutableLiveData<ViewState<List<CompanyProfile>, String?>> = MutableLiveData<ViewState<List<CompanyProfile>, String?>>()
     val peersList: LiveData<ViewState<List<CompanyProfile>, String?>> get() = mutablePeersList
 
-    private var mutablePeersTickersList: MutableLiveData<ViewState<List<String>, String?>> = MutableLiveData<ViewState<List<String>, String?>>()
+    /**
+     * Здесь используется singleLiveEvent т.к. при возврате к фрагменту к livedata заново привязываются наблюдатели и получают обновленме при привязке
+     * Это создает лишние запросы к api, которые, ввиду огранчиений, хотелось бы избежать
+     */
+    private var mutablePeersTickersList: SingleLiveEvent<ViewState<List<String>, String?>> = SingleLiveEvent()
     val peerstickersList: LiveData<ViewState<List<String>, String?>> get() = mutablePeersTickersList
 
     private var tickersCount = 0 // сколько уже загрузили(некоторые могут быть не валдины и не отображаться)

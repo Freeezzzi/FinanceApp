@@ -229,7 +229,6 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
                             binding.forecastsTextview.left,
                             0
                         )
-                        binding.appbar.setExpanded(true, true)
                     }
                 }
                 super.onPageSelected(position)

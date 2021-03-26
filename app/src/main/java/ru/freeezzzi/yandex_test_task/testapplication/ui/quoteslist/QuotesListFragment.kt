@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -57,7 +58,6 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
 
     override fun initViews(view: View) {
         super.initViews(view)
-        (activity as AppCompatActivity)?.supportActionBar?.hide()
 
         // ViewPager
         binding.tradesViewpager.adapter = viewPagerAdapter
@@ -85,6 +85,7 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
         binding.tradesListEdittext.setOnClickListener { viewModel.searchAction() }
 
         // observe
+        viewModel.companies.removeObservers(viewLifecycleOwner)
         viewModel.companies.observe(viewLifecycleOwner, this::updateAllAdapter)
         viewModel.tickersList.observe(viewLifecycleOwner, this::updateTickers)
         viewModel.localCompanies.observe(viewLifecycleOwner, this::updateFavouritesAdapter)

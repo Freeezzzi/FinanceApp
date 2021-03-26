@@ -14,6 +14,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.toCompanyProfileEntity
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
+import ru.freeezzzi.yandex_test_task.testapplication.ui.SingleLiveEvent
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
 import javax.inject.Inject
 
@@ -23,21 +24,23 @@ class QuotesListViewModel @Inject constructor(
     private val database: FavoriteCompaniesDatabase
 ) : ViewModel() {
     private val mutableCompanies = MutableLiveData<ViewState<MutableList<CompanyProfile>, String?>>()
-
     val companies: LiveData<ViewState<MutableList<CompanyProfile>, String?>> get() = mutableCompanies
 
     private val mutableLocalCompanies = MutableLiveData<ViewState<MutableList<CompanyProfile>, String?>>()
-
     val localCompanies: LiveData<ViewState<MutableList<CompanyProfile>, String?>> get() = mutableLocalCompanies
 
-    private var mutableTickersList: MutableLiveData<ViewState<List<String>, String?>> = MutableLiveData<ViewState<List<String>, String?>>()
+    /**
+     * Здесь используется singleLiveEvent т.к. при возврате к фрагменту к livedata заново привязываются наблюдатели и получают обновленме при привязке
+     * Это создает лишние запросы к api, которые, ввиду огранчиений, хотелось бы избежать
+     */
+    private var mutableTickersList: SingleLiveEvent<ViewState<List<String>, String?>> = SingleLiveEvent()
     val tickersList: LiveData<ViewState<List<String>, String?>> get() = mutableTickersList
 
     private var tickersCount = 0 // сколько уже загрузили(некоторые могут быть не валдины и не отображаться)
 
     private var numberOfCompanies = 0 // сколько компаний получили с сервера
 
-    fun searchAction(){
+    fun searchAction() {
         router.navigateTo(Screens.searchFragment(), true)
     }
 
@@ -115,7 +118,7 @@ class QuotesListViewModel @Inject constructor(
                                     is OperationResult.Error -> companyProfile.quote = null
                                 }
 
-                                if (database.companyProfileDao().isCompanyInFavorite(companyProfile.ticker)){
+                                if (database.companyProfileDao().isCompanyInFavorite(companyProfile.ticker)) {
                                     companyProfile.isFavorite = true
                                     database.companyProfileDao().update(companyProfile.toCompanyProfileEntity())
                                 }

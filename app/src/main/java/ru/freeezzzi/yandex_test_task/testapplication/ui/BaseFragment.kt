@@ -3,6 +3,7 @@ package ru.freeezzzi.yandex_test_task.testapplication.ui
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import ru.freeezzzi.yandex_test_task.testapplication.R
 
@@ -11,6 +12,7 @@ abstract class BaseFragment(layoutResource: Int) : Fragment(layoutResource) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews(view)
+        (activity as AppCompatActivity)?.supportActionBar?.hide()
     }
 
     open fun initViews(view: View) {}
