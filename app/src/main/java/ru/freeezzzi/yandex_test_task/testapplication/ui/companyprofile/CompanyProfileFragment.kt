@@ -19,6 +19,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.databinding.CompanyProfileF
 import ru.freeezzzi.yandex_test_task.testapplication.di.viewmodels.companyprofile.DaggerCompanyProfileViewModelComponent
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.News
+import ru.freeezzzi.yandex_test_task.testapplication.domain.models.RecommendationTrend
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
 import ru.freeezzzi.yandex_test_task.testapplication.ui.BaseFragment
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
@@ -46,6 +47,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
         ) },
         newsListAdapter,
         getNewsListener = { from, to -> viewModel.getNews(from, to) },
+        getRecommendationTrends = { viewModel.getRecommendationTrends() },
         peersAdapter,
         peersRefreshListener = {
             viewModel.findPeers()
@@ -75,6 +77,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
     private fun setObservers() {
         viewModel.stockCandle.observe(viewLifecycleOwner, this::updateCandleData)
         viewModel.newsList.observe(viewLifecycleOwner, this::updateNewsList)
+        viewModel.recommendationTrend.observe(viewLifecycleOwner, this::updateRecommendationTrends)
         viewModel.peersList.observe(viewLifecycleOwner, this::updatePeersList)
         viewModel.peerstickersList.observe(viewLifecycleOwner, this::updatePeersTickers)
     }
@@ -110,6 +113,24 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
                 newsListAdapter.submitList(news.oldvalue)
                 showError(news.result ?: "Couldn't load news")
                 companyProfileAdapter.newsSetRefreshing(false)
+            }
+        }
+    }
+
+    /**
+     * FORECASTS TAB
+     */
+    fun updateRecommendationTrends(trends:ViewState<List<RecommendationTrend>, String?>){
+        when (trends) {
+            is ViewState.Success -> {
+                companyProfileAdapter.forecastsSetData(trends.result)
+                companyProfileAdapter.forecastsSetRefreshing(false)
+            }
+            is ViewState.Loading -> companyProfileAdapter.forecastsSetRefreshing(true)
+            is ViewState.Error -> {
+                companyProfileAdapter.forecastsSetData(trends = trends.oldvalue)
+                showError(trends.result ?: "Couldn't load news")
+                companyProfileAdapter.forecastsSetRefreshing(false)
             }
         }
     }

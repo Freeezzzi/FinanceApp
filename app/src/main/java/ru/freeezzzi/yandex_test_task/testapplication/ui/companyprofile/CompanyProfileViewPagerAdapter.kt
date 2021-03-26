@@ -5,8 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.freeezzzi.yandex_test_task.testapplication.R
+import ru.freeezzzi.yandex_test_task.testapplication.domain.models.RecommendationTrend
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
 import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.candletab.CandleViewHolder
+import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.forecaststab.ForecastsViewHolder
 import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.newstab.NewsListAdapter
 import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.newstab.NewsTabViewHolder
 import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAdapter
@@ -20,6 +22,8 @@ class CompanyProfileViewPagerAdapter(
     // news tab
     private val newsListAdapter: NewsListAdapter,
     private val getNewsListener: (from: String, to: String) -> Unit,
+    // Forecasts tab
+    private val getRecommendationTrends: () -> Unit,
     // Peers tab
     private val peersListAdapter: QuotesListAdapter,
     private val peersRefreshListener: SwipeRefreshLayout.OnRefreshListener,
@@ -28,6 +32,7 @@ class CompanyProfileViewPagerAdapter(
     private var candleTab: CandleViewHolder? = null
     private var newsTab: NewsTabViewHolder? = null
     private var peersTab: AllTabViewHodler? = null
+    private var forecastsTab: ForecastsViewHolder? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewPagerViewHodler =
         when (viewType) {
@@ -45,9 +50,12 @@ class CompanyProfileViewPagerAdapter(
                         R.layout.news_fragment, parent, false))
                 newsTab as NewsTabViewHolder
             }
-            VIEW_TYPE_FORECASTS -> ForecastsViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.forecasts_fragment, parent, false))
+            VIEW_TYPE_FORECASTS -> {
+                forecastsTab = ForecastsViewHolder(
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.forecasts_fragment, parent, false))
+                forecastsTab as ForecastsViewHolder
+            }
             VIEW_TYPE_PEERS -> {
                 peersTab = AllTabViewHodler(
                     LayoutInflater.from(parent.context).inflate(
@@ -68,7 +76,9 @@ class CompanyProfileViewPagerAdapter(
                 newsListAdapter,
                 getNewsListener
             )
-            is ForecastsViewHolder -> holder.onBind()
+            is ForecastsViewHolder -> holder.onBind(
+                getRecommendationTrends
+            )
             is AllTabViewHodler -> {
                 holder.onBind(
                     peersListAdapter,
@@ -92,15 +102,22 @@ class CompanyProfileViewPagerAdapter(
     override fun getItemCount(): Int = 5
 
     fun setCandleData(candle: StockCandle) {
-        candleTab?.setCandleValues(candle)
+        candleTab?.setCandleValue(candle)
     }
 
     fun candleSetRefreshing(state: Boolean) {
-        candleTab?.setRefreshable(state)
+        candleTab?.setRefreshing(state)
     }
 
     fun newsSetRefreshing(state: Boolean) {
         newsTab?.setRefreshing(state)
+    }
+
+    fun forecastsSetData(trends: List<RecommendationTrend>) {
+        forecastsTab?.setValues(trends)
+    }
+    fun forecastsSetRefreshing(state: Boolean) {
+        forecastsTab?.setRefreshing(state)
     }
 
     fun setPeersRefreshing(state: Boolean) {

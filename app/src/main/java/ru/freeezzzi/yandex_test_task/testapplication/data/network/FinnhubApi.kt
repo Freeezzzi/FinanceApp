@@ -53,4 +53,10 @@ interface FinnhubApi {
         @Query(value = "symbol", encoded = true) symbol: String,
         @Query(value = "token") token: String = BuildConfig.API_KEY
     ): List<String>
+
+    @GET("stock/recommendation")
+    suspend fun getRecommendationTrends(
+        @Query(value = "symbol", encoded = true) symbol: String,
+        @Query(value = "token") token: String = BuildConfig.API_KEY
+    ): List<RecomendationTrendDTO>
 }

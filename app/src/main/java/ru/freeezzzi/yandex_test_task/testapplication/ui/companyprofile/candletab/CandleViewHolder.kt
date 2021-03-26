@@ -25,7 +25,7 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
     ) {
         val getCandleFunc = {
             val pair = when (getSelectedChipContent()) {
-                itemView.context.getString(R.string.day_chip) -> THIRTY_MINUTES_RESOLUTION to DAY
+                itemView.context.getString(R.string.day_chip) -> FIFTEEN_MINUTES_RESOLUTION to DAY
                 itemView.context.getString(R.string.week_chip) -> DAY_RESOLUTION to WEEK
                 itemView.context.getString(R.string.two_weeks_chip) -> DAY_RESOLUTION to TWO_WEEKS
                 itemView.context.getString(R.string.month_chip) -> DAY_RESOLUTION to MONTH
@@ -49,14 +49,12 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         chipGroup.setOnCheckedChangeListener { group, checkedId -> getCandleFunc() }
 
         val to = System.currentTimeMillis() / 1000
-        getCandleListener(
-            WEEK_RESOLUTION,
+        getCandleListener.invoke(WEEK_RESOLUTION,
             to - YEAR,
-            to
-        )
+            to)
     }
 
-    fun setCandleValues(
+    fun setCandleValue(
         stockCandle: StockCandle
     ) {
         val valsCandleStick = mutableListOf<CandleEntry>()
@@ -137,12 +135,12 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
     private fun getSelectedChipContent(): String =
         chipGroup.findViewById<Chip>(chipGroup.checkedChipId).text.toString()
 
-    fun setRefreshable(state: Boolean) {
+    fun setRefreshing(state: Boolean) {
         refreshLayout?.isRefreshing = state
     }
 
     companion object {
-        const val YEAR = 60L * 60 * 24 * 340 // 340 для того чтобы api точно пропустило
+        const val YEAR = 60L * 60 * 24 * 350 // 340 дней для того чтобы api точно пропустило
         const val SIX_MONTH = 60L * 60 * 24 * 30 * 6
         const val MONTH = 60L * 60 * 24 * 30
         const val TWO_WEEKS = 60L * 60 * 24 * 14
@@ -152,6 +150,7 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         const val WEEK_RESOLUTION = "W"
         const val DAY_RESOLUTION = "D"
         const val SIXTY_MINUTES_RESOLUTION = "60"
+        const val FIFTEEN_MINUTES_RESOLUTION = "15"
         const val THIRTY_MINUTES_RESOLUTION = "30"
     }
 }

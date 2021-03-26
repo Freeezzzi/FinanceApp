@@ -9,10 +9,7 @@ import kotlinx.coroutines.launch
 import ru.freeezzzi.yandex_test_task.testapplication.Screens
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompaniesDatabase
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.News
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.toCompanyProfileEntity
+import ru.freeezzzi.yandex_test_task.testapplication.domain.models.*
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
 import javax.inject.Inject
@@ -33,6 +30,12 @@ class CompanyProfileViewModel @Inject constructor(
      */
     private var mutableNewsList: MutableLiveData<ViewState<List<News>, String?>> = MutableLiveData<ViewState<List<News>, String?>>()
     val newsList: LiveData<ViewState<List<News>, String?>> get() = mutableNewsList
+
+    /**
+     * FORECASTS LIST
+     */
+    private var mutableRecommendationTrends: MutableLiveData<ViewState<List<RecommendationTrend>, String?>> = MutableLiveData<ViewState<List<RecommendationTrend>, String?>>()
+    val recommendationTrend: LiveData<ViewState<List<RecommendationTrend>, String?>> get() = mutableRecommendationTrends
 
     /**
      * PEERS LISTS
@@ -106,6 +109,19 @@ class CompanyProfileViewModel @Inject constructor(
                     mutableNewsList.value = ViewState.success(newsList)
                 }
                 is OperationResult.Error -> mutableNewsList.value = ViewState.error(newsList, tickersResult.data)
+            }
+        }
+    }
+
+    /**
+     * FORECASTS TAB
+     */
+    fun getRecommendationTrends(){
+        viewModelScope.launch {
+            mutableRecommendationTrends.value = ViewState.loading()
+            when (val trends = companiesRepository.getRecommendationTrends(companyProfile?.ticker ?: "")) {
+                is OperationResult.Success -> mutableRecommendationTrends.value = ViewState.success(trends.data)
+                is OperationResult.Error -> mutableRecommendationTrends.value = ViewState.error(emptyList(), trends.data)
             }
         }
     }

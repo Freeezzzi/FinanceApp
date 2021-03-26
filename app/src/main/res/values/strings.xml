@@ -36,4 +36,5 @@
     <string name="minute">minute</string>
     <string name="second">second</string>
     <string name="ago">ago</string>
+    <string name="recommendation_trend">Recommendation trend</string>
 </resources>

@@ -1,10 +1,7 @@
 package ru.freeezzzi.yandex_test_task.testapplication.domain.repositories
 
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.News
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.Quote
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
+import ru.freeezzzi.yandex_test_task.testapplication.domain.models.*
 
 interface CompaniesRepository {
 
@@ -21,4 +18,6 @@ interface CompaniesRepository {
     suspend fun getCompanyNews(symbol: String, from: String, to: String): OperationResult<List<News>, String?>
 
     suspend fun getCompanyPeers(symbol: String): OperationResult<List<String>, String?>
+
+    suspend fun getRecommendationTrends(symbol: String): OperationResult<List<RecommendationTrend>, String?>
 }

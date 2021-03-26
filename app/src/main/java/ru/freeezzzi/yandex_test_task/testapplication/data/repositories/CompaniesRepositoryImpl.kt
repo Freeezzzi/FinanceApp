@@ -2,10 +2,7 @@ package ru.freeezzzi.yandex_test_task.testapplication.data.repositories
 
 import ru.freeezzzi.yandex_test_task.testapplication.data.network.FinnhubApi
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.News
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.Quote
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
+import ru.freeezzzi.yandex_test_task.testapplication.domain.models.*
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
 import javax.inject.Inject
 
@@ -69,7 +66,7 @@ class CompaniesRepositoryImpl @Inject constructor(
 
     override suspend fun getCompanyNews(
         symbol: String,
-        from: String, // YYYY-MM_DD
+        from: String, // YYYY-MM-DD
         to: String // YYYY-MM-DD
     ): OperationResult<List<News>, String?> =
         try {
@@ -85,6 +82,16 @@ class CompaniesRepositoryImpl @Inject constructor(
         try {
             val tickersList = finnhabApi.getCompanyPeers(symbol)
             OperationResult.Success(tickersList)
+        } catch (e: Throwable) {
+            OperationResult.Error(e.message)
+        }
+
+    override suspend fun getRecommendationTrends(symbol: String): OperationResult<List<RecommendationTrend>, String?> =
+        try {
+            val trends = finnhabApi.getRecommendationTrends(symbol).map {
+                it.toRecomendationTrend()
+            }
+            OperationResult.Success(trends)
         } catch (e: Throwable) {
             OperationResult.Error(e.message)
         }

@@ -44,7 +44,7 @@ class NewsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
     }
 
     /**
-     * Возвращает 2 даты - текущую и 30 днйе назад в формате YYYY-MM-DD
+     * Возвращает 2 даты -30 днйе назад и текущую в формате YYYY-MM-DD
      */
     private fun getDates(from: Long): Pair<String, String> {
         val toDate = Date(from)

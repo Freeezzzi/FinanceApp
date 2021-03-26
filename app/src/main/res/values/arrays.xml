@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="pie_chart_colors">
+        <item>@color/dark_green</item>
+        <item>@color/green</item>
+        <item>@color/very_dark_yellow</item>
+        <item>@color/red</item>
+        <item>@color/dark_red</item>
+    </integer-array>
+</resources>

@@ -142,16 +142,11 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:text="@string/peers_name"
                     android:textColor="@color/font_black"
                     android:textSize="18sp"/>
 
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="TextView" />
             </LinearLayout>
         </HorizontalScrollView>
 
