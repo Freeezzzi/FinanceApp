@@ -12,3 +12,4 @@ class ForecastsViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
     fun onBind() {
     }
 }
+

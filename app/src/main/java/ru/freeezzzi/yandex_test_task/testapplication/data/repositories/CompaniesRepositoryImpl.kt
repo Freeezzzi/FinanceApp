@@ -80,4 +80,12 @@ class CompaniesRepositoryImpl @Inject constructor(
         } catch (e: Throwable) {
             OperationResult.Error(e.message)
         }
+
+    override suspend fun getCompanyPeers(symbol: String): OperationResult<List<String>, String?> =
+        try {
+            val tickersList = finnhabApi.getCompanyPeers(symbol)
+            OperationResult.Success(tickersList)
+        } catch (e: Throwable) {
+            OperationResult.Error(e.message)
+        }
 }

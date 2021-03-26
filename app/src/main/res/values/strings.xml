@@ -13,6 +13,7 @@
     <string name="chart_name">Chart</string>
     <string name="news_name">News</string>
     <string name="forecasts_name">Forecasts</string>
+    <string name="peers_name">Peers</string>
     <string name="query_label">Enter ticker, name, isin, or cusip</string>
     <string name="popular_requests">Popular requests</string>
     <string name="recent_requests">You\'ve searched for this</string>

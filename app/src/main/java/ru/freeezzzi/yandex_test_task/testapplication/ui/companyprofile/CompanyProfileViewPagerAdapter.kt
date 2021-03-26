@@ -3,23 +3,31 @@ package ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.freeezzzi.yandex_test_task.testapplication.R
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
+import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.candletab.CandleViewHolder
 import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.newstab.NewsListAdapter
 import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.newstab.NewsTabViewHolder
+import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAdapter
+import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.AllTabViewHodler
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ViewPagerViewHodler
 import java.lang.IllegalArgumentException
 
-// TODO добавить в candle и news свои scroll listener RecyclerView.OnScrollListener и SwipeRefreshLayout.OnRefreshListener
 class CompanyProfileViewPagerAdapter(
     // Candle tab
     private val getCandleListener: (resolution: String, from: Long, to: Long) -> Unit,
     // news tab
     private val newsListAdapter: NewsListAdapter,
-    private val getNewsListener: (from: String, to: String) -> Unit // TODO переделать под параметры поиска
+    private val getNewsListener: (from: String, to: String) -> Unit,
+    // Peers tab
+    private val peersListAdapter: QuotesListAdapter,
+    private val peersRefreshListener: SwipeRefreshLayout.OnRefreshListener,
+    private val peersScrollListener: RecyclerView.OnScrollListener,
 ) : RecyclerView.Adapter<ViewPagerViewHodler>() {
     private var candleTab: CandleViewHolder? = null
     private var newsTab: NewsTabViewHolder? = null
+    private var peersTab: AllTabViewHodler? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewPagerViewHodler =
         when (viewType) {
@@ -40,6 +48,13 @@ class CompanyProfileViewPagerAdapter(
             VIEW_TYPE_FORECASTS -> ForecastsViewHolder(
                 LayoutInflater.from(parent.context).inflate(
                     R.layout.forecasts_fragment, parent, false))
+            VIEW_TYPE_PEERS -> {
+                peersTab = AllTabViewHodler(
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.quotes_fragment_alltab, parent, false))
+                peersRefreshListener.onRefresh() // Вызовем чтобы отобразить компании и не загружать лишний раз
+                peersTab as AllTabViewHodler
+            }
             else -> ForecastsViewHolder(
                 LayoutInflater.from(parent.context).inflate(
                     R.layout.forecasts_fragment, parent, false))
@@ -54,6 +69,13 @@ class CompanyProfileViewPagerAdapter(
                 getNewsListener
             )
             is ForecastsViewHolder -> holder.onBind()
+            is AllTabViewHodler -> {
+                holder.onBind(
+                    peersListAdapter,
+                    peersRefreshListener,
+                    peersScrollListener
+                )
+            }
         }
     }
 
@@ -63,21 +85,26 @@ class CompanyProfileViewPagerAdapter(
             1 -> VIEW_TYPE_SUMMARY
             2 -> VIEW_TYPE_NEWS
             3 -> VIEW_TYPE_FORECASTS
+            4 -> VIEW_TYPE_PEERS
             else -> throw IllegalArgumentException("Wrong position")
         }
 
-    override fun getItemCount(): Int = 4
+    override fun getItemCount(): Int = 5
 
     fun setCandleData(candle: StockCandle) {
         candleTab?.setCandleValues(candle)
     }
 
-    fun candleSetRefreshing(state: Boolean){
+    fun candleSetRefreshing(state: Boolean) {
         candleTab?.setRefreshable(state)
     }
 
-    fun newsSetRefreshing(state:Boolean) {
+    fun newsSetRefreshing(state: Boolean) {
         newsTab?.setRefreshing(state)
+    }
+
+    fun setPeersRefreshing(state: Boolean) {
+        peersTab?.setRefreshing(state)
     }
 
     companion object {
@@ -85,5 +112,6 @@ class CompanyProfileViewPagerAdapter(
         const val VIEW_TYPE_SUMMARY = 1
         const val VIEW_TYPE_NEWS = 2
         const val VIEW_TYPE_FORECASTS = 3
+        const val VIEW_TYPE_PEERS = 4
     }
 }

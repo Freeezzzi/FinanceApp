@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
+import ru.freeezzzi.yandex_test_task.testapplication.Screens
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompaniesDatabase
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
@@ -21,14 +22,73 @@ class CompanyProfileViewModel @Inject constructor(
     private val companiesRepository: CompaniesRepository,
     private val database: FavoriteCompaniesDatabase
 ) : ViewModel() {
+    /**
+     * STOCK CANDLE
+     */
     private var mutableStockCandle: MutableLiveData<ViewState<StockCandle, String?>> = MutableLiveData<ViewState<StockCandle, String?>>()
     val stockCandle: LiveData<ViewState<StockCandle, String?>> get() = mutableStockCandle
 
+    /**
+     * NEWS LISTS
+     */
     private var mutableNewsList: MutableLiveData<ViewState<List<News>, String?>> = MutableLiveData<ViewState<List<News>, String?>>()
     val newsList: LiveData<ViewState<List<News>, String?>> get() = mutableNewsList
 
+    /**
+     * PEERS LISTS
+     */
+    private var mutablePeersList: MutableLiveData<ViewState<List<CompanyProfile>, String?>> = MutableLiveData<ViewState<List<CompanyProfile>, String?>>()
+    val peersList: LiveData<ViewState<List<CompanyProfile>, String?>> get() = mutablePeersList
+
+    private var mutablePeersTickersList: MutableLiveData<ViewState<List<String>, String?>> = MutableLiveData<ViewState<List<String>, String?>>()
+    val peerstickersList: LiveData<ViewState<List<String>, String?>> get() = mutablePeersTickersList
+
+    private var tickersCount = 0 // сколько уже загрузили(некоторые могут быть не валдины и не отображаться)
+    private var numberOfCompanies = 0 // сколько компаний получили с сервера
+
+    /**
+     * CURRENT PROFILE
+     */
     var companyProfile: CompanyProfile? = null
 
+    /**
+     * CURRENT PROFILE ADD TO FAVORITES
+     */
+    fun addToFavorites() {
+        viewModelScope.launch {
+            when (companyProfile!!.isFavorite) {
+                true -> { // Нужно удалить
+                    database.companyProfileDao().delete(companyProfile!!.toCompanyProfileEntity())
+                    companyProfile!!.isFavorite = false
+                }
+                false -> {
+                    companyProfile!!.isFavorite = true
+                    database.companyProfileDao().insert(companyProfile!!.toCompanyProfileEntity())
+                }
+            }
+        }
+    }
+
+    /**
+     * CANDLE CHART TAB
+     */
+    fun getStockCandle(
+        resolution: String,
+        from: Long,
+        to: Long
+    ) {
+        viewModelScope.launch {
+            mutableStockCandle.value = ViewState.loading()
+            when (val tickersResult = companiesRepository.getStockCandle(companyProfile?.ticker ?: "", resolution, from, to)) {
+                is OperationResult.Success -> mutableStockCandle.value = ViewState.success(tickersResult.data)
+                is OperationResult.Error -> mutableStockCandle.value = ViewState.error(StockCandle(), tickersResult.data)
+            }
+        }
+    }
+
+    /**
+     * NEWS TAB
+     */
     fun getNews(from: String, to: String) {
         viewModelScope.launch {
             var newsList: MutableList<News> = mutableListOf<News>()
@@ -50,47 +110,103 @@ class CompanyProfileViewModel @Inject constructor(
         }
     }
 
-    fun addToFavorites() {
+    /**
+     * PEERS TAB
+     */
+    fun addPeerToFavorites(company: CompanyProfile) {
         viewModelScope.launch {
-            when (companyProfile!!.isFavorite) {
+            when (company.isFavorite) {
                 true -> { // Нужно удалить
-                    database.companyProfileDao().delete(companyProfile!!.toCompanyProfileEntity())
-                    companyProfile!!.isFavorite = false
+                    database.companyProfileDao().delete(company.toCompanyProfileEntity())
+                    company.isFavorite = false
                 }
                 false -> {
-                    companyProfile!!.isFavorite = true
-                    database.companyProfileDao().insert(companyProfile!!.toCompanyProfileEntity())
+                    company.isFavorite = true
+                    database.companyProfileDao().insert(company.toCompanyProfileEntity())
                 }
             }
         }
     }
 
-    fun getStockCandle(
-        resolution: String,
-        from: Long,
-        to: Long
-    ) {
+    fun peerOnClickAction(company: CompanyProfile) {
+        router.navigateTo(Screens.companyProfileFragment(company), true)
+    }
+
+    fun findPeers() {
         viewModelScope.launch {
-            mutableStockCandle.value = ViewState.loading()
-            when (val tickersResult = companiesRepository.getStockCandle(companyProfile?.ticker ?: "", resolution, from, to)) {
-                is OperationResult.Success -> mutableStockCandle.value = ViewState.success(tickersResult.data)
-                is OperationResult.Error -> mutableStockCandle.value = ViewState.error(StockCandle(), tickersResult.data)
+            mutablePeersTickersList.value = ViewState.loading()
+            when (val tickersResult = companiesRepository.getCompanyPeers(companyProfile?.ticker ?: " ")) {
+                is OperationResult.Success -> {
+                    numberOfCompanies = tickersResult.data.size
+                    mutablePeersTickersList.value = ViewState.success(tickersResult.data)
+                }
+                is OperationResult.Error -> mutablePeersTickersList.value = ViewState.error(emptyList(), tickersResult.data)
+            }
+        }
+    }
+
+    fun getCompanies(howManyCompanies: Int) {
+        var lastCompanyToDownload = tickersCount + howManyCompanies
+        if (numberOfCompanies == 0) mutablePeersList.value = ViewState.success(mutableListOf()) // Если найдено 0 компаний, то удалим старые данные
+        if (tickersCount == numberOfCompanies) return // если загрузили все компании
+        if (lastCompanyToDownload > numberOfCompanies) { // если хотим загрузить больше компаний чем осталось
+            lastCompanyToDownload = numberOfCompanies
+        }
+        if (mutablePeersList.value is ViewState.Loading && tickersCount != 0) return
+
+        viewModelScope.launch {
+            // Проверим есть ли уже в сптске данные
+            var companiesList: MutableList<CompanyProfile> = mutableListOf<CompanyProfile>()
+            when (mutablePeersList.value) {
+                is ViewState.Success -> companiesList = (mutablePeersList.value as ViewState.Success<MutableList<CompanyProfile>>).result
+                is ViewState.Error -> companiesList = (mutablePeersList.value as ViewState.Error<MutableList<CompanyProfile>, String?>).oldvalue
+            }
+            // Здесь приходится копировать лист, т.к. если ссылка останется той же то submitList адаптера посчитает что они одинаковые и не обновит RecyclerView
+            companiesList = companiesList.toMutableList()
+
+            var state: ViewState<MutableList<CompanyProfile>, String?> = ViewState.loading() // Сюда будем записывать временные значения, пока не загрузим все значения
+            mutablePeersList.value = ViewState.loading() // Сообщаем что идет загрузка
+            when (mutablePeersTickersList.value) {
+                is ViewState.Success -> {
+                    // Для каждого запросим компанию и для нее quote
+                    for (ticker in
+                    (mutablePeersTickersList.value as ViewState.Success<List<String>>).result.subList(tickersCount, lastCompanyToDownload)) {
+                        when (val companiesResult = companiesRepository.getCompanyProfile(ticker)) {
+                            is OperationResult.Success -> { // Если удачно, то добавляем компанию в
+                                val companyProfile = companiesResult.data
+                                if (companyProfile.ticker == null) { // Если с сервера пришел невалидный ответ, то пропускаем эту компанию
+                                    tickersCount++
+                                    state = ViewState.success(companiesList) // если у нас все компании не валдины, то нужно сообщить что мы все успешно обработали
+                                    continue
+                                }
+
+                                // getQuote(companyProfile)
+                                when (val quoteResult = companiesRepository.getCompanyQuote(companyProfile.ticker ?: "")) {
+                                    is OperationResult.Success -> companyProfile.quote = quoteResult.data
+                                    is OperationResult.Error -> companyProfile.quote = null
+                                }
+
+                                if (database.companyProfileDao().isCompanyInFavorite(companyProfile.ticker)) {
+                                    companyProfile.isFavorite = true
+                                    database.companyProfileDao().update(companyProfile.toCompanyProfileEntity())
+                                }
+
+                                companiesList.add(companyProfile)
+                                state = ViewState.success(companiesList)
+                                tickersCount++
+                            }
+                            is OperationResult.Error -> state = ViewState.Error(companiesList, companiesResult.data)
+                        }
+                    }
+                    mutablePeersList.value = state
+                }
+                is ViewState.Error -> mutablePeersList.value = ViewState.error(companiesList, (mutablePeersList.value as ViewState.Error<List<String>, String?>).result)
+                is ViewState.Loading -> mutablePeersList.value = ViewState.error(companiesList, "Tickers loading.Try again!")
             }
         }
     }
 
     fun exitFragment() {
         router.exit()
-    }
-
-    companion object {
-        const val ONE_DAY_RESOLUTION = "1"
-        const val FIVE_DAYS_RESOLUTION = "5"
-        const val FIFTEEN_DAYS_RESOLUTION = "15"
-        const val THIRTY_DAYS_RESOLUTION = "30"
-        const val SIXTY_DAYS_RESOLUTION = "60"
-        const val DAY_RESOLUTION = "D"
-        const val WEEK_RESOLUTION = "W"
-        const val MONTH_RESOLUTION = "M"
     }
 }

@@ -1,6 +1,7 @@
 package ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist
 
 import android.graphics.Typeface
+import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -47,12 +48,16 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
     private val viewModel: QuotesListViewModel by viewModels(
             factoryProducer = { QuotesListViewModelFactory() })
 
-    override fun initViews(view: View) {
-        super.initViews(view)
-        (activity as AppCompatActivity)?.supportActionBar?.hide()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         viewModel.getTickers()
         viewModel.showFavourites()
+    }
+
+    override fun initViews(view: View) {
+        super.initViews(view)
+        (activity as AppCompatActivity)?.supportActionBar?.hide()
 
         // ViewPager
         binding.tradesViewpager.adapter = viewPagerAdapter

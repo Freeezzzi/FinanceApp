@@ -18,5 +18,7 @@ interface CompaniesRepository {
 
     suspend fun getStockCandle(symbol: String, resolution: String, from: Long, to: Long): OperationResult<StockCandle, String?>
 
-    suspend fun getCompanyNews(symbol: String, from:String, to:String) : OperationResult<List<News>, String?>
+    suspend fun getCompanyNews(symbol: String, from: String, to: String): OperationResult<List<News>, String?>
+
+    suspend fun getCompanyPeers(symbol: String): OperationResult<List<String>, String?>
 }

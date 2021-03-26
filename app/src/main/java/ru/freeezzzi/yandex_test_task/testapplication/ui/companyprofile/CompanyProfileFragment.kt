@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import by.kirich1409.viewbindingdelegate.viewBinding
 import ru.freeezzzi.yandex_test_task.testapplication.App
@@ -22,8 +23,8 @@ import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
 import ru.freeezzzi.yandex_test_task.testapplication.ui.BaseFragment
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
 import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.newstab.NewsListAdapter
+import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAdapter
 
-// TODO переделать все imageView в imagebutton
 class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
     private val binding by viewBinding(CompanyProfileFragmentBinding::bind)
 
@@ -32,6 +33,11 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
 
     private val newsListAdapter = NewsListAdapter { newsClickedAction(it) }
 
+    private val peersAdapter = QuotesListAdapter(
+        clickListener = { viewModel.peerOnClickAction(it) },
+        starClickListener = { viewModel.addPeerToFavorites(it) }
+    )
+
     private val companyProfileAdapter = CompanyProfileViewPagerAdapter(
         getCandleListener = { resolution, from, to -> viewModel.getStockCandle(
             resolution = resolution,
@@ -39,7 +45,12 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             to = to
         ) },
         newsListAdapter,
-        getNewsListener = { from, to -> viewModel.getNews(from, to) }
+        getNewsListener = { from, to -> viewModel.getNews(from, to) },
+        peersAdapter,
+        peersRefreshListener = {
+            viewModel.findPeers()
+        },
+        peersScrollListener = this.OnVerticalScrollListener(),
     )
 
     override fun initViews(view: View) {
@@ -52,40 +63,25 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
 
         // set viewpager settings
         binding.companyProfileViewpager.adapter = companyProfileAdapter
-        binding.companyProfileViewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                when (position) {
-                    0 -> {
-                        setTextInTitles(binding.chartTextview, binding.summaryTextview, binding.newsTextview, binding.forecastsTextview)
-                        // appbar Раскрывается, т.к. у constraint layout(который внутри этого фрагмента) нет возможности прокрутки => нет возможности прокручивать appbar
-                        binding.appbar.setExpanded(true, true)
-                        binding.horizontalScrollView.smoothScrollTo(0, 0)
-                    }
-                    1 -> {
-                        setTextInTitles(binding.summaryTextview, binding.chartTextview, binding.newsTextview, binding.forecastsTextview)
-                        binding.horizontalScrollView.smoothScrollTo(binding.chartTextview.left, 0)
-                    }
-                    2 -> {
-                        setTextInTitles(binding.newsTextview, binding.chartTextview, binding.summaryTextview, binding.forecastsTextview)
-                        binding.horizontalScrollView.smoothScrollTo(binding.summaryTextview.left, 0)
-                    }
-                    3 -> {
-                        setTextInTitles(binding.forecastsTextview, binding.chartTextview, binding.summaryTextview, binding.newsTextview)
-                        binding.horizontalScrollView.smoothScrollTo(binding.newsTextview.left, 0)
-                    }
-                }
-                super.onPageSelected(position)
-            }
-        })
+        setPageChangeCallback()
 
         // set text and star
         setText()
         setStar()
 
-        viewModel.stockCandle.observe(viewLifecycleOwner, this::updateCandleData)
-        viewModel.newsList.observe(viewLifecycleOwner, this::updateNewsList)
+        setObservers()
     }
 
+    private fun setObservers() {
+        viewModel.stockCandle.observe(viewLifecycleOwner, this::updateCandleData)
+        viewModel.newsList.observe(viewLifecycleOwner, this::updateNewsList)
+        viewModel.peersList.observe(viewLifecycleOwner, this::updatePeersList)
+        viewModel.peerstickersList.observe(viewLifecycleOwner, this::updatePeersTickers)
+    }
+
+    /**
+     * CANDLE TAB
+     */
     fun updateCandleData(candle: ViewState<StockCandle, String?>) {
         when (candle) {
             is ViewState.Success -> {
@@ -100,6 +96,9 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
         }
     }
 
+    /**
+     * NEWS TAB
+     */
     fun updateNewsList(news: ViewState<List<News>, String?>) {
         when (news) {
             is ViewState.Success -> {
@@ -115,11 +114,120 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
         }
     }
 
-    private fun setTextInTitles(currentTextView: TextView, anotherTextView: TextView, anotherTextView2: TextView, anotherTextView3: TextView) {
+    /**
+     * PEERS TAB
+     */
+    fun updatePeersTickers(tickers: ViewState<List<String>, String?>) {
+        when (tickers) {
+            is ViewState.Success -> {
+                companyProfileAdapter.setPeersRefreshing(false)
+                viewModel.getCompanies(10) // В первый раз загружаем 10 компаний
+            }
+            is ViewState.Loading -> companyProfileAdapter.setPeersRefreshing(true)
+            is ViewState.Error -> {
+                showError(tickers.result ?: "Couldn't load peers tickers")
+                companyProfileAdapter.setPeersRefreshing(false)
+            }
+        }
+    }
+
+    fun updatePeersList(peersList: ViewState<List<CompanyProfile>, String?>) {
+        when (peersList) {
+            is ViewState.Success -> {
+                peersAdapter.submitList(peersList.result)
+                companyProfileAdapter.setPeersRefreshing(false)
+            }
+            is ViewState.Loading -> companyProfileAdapter.setPeersRefreshing(true)
+            is ViewState.Error -> {
+                peersAdapter.submitList(peersList.oldvalue)
+                showError(peersList.result ?: "Couldn't load peers list")
+                companyProfileAdapter.setPeersRefreshing(false)
+            }
+        }
+    }
+
+    /**
+     * UI settings
+     */
+    private fun setPageChangeCallback() {
+        binding.companyProfileViewpager.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                when (position) {
+                    0 -> { // candle
+                        setTextInTitles(
+                            binding.chartTextview,
+                            binding.summaryTextview,
+                            binding.newsTextview,
+                            binding.forecastsTextview,
+                            binding.peersTextview
+                        )
+                        // appbar Раскрывается, т.к. у constraint layout(который внутри этого фрагмента) нет возможности прокрутки => нет возможности прокручивать appbar
+                        binding.appbar.setExpanded(true, true)
+                        binding.horizontalScrollView.smoothScrollTo(0, 0)
+                    }
+                    1 -> { // summary
+                        setTextInTitles(
+                            binding.summaryTextview,
+                            binding.chartTextview,
+                            binding.newsTextview,
+                            binding.forecastsTextview,
+                            binding.peersTextview
+                        )
+                        binding.horizontalScrollView.smoothScrollTo(binding.chartTextview.left, 0)
+                    }
+                    2 -> { // news
+                        setTextInTitles(
+                            binding.newsTextview,
+                            binding.chartTextview,
+                            binding.summaryTextview,
+                            binding.forecastsTextview,
+                            binding.peersTextview
+                        )
+                        binding.horizontalScrollView.smoothScrollTo(binding.summaryTextview.left, 0)
+                    }
+                    3 -> { // forecasts
+                        setTextInTitles(
+                            binding.forecastsTextview,
+                            binding.chartTextview,
+                            binding.summaryTextview,
+                            binding.newsTextview,
+                            binding.peersTextview
+                        )
+                        binding.horizontalScrollView.smoothScrollTo(binding.newsTextview.left, 0)
+                    }
+                    4 -> { // Peers
+                        setTextInTitles(
+                            binding.peersTextview,
+                            binding.chartTextview,
+                            binding.summaryTextview,
+                            binding.newsTextview,
+                            binding.forecastsTextview
+                        )
+                        binding.horizontalScrollView.smoothScrollTo(
+                            binding.forecastsTextview.left,
+                            0
+                        )
+                        binding.appbar.setExpanded(true, true)
+                    }
+                }
+                super.onPageSelected(position)
+            }
+        })
+    }
+
+    private fun setTextInTitles(
+        currentTextView: TextView,
+        anotherTextView: TextView,
+        anotherTextView2: TextView,
+        anotherTextView3: TextView,
+        anotherTextView4: TextView
+    ) {
         currentTextView.setTypeface(Typeface.DEFAULT_BOLD)
         anotherTextView.setTypeface(Typeface.DEFAULT)
         anotherTextView2.setTypeface(Typeface.DEFAULT)
         anotherTextView3.setTypeface(Typeface.DEFAULT)
+        anotherTextView4.setTypeface(Typeface.DEFAULT)
     }
 
     private fun setClickListeners() {
@@ -137,19 +245,18 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
         // set click listeners on titles
         binding.chartTextview.setOnClickListener {
             binding.companyProfileViewpager.setCurrentItem(0, true)
-            binding.horizontalScrollView.scrollTo(binding.chartTextview.left, 0)
         }
         binding.summaryTextview.setOnClickListener {
             binding.companyProfileViewpager.setCurrentItem(1, true)
-            binding.horizontalScrollView.scrollTo(binding.summaryTextview.left, 0)
         }
         binding.newsTextview.setOnClickListener {
             binding.companyProfileViewpager.setCurrentItem(2, true)
-            binding.horizontalScrollView.scrollTo(binding.newsTextview.left, 0)
         }
         binding.forecastsTextview.setOnClickListener {
             binding.companyProfileViewpager.setCurrentItem(3, true)
-            binding.horizontalScrollView.scrollTo(binding.forecastsTextview.left, 0)
+        }
+        binding.peersTextview.setOnClickListener {
+            binding.companyProfileViewpager.setCurrentItem(4, true)
         }
     }
 
@@ -177,6 +284,34 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             ),
             null
         )
+    }
+
+    inner class OnVerticalScrollListener : RecyclerView.OnScrollListener() {
+
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            if (!recyclerView.canScrollVertically(-1)) {
+                onScrolledToTop()
+            } else if (!recyclerView.canScrollVertically(1)) {
+                onScrolledToBottom()
+            } else if (dy < 0) {
+                onScrolledUp()
+            } else if (dy > 0) {
+                onScrolledDown()
+            }
+        }
+
+        fun onScrolledUp() {
+        }
+
+        fun onScrolledDown() {}
+
+        fun onScrolledToTop() {
+        }
+
+        fun onScrolledToBottom() {
+            viewModel.getCompanies(7)
+        }
     }
 
     override fun onBackPressed() {

@@ -34,7 +34,8 @@ class SearchViewPagerAdapter(
                     LayoutInflater.from(parent.context).inflate(
                         R.layout.quotes_fragment_favouritestab, parent, false))
             VIEW_TYPE_ALL -> {
-                allTab = AllTabViewHodler(LayoutInflater.from(parent.context).inflate(R.layout.quotes_fragment_alltab, parent, false))
+                allTab = AllTabViewHodler(
+                    LayoutInflater.from(parent.context).inflate(R.layout.quotes_fragment_alltab, parent, false))
                 allTab as AllTabViewHodler
             }
             else -> { chipsTab = ChipsTabViewHolder(

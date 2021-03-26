@@ -1,4 +1,4 @@
-package ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile
+package ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.candletab
 
 import android.graphics.Color
 import android.graphics.Paint
