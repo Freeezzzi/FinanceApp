@@ -33,7 +33,9 @@ class QuotesListViewModel @Inject constructor(
     private var mutableTickersList: MutableLiveData<ViewState<List<String>, String?>> = MutableLiveData<ViewState<List<String>, String?>>()
     val tickersList: LiveData<ViewState<List<String>, String?>> get() = mutableTickersList
 
-    private var companiesCount = 0
+    private var tickersCount = 0 // сколько уже загрузили(некоторые могут быть не валдины и не отображаться)
+
+    private var numberOfCompanies = 0 // сколько компаний получили с сервера
 
     fun searchAction(){
         router.navigateTo(Screens.searchFragment(), true)
@@ -63,15 +65,23 @@ class QuotesListViewModel @Inject constructor(
         viewModelScope.launch {
             mutableTickersList.value = ViewState.loading()
             when (val tickersResult = companiesRepository.getCompaniesTop500(BuildConfig.TICKERS_KEY)) {
-                is OperationResult.Success -> mutableTickersList.value = ViewState.success(tickersResult.data)
+                is OperationResult.Success -> {
+                    numberOfCompanies = tickersResult.data.size
+                    mutableTickersList.value = ViewState.success(tickersResult.data)
+                }
                 is OperationResult.Error -> mutableTickersList.value = ViewState.error(emptyList(), tickersResult.data)
             }
         }
     }
 
     fun getCompanies(howManyCompanies: Int) {
-        if (companiesCount + howManyCompanies > 499) return
-        if (mutableCompanies.value is ViewState.Loading && companiesCount != 0) return
+        var lastCompanyToDownload = tickersCount + howManyCompanies
+        if (numberOfCompanies == 0) mutableCompanies.value = ViewState.success(mutableListOf()) // Если найдено 0 компаний, то удалим старые данные
+        if (tickersCount == numberOfCompanies) return // если загрузили все компании
+        if (lastCompanyToDownload > numberOfCompanies) { // если хотим загрузить больше компаний чем осталось
+            lastCompanyToDownload = numberOfCompanies
+        }
+        if (mutableCompanies.value is ViewState.Loading && tickersCount != 0) return
 
         viewModelScope.launch {
             // Проверим есть ли уже в сптске данные
@@ -89,11 +99,13 @@ class QuotesListViewModel @Inject constructor(
                 is ViewState.Success -> {
                     // Для каждого запросим компанию и для нее quote
                     for (ticker in
-                    (tickersList.value as ViewState.Success<List<String>>).result.subList(companiesCount, companiesCount + howManyCompanies)) {
+                    (tickersList.value as ViewState.Success<List<String>>).result.subList(tickersCount, lastCompanyToDownload)) {
                         when (val companiesResult = companiesRepository.getCompanyProfile(ticker)) {
                             is OperationResult.Success -> { // Если удачно, то добавляем компанию в
                                 val companyProfile = companiesResult.data
                                 if (companyProfile.ticker == null) { // Если с сервера пришел невалидный ответ, то пропускаем эту компанию
+                                    tickersCount++
+                                    state = ViewState.success(companiesList) // если у нас все компании не валдины, то нужно сообщить что мы все успешно обработали
                                     continue
                                 }
 
@@ -110,7 +122,7 @@ class QuotesListViewModel @Inject constructor(
 
                                 companiesList.add(companyProfile)
                                 state = ViewState.success(companiesList)
-                                companiesCount++
+                                tickersCount++
                             }
                             is OperationResult.Error -> state = ViewState.Error(companiesList, companiesResult.data)
                         }
@@ -136,7 +148,7 @@ class QuotesListViewModel @Inject constructor(
     }
 
     fun clearCompaniesList() {
-        companiesCount = 0
+        tickersCount = 0
         mutableCompanies.value = ViewState.loading()
     }
 

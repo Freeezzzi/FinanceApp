@@ -76,8 +76,11 @@ class QuotesItemViewHolder(
             binding.quoteItemPricechange.setTextColor(ContextCompat.getColor(itemView.context, R.color.red))
             priceChangeString += "-"
             priceChange = -priceChange
+        } else{
+            binding.quoteItemPricechange.setTextColor(ContextCompat.getColor(itemView.context, R.color.font_black))
         }
-        val percentPriceChange = priceChange / (companyProfile.quote?.pc ?: 1.0F)
+        //У некоторых компаний там 0, поэтмоу ставим в знаменатель единицу
+        val percentPriceChange = priceChange / (if (companyProfile.quote?.pc ?: 1.0F == 0F) 1.0F else companyProfile.quote?.pc ?: 1.0F)
 
         when (companyProfile.currency) {
             "USD" -> priceChangeString += "$ "

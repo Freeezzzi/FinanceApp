@@ -4,6 +4,7 @@ import androidx.room.*
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.CompanyProfileEntity
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.RecentQueryEntity
 
+// TODO сделать поиск по имени компании
 @Dao
 interface CompanyProfileDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
