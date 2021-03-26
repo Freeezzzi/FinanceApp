@@ -45,7 +45,10 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         }
         refreshLayout?.setOnRefreshListener { getCandleFunc() }
 
-        // здесь можно было бы понять какой чип по id, но для краткости я использовал ту же функцию
+        val customMarkerView = CustomMarkerView(itemView.context, R.layout.custom_marker_view)
+        candleStickChart?.marker = customMarkerView
+
+        // здесь можно было бы понять какой чип по id чипа, но для краткости я использовал ту же функцию
         chipGroup.setOnCheckedChangeListener { group, checkedId -> getCandleFunc() }
 
         val to = System.currentTimeMillis() / 1000
@@ -82,6 +85,7 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         // scaling and dragging
         candleStickChart?.isDragEnabled = false
         candleStickChart?.setScaleEnabled(false)
+        candleStickChart?.setTouchEnabled(true)
 
         // hidfe background grids
         candleStickChart?.setDrawBorders(false)
@@ -126,6 +130,9 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         set1.increasingPaintStyle = Paint.Style.FILL
         set1.neutralColor = ContextCompat.getColor(itemView.context, R.color.light_grey)
         set1.setDrawValues(false)
+
+        set1.setDrawHorizontalHighlightIndicator(false)
+        set1.setDrawVerticalHighlightIndicator(false)
 
         return CandleData(set1)
     }
