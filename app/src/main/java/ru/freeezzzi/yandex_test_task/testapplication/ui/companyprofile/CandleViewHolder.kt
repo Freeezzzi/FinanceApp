@@ -151,6 +151,7 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
 
         const val WEEK_RESOLUTION = "W"
         const val DAY_RESOLUTION = "D"
+        const val SIXTY_MINUTES_RESOLUTION = "60"
         const val THIRTY_MINUTES_RESOLUTION = "30"
     }
 }

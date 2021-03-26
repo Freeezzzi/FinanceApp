@@ -88,7 +88,7 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
     fun updateFavouritesAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
         when (companies) {
             is ViewState.Success -> {
-                quotesFavouritesAdapter.submitList(companies.result)            }
+                quotesFavouritesAdapter.submitList(companies.result) }
             // is ViewState.Loading ->
             is ViewState.Error -> {
                 quotesFavouritesAdapter.submitList(companies.oldvalue)

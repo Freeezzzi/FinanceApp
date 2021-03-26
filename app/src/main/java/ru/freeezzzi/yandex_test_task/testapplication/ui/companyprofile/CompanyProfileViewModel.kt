@@ -31,10 +31,21 @@ class CompanyProfileViewModel @Inject constructor(
 
     fun getNews(from: String, to: String) {
         viewModelScope.launch {
+            var newsList: MutableList<News> = mutableListOf<News>()
+            when (mutableNewsList.value) {
+                is ViewState.Success -> newsList = (mutableNewsList.value as ViewState.Success<MutableList<News>>).result
+                is ViewState.Error -> newsList = (mutableNewsList.value as ViewState.Error<MutableList<News>, String?>).oldvalue
+            }
+            // Здесь приходится копировать лист, т.к. если ссылка останется той же то submitList адаптера посчитает что они одинаковые и не обновит RecyclerView
+            newsList = newsList.toMutableList()
+
             mutableNewsList.value = ViewState.loading()
             when (val tickersResult = companiesRepository.getCompanyNews(companyProfile?.ticker ?: " ", from, to)) {
-                is OperationResult.Success -> mutableNewsList.value = ViewState.success(tickersResult.data)
-                is OperationResult.Error -> mutableNewsList.value = ViewState.error(emptyList(), tickersResult.data)
+                is OperationResult.Success -> { // Если успешно то добавтим новые новости к старым
+                    newsList.addAll(tickersResult.data)
+                    mutableNewsList.value = ViewState.success(newsList)
+                }
+                is OperationResult.Error -> mutableNewsList.value = ViewState.error(newsList, tickersResult.data)
             }
         }
     }
