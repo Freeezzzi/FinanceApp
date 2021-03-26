@@ -27,4 +27,12 @@
     <string name="news_source">News source</string>
     <string name="news_time">Recently</string>
     <string name="choose_news_opener">Choose where open news</string>
+    <string name="year">year</string>
+    <string name="month">month</string>
+    <string name="week">week</string>
+    <string name="day">day</string>
+    <string name="hour">hour</string>
+    <string name="minute">minute</string>
+    <string name="second">second</string>
+    <string name="ago">ago</string>
 </resources>
