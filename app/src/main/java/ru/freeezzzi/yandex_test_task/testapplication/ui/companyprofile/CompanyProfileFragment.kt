@@ -46,7 +46,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             to = to
         ) },
         newsListAdapter,
-        getNewsListener = { from, to -> viewModel.getNews(from, to) },
+        getNewsListener = { from, to, clearList -> viewModel.getNews(from, to, clearList) },
         getRecommendationTrends = { viewModel.getRecommendationTrends() },
         peersAdapter,
         peersRefreshListener = {
@@ -120,7 +120,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
     /**
      * FORECASTS TAB
      */
-    fun updateRecommendationTrends(trends:ViewState<List<RecommendationTrend>, String?>){
+    fun updateRecommendationTrends(trends: ViewState<List<RecommendationTrend>, String?>) {
         when (trends) {
             is ViewState.Success -> {
                 companyProfileAdapter.forecastsSetData(trends.result)
@@ -196,6 +196,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
                             binding.peersTextview
                         )
                         binding.horizontalScrollView.smoothScrollTo(binding.chartTextview.left, 0)
+                        binding.appbar.setExpanded(true, true)
                     }
                     2 -> { // news
                         setTextInTitles(
@@ -206,6 +207,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
                             binding.peersTextview
                         )
                         binding.horizontalScrollView.smoothScrollTo(binding.summaryTextview.left, 0)
+                        binding.appbar.setExpanded(true, true)
                     }
                     3 -> { // forecasts
                         setTextInTitles(
@@ -216,6 +218,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
                             binding.peersTextview
                         )
                         binding.horizontalScrollView.smoothScrollTo(binding.newsTextview.left, 0)
+                        binding.appbar.setExpanded(true, true)
                     }
                     4 -> { // Peers
                         setTextInTitles(
@@ -225,10 +228,8 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
                             binding.newsTextview,
                             binding.forecastsTextview
                         )
-                        binding.horizontalScrollView.smoothScrollTo(
-                            binding.forecastsTextview.left,
-                            0
-                        )
+                        binding.horizontalScrollView.smoothScrollTo(binding.forecastsTextview.left, 0)
+                        binding.appbar.setExpanded(true, true)
                     }
                 }
                 super.onPageSelected(position)
@@ -243,11 +244,11 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
         anotherTextView3: TextView,
         anotherTextView4: TextView
     ) {
-        currentTextView.setTypeface(Typeface.DEFAULT_BOLD)
-        anotherTextView.setTypeface(Typeface.DEFAULT)
-        anotherTextView2.setTypeface(Typeface.DEFAULT)
-        anotherTextView3.setTypeface(Typeface.DEFAULT)
-        anotherTextView4.setTypeface(Typeface.DEFAULT)
+        currentTextView.typeface = Typeface.DEFAULT_BOLD
+        anotherTextView.typeface = Typeface.DEFAULT
+        anotherTextView2.typeface = Typeface.DEFAULT
+        anotherTextView3.typeface = Typeface.DEFAULT
+        anotherTextView4.typeface = Typeface.DEFAULT
     }
 
     private fun setClickListeners() {

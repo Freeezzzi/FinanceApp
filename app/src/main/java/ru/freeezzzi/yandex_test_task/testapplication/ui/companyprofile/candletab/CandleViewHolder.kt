@@ -49,9 +49,7 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         chipGroup.setOnCheckedChangeListener { group, checkedId -> getCandleFunc() }
 
         val to = System.currentTimeMillis() / 1000
-        getCandleListener.invoke(WEEK_RESOLUTION,
-            to - YEAR,
-            to)
+        getCandleFunc.invoke()
     }
 
     fun setCandleValue(
@@ -81,7 +79,7 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
     }
 
     private fun setUpCandle(valsCandleStick: MutableList<CandleEntry>): CandleData {
-        // scalling and dragging
+        // scaling and dragging
         candleStickChart?.isDragEnabled = false
         candleStickChart?.setScaleEnabled(false)
 
@@ -108,7 +106,7 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         xAxis?.isGranularityEnabled = true
         xAxis?.setAvoidFirstLastClipping(true)*/
 
-        // чтобы можно было листать recyclerview
+        // чтобы можно было листать viewpager
         candleStickChart?.isHighlightPerDragEnabled = false
 
         candleStickChart?.requestDisallowInterceptTouchEvent(true)

@@ -97,12 +97,14 @@ class CompanyProfileViewModel @Inject constructor(
     /**
      * NEWS TAB
      */
-    fun getNews(from: String, to: String) {
+    fun getNews(from: String, to: String, clearList: Boolean) {
         viewModelScope.launch {
             var newsList: MutableList<News> = mutableListOf<News>()
-            when (mutableNewsList.value) {
-                is ViewState.Success -> newsList = (mutableNewsList.value as ViewState.Success<MutableList<News>>).result
-                is ViewState.Error -> newsList = (mutableNewsList.value as ViewState.Error<MutableList<News>, String?>).oldvalue
+            if (!clearList) { // если лист не нужно очистить то сохраним старые значения
+                when (mutableNewsList.value) {
+                    is ViewState.Success -> newsList = (mutableNewsList.value as ViewState.Success<MutableList<News>>).result
+                    is ViewState.Error -> newsList = (mutableNewsList.value as ViewState.Error<MutableList<News>, String?>).oldvalue
+                }
             }
             // Здесь приходится копировать лист, т.к. если ссылка останется той же то submitList адаптера посчитает что они одинаковые и не обновит RecyclerView
             newsList = newsList.toMutableList()
@@ -121,7 +123,7 @@ class CompanyProfileViewModel @Inject constructor(
     /**
      * FORECASTS TAB
      */
-    fun getRecommendationTrends(){
+    fun getRecommendationTrends() {
         viewModelScope.launch {
             mutableRecommendationTrends.value = ViewState.loading()
             when (val trends = companiesRepository.getRecommendationTrends(companyProfile?.ticker ?: "")) {

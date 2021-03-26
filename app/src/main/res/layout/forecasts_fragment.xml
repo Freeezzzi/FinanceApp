@@ -8,10 +8,12 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/forecasts_swiperefreshlayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="120dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/forecasts_piechart"
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/forecasts_barchart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"

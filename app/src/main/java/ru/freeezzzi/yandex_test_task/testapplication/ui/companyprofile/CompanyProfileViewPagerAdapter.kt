@@ -21,7 +21,7 @@ class CompanyProfileViewPagerAdapter(
     private val getCandleListener: (resolution: String, from: Long, to: Long) -> Unit,
     // news tab
     private val newsListAdapter: NewsListAdapter,
-    private val getNewsListener: (from: String, to: String) -> Unit,
+    private val getNewsListener: (from: String, to: String, clearList:Boolean) -> Unit,
     // Forecasts tab
     private val getRecommendationTrends: () -> Unit,
     // Peers tab

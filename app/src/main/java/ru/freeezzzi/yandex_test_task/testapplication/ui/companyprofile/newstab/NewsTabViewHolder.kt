@@ -9,18 +9,17 @@ import ru.freeezzzi.yandex_test_task.testapplication.R
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ViewPagerViewHodler
 import java.util.*
 
-// TODO Добавить отображение даты
 class NewsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
     private val recyclerView: RecyclerView? = itemView.findViewById(R.id.news_recyclerview)
     private val refreshLayout: SwipeRefreshLayout? = itemView.findViewById(R.id.news_swiperefreshlayout)
     private val layoutManager = LinearLayoutManager(itemView.context)
     private var adapter: NewsListAdapter? = null
-    private var getNewsListener: ((String, String) -> Unit)? = null
+    private var getNewsListener: ((String, String, Boolean) -> Unit)? = null
     private var previousQueryTime = System.currentTimeMillis()
 
     fun onBind(
         adapter: NewsListAdapter,
-        getNewsListener: (from: String, to: String) -> Unit
+        getNewsListener: (from: String, to: String, clearList: Boolean) -> Unit
     ) {
         this.getNewsListener = getNewsListener
         this.adapter = adapter
@@ -29,18 +28,18 @@ class NewsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         recyclerView?.addOnScrollListener(this.OnVerticalScrollListener())
         refreshLayout?.setOnRefreshListener {
             previousQueryTime = System.currentTimeMillis()
-            invokeGetNews()
+            invokeGetNews(true)
         }
-        invokeGetNews()
+        invokeGetNews(false)
     }
 
     fun setRefreshing(state: Boolean) {
         refreshLayout?.isRefreshing = state
     }
 
-    private fun invokeGetNews(){
+    private fun invokeGetNews(clearList: Boolean) {
         val fromToValues = getDates(previousQueryTime)
-        getNewsListener?.invoke(fromToValues.first, fromToValues.second)
+        getNewsListener?.invoke(fromToValues.first, fromToValues.second, clearList)
     }
 
     /**
@@ -64,7 +63,7 @@ class NewsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         }
 
         fun onScrolledToBottom() {
-            invokeGetNews()
+            invokeGetNews(false)
         }
     }
 
