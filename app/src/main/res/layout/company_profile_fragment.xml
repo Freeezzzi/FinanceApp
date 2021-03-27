@@ -99,53 +99,31 @@
 
                 <TextView
                     android:id="@+id/chart_textview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:text="@string/chart_name"
-                    android:textColor="@color/font_black"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    style="@style/title_style" />
 
                 <TextView
                     android:id="@+id/summary_textview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
                     android:text="@string/summary_name"
-                    android:textColor="@color/font_black"
-                    android:textSize="18sp" />
+                    style="@style/title_style"/>
 
                 <TextView
                     android:id="@+id/news_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_weight="1"
                     android:text="@string/news_name"
-                    android:textColor="@color/font_black"
-                    android:textSize="18sp" />
+                    style="@style/title_style" />
 
                 <TextView
                     android:id="@+id/forecasts_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_weight="1"
                     android:text="@string/forecasts_name"
-                    android:textColor="@color/font_black"
-                    android:textSize="18sp" />
+                    style="@style/title_style" />
 
                 <TextView
                     android:id="@+id/peers_textview"
+                    style="@style/title_style"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
-                    android:text="@string/peers_name"
-                    android:textColor="@color/font_black"
-                    android:textSize="18sp"/>
+                    android:text="@string/peers_name" />
 
             </LinearLayout>
         </HorizontalScrollView>

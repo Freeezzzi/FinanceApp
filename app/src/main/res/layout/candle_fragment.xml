@@ -38,27 +38,17 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/day_chip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@drawable/candle_chip_background"
-            android:checkable="true"
-            android:text="@string/day_chip"
-            android:textColor="@drawable/candle_chip_fontcolor"
             app:checkedIconVisible="false"
             app:chipCornerRadius="12dp"
             app:chipMinHeight="@dimen/chip_size"
-            app:minWidth = "@dimen/chip_size"
-            tools:text="@string/day_chip" />
+            android:text="@string/day_chip"
+            tools:text="@string/day_chip"
+            style="@style/candle_chip_style" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/week_chip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@drawable/candle_chip_background"
-            android:checkable="true"
-            android:padding="16dp"
+            style="@style/candle_chip_style"
             android:text="@string/week_chip"
-            android:textColor="@drawable/candle_chip_fontcolor"
             app:checkedIconVisible="false"
             app:chipCornerRadius="12dp"
             app:chipMinHeight="@dimen/chip_size"
@@ -66,60 +56,38 @@
 
         <com.google.android.material.chip.Chip
             android:id="@+id/two_weeks_chip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@drawable/candle_chip_background"
-            android:checkable="true"
-            android:padding="16dp"
-            android:text="@string/two_weeks_chip"
-            android:textColor="@drawable/candle_chip_fontcolor"
+            style="@style/candle_chip_style"
             app:checkedIconVisible="false"
             app:chipCornerRadius="12dp"
             app:chipMinHeight="@dimen/chip_size"
+            android:text="@string/two_weeks_chip"
             tools:text="@string/two_weeks_chip" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/month_chip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@drawable/candle_chip_background"
-            android:checkable="true"
-            android:includeFontPadding="true"
-            android:padding="16dp"
+            style="@style/candle_chip_style"
             android:text="@string/month_chip"
-            android:textColor="@drawable/candle_chip_fontcolor"
             app:checkedIconVisible="false"
             app:chipCornerRadius="12dp"
-
             app:chipMinHeight="@dimen/chip_size"
             tools:text="@string/month_chip" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/six_month_chip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:chipMinHeight="@dimen/chip_size"
-            android:backgroundTint="@drawable/candle_chip_background"
-            android:checkable="true"
-            android:padding="16dp"
+            style="@style/candle_chip_style"
             android:text="@string/six_month_chip"
-            android:textColor="@drawable/candle_chip_fontcolor"
             app:checkedIconVisible="false"
             app:chipCornerRadius="12dp"
+            app:chipMinHeight="@dimen/chip_size"
             tools:text="@string/six_month_chip" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/year_chip"
+            style="@style/candle_chip_style"
             android:checked="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:chipMinHeight="@dimen/chip_size"
-            android:backgroundTint="@drawable/candle_chip_background"
-            android:checkable="true"
-            android:padding="16dp"
             android:text="@string/year_chip"
-            android:textColor="@drawable/candle_chip_fontcolor"
             app:checkedIconVisible="false"
+            app:chipMinHeight="@dimen/chip_size"
             app:chipCornerRadius="12dp"
             tools:text="@string/year_chip" />
 

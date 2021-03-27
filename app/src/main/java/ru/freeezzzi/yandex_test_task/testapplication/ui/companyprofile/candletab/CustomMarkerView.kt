@@ -1,7 +1,6 @@
 package ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.candletab
 
 import android.content.Context
-import android.util.Log
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.data.Entry
@@ -14,6 +13,7 @@ class CustomMarkerView(
     layoutResource: Int
 ) : MarkerView(context, layoutResource) {
     private val binding by viewBinding(CustomMarkerViewBinding::bind)
+    private var mOffset: MPPointF? = null
 
     override fun refreshContent(e: Entry?, highlight: Highlight?) {
         super.refreshContent(e, highlight)
@@ -22,6 +22,9 @@ class CustomMarkerView(
     }
 
     override fun getOffset(): MPPointF {
-        return MPPointF(-(width)/2F, -height.toFloat())
+        if (mOffset == null) {
+            mOffset = MPPointF(-(width) / 2F, -height.toFloat())
+        }
+        return mOffset!!
     }
 }

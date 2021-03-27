@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TestApplication</string>
+    <string name="app_name">FinanceApp</string>
     <string name="ticker">TICKER</string>
     <string name="company_name">Company name</string>
     <string name="last_bid_price">Price</string>

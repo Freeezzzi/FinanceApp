@@ -1,6 +1,7 @@
 package ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist
 
 import android.content.res.ColorStateList
+import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -29,10 +30,14 @@ class QuotesItemViewHolder(
         starClickListener: (CompanyProfile) -> Unit,
         isOdd: Boolean
     ) {
+        val theme = itemView.context.theme
+        val typedValue = TypedValue()
         if (isOdd) {
-            binding.root.setCardBackgroundColor(itemView.resources.getColor(R.color.light_blue))
+            theme.resolveAttribute(R.attr.colorPrimaryVariant, typedValue, false)
+            binding.root.setCardBackgroundColor(itemView.resources.getColor(typedValue.data, theme))
         } else {
-            binding.root.setCardBackgroundColor(itemView.resources.getColor(R.color.white))
+            theme.resolveAttribute(R.attr.colorPrimary, typedValue, false)
+            binding.root.setCardBackgroundColor(itemView.resources.getColor(typedValue.data, theme))
         }
         setClickListeners(companyProfile, clickListener, starClickListener)
         setStar(companyProfile)
@@ -76,10 +81,10 @@ class QuotesItemViewHolder(
             binding.quoteItemPricechange.setTextColor(ContextCompat.getColor(itemView.context, R.color.red))
             priceChangeString += "-"
             priceChange = -priceChange
-        } else{
+        } else {
             binding.quoteItemPricechange.setTextColor(ContextCompat.getColor(itemView.context, R.color.font_black))
         }
-        //У некоторых компаний там 0, поэтмоу ставим в знаменатель единицу
+        // У некоторых компаний там 0, поэтмоу ставим в знаменатель единицу
         val percentPriceChange = priceChange / (if (companyProfile.quote?.pc ?: 1.0F == 0F) 1.0F else companyProfile.quote?.pc ?: 1.0F)
 
         when (companyProfile.currency) {

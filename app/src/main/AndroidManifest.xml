@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TestApplication">
+        android:theme="@style/Theme.FinanceApp">
         <activity
             android:name=".ui.AppActivity"
             android:exported="true"
