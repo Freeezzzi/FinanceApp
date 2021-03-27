@@ -45,6 +45,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             from = from,
             to = to
         ) },
+        getPrices = ::getPrices,
         newsListAdapter,
         getNewsListener = { from, to, clearList -> viewModel.getNews(from, to, clearList) },
         getRecommendationTrends = { viewModel.getRecommendationTrends() },
@@ -97,6 +98,37 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
                 companyProfileAdapter.candleSetRefreshing(false)
             }
         }
+    }
+
+    /**
+     * Возвращает пару значений: цену и изменение цены
+     */
+    fun getPrices(): Pair<String, String> {
+        var price = String.format("${when (viewModel.companyProfile?.currency){
+            "USD" -> "$"
+            "EUR" -> "€"
+            "RUB" -> "₽"
+            else -> "$"
+        }}%.2f", viewModel.companyProfile?.quote?.c ?: 0F)
+
+        // В зависимости от изменения цены изменяем поле
+        var priceChangeString = ""
+        var priceChange = (viewModel.companyProfile?.quote?.c ?: 0.0F) - (viewModel.companyProfile?.quote?.pc ?: 0.0F)
+        if (priceChange > 0) {
+            priceChangeString += "+"
+        } else if (priceChange < 0) {
+            priceChangeString += "-"
+            priceChange = -priceChange }
+        // У некоторых компаний там 0, поэтмоу ставим в знаменатель единицу
+        val percentPriceChange = priceChange / (if (viewModel.companyProfile?.quote?.pc ?: 1.0F == 0F) 1.0F else viewModel.companyProfile?.quote?.pc ?: 1.0F) * 100
+
+        when (viewModel.companyProfile?.currency) {
+            "USD" -> priceChangeString += "$"
+            "EUR" -> priceChangeString += "€"
+            "RUB" -> priceChangeString += "₽"
+        }
+        priceChangeString += "%.2f (%.2f%%)"
+        return price to String.format(priceChangeString, priceChange, percentPriceChange)
     }
 
     /**

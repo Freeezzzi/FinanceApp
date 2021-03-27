@@ -19,6 +19,7 @@ import java.lang.IllegalArgumentException
 class CompanyProfileViewPagerAdapter(
     // Candle tab
     private val getCandleListener: (resolution: String, from: Long, to: Long) -> Unit,
+    private val getPrices: ()->Pair<String,String>,
     // news tab
     private val newsListAdapter: NewsListAdapter,
     private val getNewsListener: (from: String, to: String, clearList:Boolean) -> Unit,
@@ -70,7 +71,10 @@ class CompanyProfileViewPagerAdapter(
 
     override fun onBindViewHolder(holder: ViewPagerViewHodler, position: Int) {
         when (holder) {
-            is CandleViewHolder -> holder.onBind(getCandleListener)
+            is CandleViewHolder -> holder.onBind(
+                getCandleListener,
+                getPrices
+            )
             is SummaryViewHolder -> holder.onBind()
             is NewsTabViewHolder -> holder.onBind(
                 newsListAdapter,

@@ -65,10 +65,10 @@ class QuotesItemViewHolder(
         binding.quoteItemCompanyName.text = companyProfile.name
         binding.quoteItemTicker.text = companyProfile.ticker
         binding.quoteItemPrice.text = String.format("${when (companyProfile.currency){
-            "USD" -> "$ "
-            "EUR" -> "€ "
-            "RUB" -> "₽ "
-            else -> "$ "
+            "USD" -> "$"
+            "EUR" -> "€"
+            "RUB" -> "₽"
+            else -> "$"
         }}%.2f", companyProfile.quote?.c ?: 0F)
 
         // В зависимости от изменения цены изменяем поле
@@ -85,12 +85,12 @@ class QuotesItemViewHolder(
             binding.quoteItemPricechange.setTextColor(ContextCompat.getColor(itemView.context, R.color.font_black))
         }
         // У некоторых компаний там 0, поэтмоу ставим в знаменатель единицу
-        val percentPriceChange = priceChange / (if (companyProfile.quote?.pc ?: 1.0F == 0F) 1.0F else companyProfile.quote?.pc ?: 1.0F)
+        val percentPriceChange = priceChange / (if (companyProfile.quote?.pc ?: 1.0F == 0F) 1.0F else companyProfile.quote?.pc ?: 1.0F)*100
 
         when (companyProfile.currency) {
-            "USD" -> priceChangeString += "$ "
-            "EUR" -> priceChangeString += "€ "
-            "RUB" -> priceChangeString += "₽ "
+            "USD" -> priceChangeString += "$"
+            "EUR" -> priceChangeString += "€"
+            "RUB" -> priceChangeString += "₽"
         }
         priceChangeString += "%.2f (%.2f%%)"
         binding.quoteItemPricechange.text = String.format(priceChangeString, priceChange, percentPriceChange)

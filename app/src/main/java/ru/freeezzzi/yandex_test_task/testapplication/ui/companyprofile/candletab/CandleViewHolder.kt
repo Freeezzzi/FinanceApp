@@ -3,6 +3,7 @@ package ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.candleta
 import android.graphics.Color
 import android.graphics.Paint
 import android.view.View
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.mikephil.charting.charts.CandleStickChart
@@ -16,12 +17,16 @@ import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ViewPagerViewHodler
 
 class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
+    private val priceTextView : TextView = itemView.findViewById(R.id.candle_price)
+    private val priceChangeTextView : TextView = itemView.findViewById(R.id.candle_pricechange)
     private val candleStickChart: CandleStickChart? = itemView.findViewById(R.id.candle_stick_chart)
     private val refreshLayout: SwipeRefreshLayout? = itemView.findViewById(R.id.chart_swipterefreshlayout)
     private val chipGroup: ChipGroup = itemView.findViewById(R.id.candles_chip_group)
+    private var currency:Char? = null
 
     fun onBind(
-        getCandleListener: (resolution: String, from: Long, to: Long) -> Unit
+        getCandleListener: (resolution: String, from: Long, to: Long) -> Unit,
+        getPrices: () -> Pair<String, String>
     ) {
         val getCandleFunc = {
             val pair = when (getSelectedChipContent()) {
@@ -45,14 +50,17 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         }
         refreshLayout?.setOnRefreshListener { getCandleFunc() }
 
-        val customMarkerView = CustomMarkerView(itemView.context, R.layout.custom_marker_view)
-        candleStickChart?.marker = customMarkerView
-
         // здесь можно было бы понять какой чип по id чипа, но для краткости я использовал ту же функцию
         chipGroup.setOnCheckedChangeListener { group, checkedId -> getCandleFunc() }
 
         val to = System.currentTimeMillis() / 1000
         getCandleFunc.invoke()
+        val prices = getPrices.invoke()
+        setPrices(prices.first, prices.second)
+
+        currency = prices.first[0];
+        val customMarkerView = CustomMarkerView(itemView.context, R.layout.custom_marker_view, currency ?: ' ')
+        candleStickChart?.marker = customMarkerView
     }
 
     fun setCandleValue(
@@ -61,7 +69,7 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         val valsCandleStick = mutableListOf<CandleEntry>()
         val minValue = minOf(stockCandle.c?.size ?: 0, stockCandle.h?.size ?: 0, stockCandle.l?.size ?: 0,
             stockCandle.o?.size ?: 0, stockCandle.t?.size ?: 0)
-        if (minValue == 0) return // TODO отобразить ошибку
+        if (minValue == 0) return
         // Возьмем минимальную длину из полученных массивов(на всякий случай)
         for (i in 0..(minValue - 1)) {
             valsCandleStick.add(
@@ -136,6 +144,19 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         set1.setDrawVerticalHighlightIndicator(false)
 
         return CandleData(set1)
+    }
+
+    private fun setPrices(price : String, priceChange: String){
+        if (priceChange[0] == '+') {
+            priceChangeTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.green))
+        } else if (priceChange[0] == '-') {
+            priceChangeTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.red))
+        } else {
+            priceChangeTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.font_black))
+        }
+
+        priceTextView.text = price
+        priceChangeTextView.text = priceChange
     }
 
     private fun getSelectedChipContent(): String =
