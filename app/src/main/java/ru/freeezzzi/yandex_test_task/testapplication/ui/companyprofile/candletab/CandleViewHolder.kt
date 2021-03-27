@@ -17,12 +17,12 @@ import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ViewPagerViewHodler
 
 class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
-    private val priceTextView : TextView = itemView.findViewById(R.id.candle_price)
-    private val priceChangeTextView : TextView = itemView.findViewById(R.id.candle_pricechange)
+    private val priceTextView: TextView = itemView.findViewById(R.id.candle_price)
+    private val priceChangeTextView: TextView = itemView.findViewById(R.id.candle_pricechange)
     private val candleStickChart: CandleStickChart? = itemView.findViewById(R.id.candle_stick_chart)
     private val refreshLayout: SwipeRefreshLayout? = itemView.findViewById(R.id.chart_swipterefreshlayout)
     private val chipGroup: ChipGroup = itemView.findViewById(R.id.candles_chip_group)
-    private var currency:Char? = null
+    private var currency: Char? = null
 
     fun onBind(
         getCandleListener: (resolution: String, from: Long, to: Long) -> Unit,
@@ -58,7 +58,7 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         val prices = getPrices.invoke()
         setPrices(prices.first, prices.second)
 
-        currency = prices.first[0];
+        currency = prices.first[0]
         val customMarkerView = CustomMarkerView(itemView.context, R.layout.custom_marker_view, currency ?: ' ')
         candleStickChart?.marker = customMarkerView
     }
@@ -75,10 +75,10 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
             valsCandleStick.add(
                 CandleEntry(
                     i.toFloat(),
-                    stockCandle?.h?.get(i) ?: 0F,
-                    stockCandle?.l?.get(i) ?: 0F,
-                    stockCandle?.o?.get(i) ?: 0F,
-                    stockCandle?.c?.get(i) ?: 0F,
+                    stockCandle.h?.get(i) ?: 0F,
+                    stockCandle.l?.get(i) ?: 0F,
+                    stockCandle.o?.get(i) ?: 0F,
+                    stockCandle.c?.get(i) ?: 0F,
                     stockCandle.t?.get(i) ?: " "
                 )
             )
@@ -146,7 +146,7 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         return CandleData(set1)
     }
 
-    private fun setPrices(price : String, priceChange: String){
+    private fun setPrices(price: String, priceChange: String) {
         if (priceChange[0] == '+') {
             priceChangeTextView.setTextColor(ContextCompat.getColor(itemView.context, R.color.green))
         } else if (priceChange[0] == '-') {

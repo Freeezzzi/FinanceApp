@@ -11,6 +11,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import ru.freeezzzi.yandex_test_task.testapplication.R
 import ru.freeezzzi.yandex_test_task.testapplication.databinding.QuoteItemBinding
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
+import ru.freeezzzi.yandex_test_task.testapplication.extensions.getCurrencySymbol
 
 class QuotesItemViewHolder(
     private val binding: QuoteItemBinding
@@ -64,12 +65,7 @@ class QuotesItemViewHolder(
         // set text about company
         binding.quoteItemCompanyName.text = companyProfile.name
         binding.quoteItemTicker.text = companyProfile.ticker
-        binding.quoteItemPrice.text = String.format("${when (companyProfile.currency){
-            "USD" -> "$"
-            "EUR" -> "€"
-            "RUB" -> "₽"
-            else -> "$"
-        }}%.2f", companyProfile.quote?.c ?: 0F)
+        binding.quoteItemPrice.text = String.format("${companyProfile.currency?.getCurrencySymbol()}%.2f", companyProfile.quote?.c ?: 0F)
 
         // В зависимости от изменения цены изменяем поле
         var priceChangeString = ""
@@ -87,11 +83,7 @@ class QuotesItemViewHolder(
         // У некоторых компаний там 0, поэтмоу ставим в знаменатель единицу
         val percentPriceChange = priceChange / (if (companyProfile.quote?.pc ?: 1.0F == 0F) 1.0F else companyProfile.quote?.pc ?: 1.0F)*100
 
-        when (companyProfile.currency) {
-            "USD" -> priceChangeString += "$"
-            "EUR" -> priceChangeString += "€"
-            "RUB" -> priceChangeString += "₽"
-        }
+        priceChangeString += companyProfile.currency?.getCurrencySymbol()
         priceChangeString += "%.2f (%.2f%%)"
         binding.quoteItemPricechange.text = String.format(priceChangeString, priceChange, percentPriceChange)
     }

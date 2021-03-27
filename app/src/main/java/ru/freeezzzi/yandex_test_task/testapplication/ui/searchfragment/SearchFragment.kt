@@ -10,7 +10,6 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +21,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.R
 import ru.freeezzzi.yandex_test_task.testapplication.databinding.SearchFragmentBinding
 import ru.freeezzzi.yandex_test_task.testapplication.di.viewmodels.searchfragment.DaggerSearchFragmentViewModelComponent
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
+import ru.freeezzzi.yandex_test_task.testapplication.extensions.hideKeyboard
 import ru.freeezzzi.yandex_test_task.testapplication.ui.BaseFragment
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
 import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAdapter
@@ -204,7 +204,7 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
     }
 
     fun performSearch() {
-        hideKeybord()
+        view?.hideKeyboard()
         val symbol = binding.searchBarEditText.text.toString()
         if (symbol.isBlank()) {
             binding.searchBarEditText.setText("")
@@ -212,12 +212,8 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
         }
         binding.searchViewpager.setCurrentItem(1, true) // переключим вкладку на список компаний
         viewModel.searchAction(symbol) // отправим запрос на сервер
-        viewModel.showFavourites(symbol) // найдем такой тикер в favourites
+        viewModel.searchInFavourites(symbol) // найдем такой тикер в favourites
         viewModel.saveToRecentQueries(symbol)
-    }
-    private fun hideKeybord() {
-        val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
     inner class OnVerticalScrollListener : RecyclerView.OnScrollListener() {

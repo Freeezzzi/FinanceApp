@@ -144,7 +144,7 @@ class SearchFragmentViewModel @Inject constructor(
         mutableCompanies.value = ViewState.loading()
     }
 
-    fun showFavourites(symbol: String) {
+    fun searchInFavourites(symbol: String) {
         viewModelScope.launch {
             mutableLocalCompanies.value = ViewState.loading()
             val localCompaniesQuery = database.companyProfileDao().findInFavouritesCompanies("%$symbol%").map {

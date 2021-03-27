@@ -21,6 +21,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfil
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.News
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.RecommendationTrend
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
+import ru.freeezzzi.yandex_test_task.testapplication.extensions.getCurrencySymbol
 import ru.freeezzzi.yandex_test_task.testapplication.ui.BaseFragment
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
 import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.newstab.NewsListAdapter
@@ -104,12 +105,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
      * Возвращает пару значений: цену и изменение цены
      */
     fun getPrices(): Pair<String, String> {
-        var price = String.format("${when (viewModel.companyProfile?.currency){
-            "USD" -> "$"
-            "EUR" -> "€"
-            "RUB" -> "₽"
-            else -> "$"
-        }}%.2f", viewModel.companyProfile?.quote?.c ?: 0F)
+        var price = String.format("${viewModel.companyProfile?.currency?.getCurrencySymbol()}%.2f", viewModel.companyProfile?.quote?.c ?: 0F)
 
         // В зависимости от изменения цены изменяем поле
         var priceChangeString = ""
@@ -122,11 +118,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
         // У некоторых компаний там 0, поэтмоу ставим в знаменатель единицу
         val percentPriceChange = priceChange / (if (viewModel.companyProfile?.quote?.pc ?: 1.0F == 0F) 1.0F else viewModel.companyProfile?.quote?.pc ?: 1.0F) * 100
 
-        when (viewModel.companyProfile?.currency) {
-            "USD" -> priceChangeString += "$"
-            "EUR" -> priceChangeString += "€"
-            "RUB" -> priceChangeString += "₽"
-        }
+        priceChangeString += viewModel.companyProfile?.currency?.getCurrencySymbol()
         priceChangeString += "%.2f (%.2f%%)"
         return price to String.format(priceChangeString, priceChange, percentPriceChange)
     }
