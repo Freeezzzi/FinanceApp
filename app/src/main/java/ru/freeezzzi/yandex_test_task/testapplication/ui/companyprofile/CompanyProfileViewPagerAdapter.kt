@@ -11,6 +11,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.candletab
 import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.forecaststab.ForecastsViewHolder
 import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.newstab.NewsListAdapter
 import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.newstab.NewsTabViewHolder
+import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.summarytab.SummaryViewHolder
 import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAdapter
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.AllTabViewHodler
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ViewPagerViewHodler

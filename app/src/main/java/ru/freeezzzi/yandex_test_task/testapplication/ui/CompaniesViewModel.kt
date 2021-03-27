@@ -11,17 +11,19 @@ import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfil
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.toCompanyProfileEntity
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
 
+/**
+ * Позволяет загружать список компаний. Тикеры компаний нужно класть в mutableTickersList.
+ */
 abstract class CompaniesViewModel constructor(
     private val companiesRepository: CompaniesRepository,
     private val database: FavoriteCompaniesDatabase
 ) : ViewModel() {
     /**
-     * Здесь используется singleLiveEvent т.к. при возврате к фрагменту к livedata заново привязываются наблюдатели и получают обновленме при привязке
+     * Здесь используется singleLiveEvent т.к. при возврате к фрагменту к livedata заново привязываются наблюдатели и получают обновление при привязке
      * Это создает лишние запросы к api, которые, ввиду огранчиений, хотелось бы избежать
      */
     protected var mutableTickersList: SingleLiveEvent<ViewState<List<String>, String?>> = SingleLiveEvent()
     val tickersList: LiveData<ViewState<List<String>, String?>> get() = mutableTickersList
-
     protected val mutableCompanies = MutableLiveData<ViewState<MutableList<CompanyProfile>, String?>>()
     val companies: LiveData<ViewState<MutableList<CompanyProfile>, String?>> get() = mutableCompanies
 

@@ -2,7 +2,6 @@ package ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
@@ -12,10 +11,8 @@ import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompanie
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.toCompanyProfile
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.toCompanyProfileEntity
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
 import ru.freeezzzi.yandex_test_task.testapplication.ui.CompaniesViewModel
-import ru.freeezzzi.yandex_test_task.testapplication.ui.SingleLiveEvent
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
 import javax.inject.Inject
 
@@ -25,6 +22,9 @@ class QuotesListViewModel @Inject constructor(
     private val database: FavoriteCompaniesDatabase
 ) : CompaniesViewModel(companiesRepository, database) {
 
+    /**
+     * Список компаний, которые хранятся на устройстве
+     */
     private val mutableLocalCompanies = MutableLiveData<ViewState<MutableList<CompanyProfile>, String?>>()
     val localCompanies: LiveData<ViewState<MutableList<CompanyProfile>, String?>> get() = mutableLocalCompanies
 
@@ -68,6 +68,9 @@ class QuotesListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Отображает все компании, добавленные в favorites
+     */
     fun showFavourites() {
         viewModelScope.launch {
             mutableLocalCompanies.value = ViewState.loading()

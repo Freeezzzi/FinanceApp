@@ -24,9 +24,15 @@ class SearchFragmentViewModel @Inject constructor(
     private val database: FavoriteCompaniesDatabase,
     private val companiesRepository: CompaniesRepository
 ) : CompaniesViewModel(companiesRepository, database) {
+    /**
+     * Список компаний, которые удоавлетворяют запросу и хранятся на устройстве
+     */
     private val mutableLocalCompanies = MutableLiveData<ViewState<MutableList<CompanyProfile>, String?>>()
     val localCompanies: LiveData<ViewState<MutableList<CompanyProfile>, String?>> get() = mutableLocalCompanies
 
+    /**
+     * Список прошлых запросов. Хранится на устройстве
+     */
     private var mutableQueriesList: MutableLiveData<ViewState<List<String>, String?>> = MutableLiveData<ViewState<List<String>, String?>>()
     val queriesList: LiveData<ViewState<List<String>, String?>> get() = mutableQueriesList
 

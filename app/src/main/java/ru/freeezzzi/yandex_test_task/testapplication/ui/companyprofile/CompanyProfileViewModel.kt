@@ -2,7 +2,6 @@ package ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
@@ -12,7 +11,6 @@ import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.*
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
 import ru.freeezzzi.yandex_test_task.testapplication.ui.CompaniesViewModel
-import ru.freeezzzi.yandex_test_task.testapplication.ui.SingleLiveEvent
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
 import javax.inject.Inject
 
@@ -38,20 +36,6 @@ class CompanyProfileViewModel @Inject constructor(
      */
     private var mutableRecommendationTrends: MutableLiveData<ViewState<List<RecommendationTrend>, String?>> = MutableLiveData<ViewState<List<RecommendationTrend>, String?>>()
     val recommendationTrend: LiveData<ViewState<List<RecommendationTrend>, String?>> get() = mutableRecommendationTrends
-
-    /**
-     * PEERS LISTS
-     */
-    /*private var mutablePeersList: MutableLiveData<ViewState<List<CompanyProfile>, String?>> = MutableLiveData<ViewState<List<CompanyProfile>, String?>>()
-    val peersList: LiveData<ViewState<List<CompanyProfile>, String?>> get() = mutablePeersList
-
-    *//**
-     * Здесь используется singleLiveEvent т.к. при возврате к фрагменту к livedata заново привязываются наблюдатели и получают обновленме при привязке
-     * Это создает лишние запросы к api, которые, ввиду огранчиений, хотелось бы избежать
-     *//*
-    private var mutablePeersTickersList: SingleLiveEvent<ViewState<List<String>, String?>> = SingleLiveEvent()
-    val peerstickersList: LiveData<ViewState<List<String>, String?>> get() = mutablePeersTickersList*/
-
 
     /**
      * CURRENT PROFILE
@@ -98,7 +82,7 @@ class CompanyProfileViewModel @Inject constructor(
      */
     fun getNews(from: String, to: String, clearList: Boolean) {
         viewModelScope.launch {
-            var newsList: MutableList<News> = mutableListOf<News>()
+            var newsList: MutableList<News> = mutableListOf()
             if (!clearList) { // если лист не нужно очистить то сохраним старые значения
                 when (mutableNewsList.value) {
                     is ViewState.Success -> newsList = (mutableNewsList.value as ViewState.Success<MutableList<News>>).result
@@ -135,21 +119,6 @@ class CompanyProfileViewModel @Inject constructor(
     /**
      * PEERS TAB
      */
-/*    fun addPeerToFavorites(company: CompanyProfile) {
-        viewModelScope.launch {
-            when (company.isFavorite) {
-                true -> { // Нужно удалить
-                    database.companyProfileDao().delete(company.toCompanyProfileEntity())
-                    company.isFavorite = false
-                }
-                false -> {
-                    company.isFavorite = true
-                    database.companyProfileDao().insert(company.toCompanyProfileEntity())
-                }
-            }
-        }
-    }*/
-
     fun peerOnClickAction(company: CompanyProfile) {
         router.navigateTo(Screens.companyProfileFragment(company), true)
     }

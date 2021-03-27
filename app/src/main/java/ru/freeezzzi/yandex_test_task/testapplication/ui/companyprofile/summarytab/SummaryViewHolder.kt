@@ -1,4 +1,4 @@
-package ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile
+package ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.summarytab
 
 import android.view.View
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ViewPagerViewHodler

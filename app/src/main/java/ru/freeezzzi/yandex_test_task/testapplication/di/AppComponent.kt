@@ -6,7 +6,6 @@ import dagger.BindsInstance
 import dagger.Component
 import ru.freeezzzi.yandex_test_task.testapplication.App
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompaniesDatabase
-import ru.freeezzzi.yandex_test_task.testapplication.data.local.dao.CompanyProfileDao
 import ru.freeezzzi.yandex_test_task.testapplication.di.modules.AppModule
 import ru.freeezzzi.yandex_test_task.testapplication.di.modules.DataModule
 import ru.freeezzzi.yandex_test_task.testapplication.di.modules.NetworkModule
@@ -21,8 +20,6 @@ interface AppComponent {
     fun provideRouter(): Router
 
     fun provideCompaniesRepository(): CompaniesRepository
-
-    //fun provideCompanyProfileDao(): CompanyProfileDao
 
     fun provideFavoriteCompaniesDatabase(): FavoriteCompaniesDatabase
 
