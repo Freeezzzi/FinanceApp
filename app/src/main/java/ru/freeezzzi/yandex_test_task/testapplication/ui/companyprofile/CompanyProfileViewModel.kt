@@ -11,6 +11,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompanie
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.*
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
+import ru.freeezzzi.yandex_test_task.testapplication.ui.CompaniesViewModel
 import ru.freeezzzi.yandex_test_task.testapplication.ui.SingleLiveEvent
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
 import javax.inject.Inject
@@ -19,7 +20,7 @@ class CompanyProfileViewModel @Inject constructor(
     private val router: Router,
     private val companiesRepository: CompaniesRepository,
     private val database: FavoriteCompaniesDatabase
-) : ViewModel() {
+) : CompaniesViewModel(companiesRepository, database) {
     /**
      * STOCK CANDLE
      */
@@ -41,18 +42,16 @@ class CompanyProfileViewModel @Inject constructor(
     /**
      * PEERS LISTS
      */
-    private var mutablePeersList: MutableLiveData<ViewState<List<CompanyProfile>, String?>> = MutableLiveData<ViewState<List<CompanyProfile>, String?>>()
+    /*private var mutablePeersList: MutableLiveData<ViewState<List<CompanyProfile>, String?>> = MutableLiveData<ViewState<List<CompanyProfile>, String?>>()
     val peersList: LiveData<ViewState<List<CompanyProfile>, String?>> get() = mutablePeersList
 
-    /**
+    *//**
      * Здесь используется singleLiveEvent т.к. при возврате к фрагменту к livedata заново привязываются наблюдатели и получают обновленме при привязке
      * Это создает лишние запросы к api, которые, ввиду огранчиений, хотелось бы избежать
-     */
+     *//*
     private var mutablePeersTickersList: SingleLiveEvent<ViewState<List<String>, String?>> = SingleLiveEvent()
-    val peerstickersList: LiveData<ViewState<List<String>, String?>> get() = mutablePeersTickersList
+    val peerstickersList: LiveData<ViewState<List<String>, String?>> get() = mutablePeersTickersList*/
 
-    private var tickersCount = 0 // сколько уже загрузили(некоторые могут быть не валдины и не отображаться)
-    private var numberOfCompanies = 0 // сколько компаний получили с сервера
 
     /**
      * CURRENT PROFILE
@@ -136,7 +135,7 @@ class CompanyProfileViewModel @Inject constructor(
     /**
      * PEERS TAB
      */
-    fun addPeerToFavorites(company: CompanyProfile) {
+/*    fun addPeerToFavorites(company: CompanyProfile) {
         viewModelScope.launch {
             when (company.isFavorite) {
                 true -> { // Нужно удалить
@@ -149,7 +148,7 @@ class CompanyProfileViewModel @Inject constructor(
                 }
             }
         }
-    }
+    }*/
 
     fun peerOnClickAction(company: CompanyProfile) {
         router.navigateTo(Screens.companyProfileFragment(company), true)
@@ -157,74 +156,13 @@ class CompanyProfileViewModel @Inject constructor(
 
     fun findPeers() {
         viewModelScope.launch {
-            mutablePeersTickersList.value = ViewState.loading()
+            mutableTickersList.value = ViewState.loading()
             when (val tickersResult = companiesRepository.getCompanyPeers(companyProfile?.ticker ?: " ")) {
                 is OperationResult.Success -> {
                     numberOfCompanies = tickersResult.data.size
-                    mutablePeersTickersList.value = ViewState.success(tickersResult.data)
+                    mutableTickersList.value = ViewState.success(tickersResult.data)
                 }
-                is OperationResult.Error -> mutablePeersTickersList.value = ViewState.error(emptyList(), tickersResult.data)
-            }
-        }
-    }
-
-    fun getCompanies(howManyCompanies: Int) {
-        var lastCompanyToDownload = tickersCount + howManyCompanies
-        if (numberOfCompanies == 0) mutablePeersList.value = ViewState.success(mutableListOf()) // Если найдено 0 компаний, то удалим старые данные
-        if (tickersCount == numberOfCompanies) return // если загрузили все компании
-        if (lastCompanyToDownload > numberOfCompanies) { // если хотим загрузить больше компаний чем осталось
-            lastCompanyToDownload = numberOfCompanies
-        }
-        if (mutablePeersList.value is ViewState.Loading && tickersCount != 0) return
-
-        viewModelScope.launch {
-            // Проверим есть ли уже в сптске данные
-            var companiesList: MutableList<CompanyProfile> = mutableListOf<CompanyProfile>()
-            when (mutablePeersList.value) {
-                is ViewState.Success -> companiesList = (mutablePeersList.value as ViewState.Success<MutableList<CompanyProfile>>).result
-                is ViewState.Error -> companiesList = (mutablePeersList.value as ViewState.Error<MutableList<CompanyProfile>, String?>).oldvalue
-            }
-            // Здесь приходится копировать лист, т.к. если ссылка останется той же то submitList адаптера посчитает что они одинаковые и не обновит RecyclerView
-            companiesList = companiesList.toMutableList()
-
-            var state: ViewState<MutableList<CompanyProfile>, String?> = ViewState.loading() // Сюда будем записывать временные значения, пока не загрузим все значения
-            mutablePeersList.value = ViewState.loading() // Сообщаем что идет загрузка
-            when (mutablePeersTickersList.value) {
-                is ViewState.Success -> {
-                    // Для каждого запросим компанию и для нее quote
-                    for (ticker in
-                    (mutablePeersTickersList.value as ViewState.Success<List<String>>).result.subList(tickersCount, lastCompanyToDownload)) {
-                        when (val companiesResult = companiesRepository.getCompanyProfile(ticker)) {
-                            is OperationResult.Success -> { // Если удачно, то добавляем компанию в
-                                val companyProfile = companiesResult.data
-                                if (companyProfile.ticker == null) { // Если с сервера пришел невалидный ответ, то пропускаем эту компанию
-                                    tickersCount++
-                                    state = ViewState.success(companiesList) // если у нас все компании не валдины, то нужно сообщить что мы все успешно обработали
-                                    continue
-                                }
-
-                                // getQuote(companyProfile)
-                                when (val quoteResult = companiesRepository.getCompanyQuote(companyProfile.ticker ?: "")) {
-                                    is OperationResult.Success -> companyProfile.quote = quoteResult.data
-                                    is OperationResult.Error -> companyProfile.quote = null
-                                }
-
-                                if (database.companyProfileDao().isCompanyInFavorite(companyProfile.ticker)) {
-                                    companyProfile.isFavorite = true
-                                    database.companyProfileDao().update(companyProfile.toCompanyProfileEntity())
-                                }
-
-                                companiesList.add(companyProfile)
-                                state = ViewState.success(companiesList)
-                                tickersCount++
-                            }
-                            is OperationResult.Error -> state = ViewState.Error(companiesList, companiesResult.data)
-                        }
-                    }
-                    mutablePeersList.value = state
-                }
-                is ViewState.Error -> mutablePeersList.value = ViewState.error(companiesList, (mutablePeersList.value as ViewState.Error<List<String>, String?>).result)
-                is ViewState.Loading -> mutablePeersList.value = ViewState.error(companiesList, "Tickers loading.Try again!")
+                is OperationResult.Error -> mutableTickersList.value = ViewState.error(emptyList(), tickersResult.data)
             }
         }
     }

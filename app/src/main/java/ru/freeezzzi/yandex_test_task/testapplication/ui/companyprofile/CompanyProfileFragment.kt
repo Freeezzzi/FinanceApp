@@ -37,7 +37,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
 
     private val peersAdapter = QuotesListAdapter(
         clickListener = { viewModel.peerOnClickAction(it) },
-        starClickListener = { viewModel.addPeerToFavorites(it) }
+        starClickListener = { viewModel.addToFavorites(it) }
     )
 
     private val companyProfileAdapter = CompanyProfileViewPagerAdapter(
@@ -80,8 +80,8 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
         viewModel.stockCandle.observe(viewLifecycleOwner, this::updateCandleData)
         viewModel.newsList.observe(viewLifecycleOwner, this::updateNewsList)
         viewModel.recommendationTrend.observe(viewLifecycleOwner, this::updateRecommendationTrends)
-        viewModel.peersList.observe(viewLifecycleOwner, this::updatePeersList)
-        viewModel.peerstickersList.observe(viewLifecycleOwner, this::updatePeersTickers)
+        viewModel.companies.observe(viewLifecycleOwner, this::updatePeersList)
+        viewModel.tickersList.observe(viewLifecycleOwner, this::updatePeersTickers)
     }
 
     /**
@@ -165,7 +165,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
     fun updatePeersTickers(tickers: ViewState<List<String>, String?>) {
         when (tickers) {
             is ViewState.Success -> {
-                companyProfileAdapter.setPeersRefreshing(false)
+                viewModel.clearCompaniesList()
                 viewModel.getCompanies(10) // В первый раз загружаем 10 компаний
             }
             is ViewState.Loading -> companyProfileAdapter.setPeersRefreshing(true)
