@@ -37,4 +37,10 @@
     <string name="second">second</string>
     <string name="ago">ago</string>
     <string name="recommendation_trend">Recommendation trend</string>
+    <string name="site">Site:</string>
+    <string name="phone">Phone:</string>
+    <string name="share_outstanding">Shared outstanding:</string>
+    <string name="market_capitalization">Market capitalization:</string>
+    <string name="ipo_date">IPO date:</string>
+    <string name="industry">Industry:</string>
 </resources>

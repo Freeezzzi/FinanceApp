@@ -1,17 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView3"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CompanyProfile"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="20dp" />
+
+    <TextView
+        android:id="@+id/summary_industry"
+        style="@style/summary_labels"
+        android:text="@string/industry"
+        app:layout_constraintStart_toStartOf="@+id/guideline7"
+        app:layout_constraintTop_toTopOf="@+id/guideline8" />
+
+    <TextView
+        android:id="@+id/summary_ipo"
+        style="@style/summary_labels"
+        android:text="@string/ipo_date"
+        app:layout_constraintStart_toStartOf="@+id/guideline7"
+        app:layout_constraintTop_toBottomOf="@+id/summary_industry" />
+
+    <TextView
+        android:id="@+id/summary_marketcapitalization"
+        style="@style/summary_labels"
+        android:text="@string/market_capitalization"
+        app:layout_constraintStart_toStartOf="@+id/guideline7"
+        app:layout_constraintTop_toBottomOf="@+id/summary_ipo" />
+
+    <TextView
+        android:id="@+id/summary_sharedoutstanding"
+        style="@style/summary_labels"
+        android:text="@string/share_outstanding"
+        app:layout_constraintStart_toStartOf="@+id/guideline7"
+        app:layout_constraintTop_toBottomOf="@+id/summary_marketcapitalization" />
+
+    <TextView
+        android:id="@+id/summary_weburl"
+        style="@style/summary_labels"
+        android:text="@string/site"
+        app:layout_constraintStart_toStartOf="@+id/guideline7"
+        app:layout_constraintTop_toBottomOf="@+id/summary_sharedoutstanding" />
+
+    <TextView
+        android:id="@+id/summary_phone"
+        style="@style/summary_labels"
+        android:text="@string/phone"
+        app:layout_constraintStart_toStartOf="@+id/guideline7"
+        app:layout_constraintTop_toBottomOf="@+id/summary_weburl" />
+
+    <TextView
+        android:id="@+id/summary_industry_value"
+        style="@style/summary_values"
+        app:layout_constraintEnd_toEndOf="@id/guideline9"
+        app:layout_constraintTop_toTopOf="@+id/guideline8" />
+
+    <TextView
+        android:id="@+id/summary_ipo_value"
+        style="@style/summary_values"
+        app:layout_constraintEnd_toEndOf="@id/guideline9"
+        app:layout_constraintTop_toBottomOf="@+id/summary_industry_value" />
+
+    <TextView
+        android:id="@+id/summary_marketcapitalization_value"
+        style="@style/summary_values"
+        app:layout_constraintTop_toBottomOf="@+id/summary_ipo_value"
+        app:layout_constraintEnd_toEndOf="@id/guideline9"
+        tools:layout_editor_absoluteX="199dp" />
+
+    <TextView
+        android:id="@+id/summary_sharedoutstanding_value"
+        style="@style/summary_values"
+        app:layout_constraintTop_toBottomOf="@+id/summary_marketcapitalization_value"
+        app:layout_constraintEnd_toEndOf="@id/guideline9"
+        tools:layout_editor_absoluteX="199dp" />
+
+    <TextView
+        android:id="@+id/summary_weburl_value"
+        style="@style/summary_values"
+        app:layout_constraintTop_toBottomOf="@+id/summary_sharedoutstanding_value"
+        app:layout_constraintEnd_toEndOf="@id/guideline9"
+        tools:layout_editor_absoluteX="199dp" />
+
+    <TextView
+        android:id="@+id/summary_phone_value"
+        style="@style/summary_values"
+        app:layout_constraintTop_toBottomOf="@+id/summary_weburl_value"
+        app:layout_constraintEnd_toEndOf="@id/guideline9"
+        tools:layout_editor_absoluteX="199dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -43,7 +43,7 @@ class QuotesItemViewHolder(
         setClickListeners(companyProfile, clickListener, starClickListener)
         setStar(companyProfile)
         setText(companyProfile)
-        setPicture(companyProfile)
+        setPicture(companyProfile, isOdd)
     }
 
     fun setStar(companyProfile: CompanyProfile) {
@@ -111,15 +111,15 @@ class QuotesItemViewHolder(
         }
     }
 
-    fun setPicture(companyProfile: CompanyProfile) {
+    fun setPicture(companyProfile: CompanyProfile, isOdd : Boolean) {
         if (companyProfile.logo.isNullOrEmpty()) {
-            binding.quoteItemImage.setImageResource(R.drawable.ic_launcher_background)
+            binding.quoteItemImage.setImageResource(if (isOdd) R.color.light_blue else R.color.white)
         } else {
             Picasso.get().isLoggingEnabled = true
         Picasso.get()
             .load(companyProfile.logo)
-            .placeholder(R.drawable.ic_launcher_background)
-            .error(R.drawable.ic_round_star_24)
+            .placeholder(if (isOdd) R.color.light_blue else R.color.white)
+            .error(if (isOdd) R.color.light_blue else R.color.white)
             .transform(transformation)
             .fit()
             .centerInside()

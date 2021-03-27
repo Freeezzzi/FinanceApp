@@ -61,13 +61,13 @@ class NewsItemViewHolder(
 
     fun setPicture(news: News) {
         if (news.image.isNullOrEmpty()) {
-            binding.newsImage.setImageResource(R.drawable.ic_launcher_background)
+            binding.newsImage.setImageResource(R.color.white)
         } else {
             Picasso.get().isLoggingEnabled = true
             Picasso.get()
                 .load(news.image)
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_round_star_24)
+                .placeholder(R.color.white)
+                .error(R.color.white)
                 .fit()
                 .centerInside()
                 // .centerCrop()

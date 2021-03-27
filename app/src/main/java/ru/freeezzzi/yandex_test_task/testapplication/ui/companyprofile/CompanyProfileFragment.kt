@@ -41,15 +41,19 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
     )
 
     private val companyProfileAdapter = CompanyProfileViewPagerAdapter(
+        // CANDLE TAB
         getCandleListener = { resolution, from, to -> viewModel.getStockCandle(
             resolution = resolution,
             from = from,
             to = to
         ) },
         getPrices = ::getPrices,
+        // NEWS TAB
         newsListAdapter,
         getNewsListener = { from, to, clearList -> viewModel.getNews(from, to, clearList) },
+        // FORECASTS TAB
         getRecommendationTrends = { viewModel.getRecommendationTrends() },
+        // PEERS TAB
         peersAdapter,
         peersRefreshListener = {
             viewModel.findPeers()
@@ -221,6 +225,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
                         )
                         binding.horizontalScrollView.smoothScrollTo(binding.chartTextview.left, 0)
                         binding.appbar.setExpanded(true, true)
+                        companyProfileAdapter.setSummaryData(viewModel.companyProfile ?: CompanyProfile())
                     }
                     2 -> { // news
                         setTextInTitles(

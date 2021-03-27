@@ -31,7 +31,7 @@ data class CompanyProfileEntity(
     @ColumnInfo(name = "logo") val logo: String?,
     @ColumnInfo(name = "isFavorite") val isFavorite: Boolean,
     @ColumnInfo(name = "currentPrice") val currentPrice: Float,
-    @ColumnInfo(name = "previousPrice") val previousPrice: Float
+    @ColumnInfo(name = "previousPrice") val previousPrice: Float,
 )
 
 fun CompanyProfileEntity.toCompanyProfile(): CompanyProfile =
@@ -46,3 +46,17 @@ fun CompanyProfileEntity.toCompanyProfile(): CompanyProfile =
             pc = previousPrice
         )
     )
+
+/*
+@ColumnInfo(name = "ipo") val ipo: String?,
+@ColumnInfo(name = "marketCapitalization") val marketCapitalization: Float?,
+@ColumnInfo(name = "shareOutstanding") val shareOutstanding: Float?,
+@ColumnInfo(name = "phone") val phone: String?,
+@ColumnInfo(name = "weburl") val weburl: String?,
+@ColumnInfo(name = "finnhubIndustry") val finnhubIndustry: String?,
+ipo = ipo,
+marketCapitalization = marketCapitalization,
+shareOutstanding = shareOutstanding,
+phone = phone,
+weburl = weburl,
+finnhubIndustry = finnhubIndustry,*/

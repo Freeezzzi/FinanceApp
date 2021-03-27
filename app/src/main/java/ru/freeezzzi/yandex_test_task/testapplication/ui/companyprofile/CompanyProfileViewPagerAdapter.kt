@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.freeezzzi.yandex_test_task.testapplication.R
+import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.RecommendationTrend
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.StockCandle
 import ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.candletab.CandleViewHolder
@@ -20,10 +21,10 @@ import java.lang.IllegalArgumentException
 class CompanyProfileViewPagerAdapter(
     // Candle tab
     private val getCandleListener: (resolution: String, from: Long, to: Long) -> Unit,
-    private val getPrices: ()->Pair<String,String>,
+    private val getPrices: () -> Pair<String, String>,
     // news tab
     private val newsListAdapter: NewsListAdapter,
-    private val getNewsListener: (from: String, to: String, clearList:Boolean) -> Unit,
+    private val getNewsListener: (from: String, to: String, clearList: Boolean) -> Unit,
     // Forecasts tab
     private val getRecommendationTrends: () -> Unit,
     // Peers tab
@@ -32,6 +33,7 @@ class CompanyProfileViewPagerAdapter(
     private val peersScrollListener: RecyclerView.OnScrollListener,
 ) : RecyclerView.Adapter<ViewPagerViewHodler>() {
     private var candleTab: CandleViewHolder? = null
+    private var summaryTab: SummaryViewHolder? = null
     private var newsTab: NewsTabViewHolder? = null
     private var peersTab: AllTabViewHodler? = null
     private var forecastsTab: ForecastsViewHolder? = null
@@ -43,9 +45,12 @@ class CompanyProfileViewPagerAdapter(
                     R.layout.candle_fragment, parent, false))
                 candleTab as CandleViewHolder
             }
-            VIEW_TYPE_SUMMARY -> SummaryViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.summary_fragment, parent, false))
+            VIEW_TYPE_SUMMARY -> {
+                summaryTab =  SummaryViewHolder(
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.summary_fragment, parent, false))
+                summaryTab as SummaryViewHolder
+            }
             VIEW_TYPE_NEWS -> {
                 newsTab = NewsTabViewHolder(
                     LayoutInflater.from(parent.context).inflate(
@@ -112,6 +117,10 @@ class CompanyProfileViewPagerAdapter(
 
     fun candleSetRefreshing(state: Boolean) {
         candleTab?.setRefreshing(state)
+    }
+
+    fun setSummaryData(companyProfile: CompanyProfile) {
+        summaryTab?.setData(companyProfile)
     }
 
     fun newsSetRefreshing(state: Boolean) {
