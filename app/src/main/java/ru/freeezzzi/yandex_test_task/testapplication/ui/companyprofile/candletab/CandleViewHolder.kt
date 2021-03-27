@@ -70,7 +70,8 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
                     stockCandle?.h?.get(i) ?: 0F,
                     stockCandle?.l?.get(i) ?: 0F,
                     stockCandle?.o?.get(i) ?: 0F,
-                    stockCandle?.c?.get(i) ?: 0F
+                    stockCandle?.c?.get(i) ?: 0F,
+                    stockCandle.t?.get(i) ?: " "
                 )
             )
         }
