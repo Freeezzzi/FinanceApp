@@ -157,10 +157,10 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
             binding.searchBarEditText.setText("")
             return
         }
+        viewModel.saveToRecentQueries(symbol)
         binding.searchViewpager.setCurrentItem(1, true) // переключим вкладку на список компаний
         viewModel.searchAction(symbol) // отправим запрос на сервер
         viewModel.searchInFavourites(symbol) // найдем такой тикер в favourites
-        viewModel.saveToRecentQueries(symbol)
     }
 
     /**
