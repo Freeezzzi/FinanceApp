@@ -57,7 +57,7 @@ abstract class CompaniesViewModel constructor(
 
         viewModelScope.launch {
             // Проверим есть ли уже в сптске данные
-            var companiesList: MutableList<CompanyProfile> = mutableListOf<CompanyProfile>()
+            var companiesList: MutableList<CompanyProfile> = mutableListOf()
             when (mutableCompanies.value) {
                 is ViewState.Success -> companiesList = (mutableCompanies.value as ViewState.Success<MutableList<CompanyProfile>>).result
                 is ViewState.Error -> companiesList = (mutableCompanies.value as ViewState.Error<MutableList<CompanyProfile>, String?>).oldvalue
@@ -82,7 +82,7 @@ abstract class CompaniesViewModel constructor(
                                 }
 
                                 // getQuote(companyProfile)
-                                when (val quoteResult = companiesRepository.getCompanyQuote(companyProfile.ticker ?: "")) {
+                                when (val quoteResult = companiesRepository.getCompanyQuote(companyProfile.ticker)) {
                                     is OperationResult.Success -> companyProfile.quote = quoteResult.data
                                     is OperationResult.Error -> companyProfile.quote = null
                                 }

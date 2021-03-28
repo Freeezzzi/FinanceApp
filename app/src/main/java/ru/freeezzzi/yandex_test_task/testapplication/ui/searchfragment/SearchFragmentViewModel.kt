@@ -2,7 +2,6 @@ package ru.freeezzzi.yandex_test_task.testapplication.ui.searchfragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch

@@ -59,6 +59,57 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
     override fun initViews(view: View) {
         super.initViews(view)
 
+        setUpClickListeners()
+
+        // observe
+        viewModel.companies.removeObservers(viewLifecycleOwner)
+        viewModel.companies.observe(viewLifecycleOwner, this::updateAllAdapter)
+        viewModel.tickersList.observe(viewLifecycleOwner, this::updateTickers)
+        viewModel.localCompanies.observe(viewLifecycleOwner, this::updateFavouritesAdapter)
+    }
+
+    private fun updateFavouritesAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
+        when (companies) {
+            is ViewState.Success -> {
+                quotesFavouritesAdapter.submitList(companies.result) }
+            // is ViewState.Loading ->
+            is ViewState.Error -> {
+                quotesFavouritesAdapter.submitList(companies.oldvalue)
+                showError(companies.result ?: "Couldn't load companies", binding.root)
+            }
+        }
+    }
+
+    private fun updateAllAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
+        when (companies) {
+            is ViewState.Success -> {
+                quotesAllAdapter.submitList(companies.result)
+                viewPagerAdapter.setRefreshing(false)
+            }
+            is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
+            is ViewState.Error -> {
+                quotesAllAdapter.submitList(companies.oldvalue)
+                showError(companies.result ?: "Couldn't load companies", binding.root)
+                viewPagerAdapter.setRefreshing(false)
+            }
+        }
+    }
+
+    private fun updateTickers(tickers: ViewState<List<String>, String?>) {
+        when (tickers) {
+            is ViewState.Success -> {
+                viewModel.clearCompaniesList()
+                viewModel.getCompanies(10) // В первый раз загружаем 10 компаний
+            }
+            is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
+            is ViewState.Error -> {
+                showError(tickers.result ?: "Couldn't load tickers", binding.root)
+                viewPagerAdapter.setRefreshing(false)
+            }
+        }
+    }
+
+    private fun setUpClickListeners() {
         // ViewPager
         binding.tradesViewpager.adapter = viewPagerAdapter
         binding.tradesViewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -83,53 +134,6 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
         // set click listener on searchView
         binding.searchCardview.setOnClickListener { viewModel.searchAction() }
         binding.tradesListEdittext.setOnClickListener { viewModel.searchAction() }
-
-        // observe
-        viewModel.companies.removeObservers(viewLifecycleOwner)
-        viewModel.companies.observe(viewLifecycleOwner, this::updateAllAdapter)
-        viewModel.tickersList.observe(viewLifecycleOwner, this::updateTickers)
-        viewModel.localCompanies.observe(viewLifecycleOwner, this::updateFavouritesAdapter)
-    }
-
-    fun updateFavouritesAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
-        when (companies) {
-            is ViewState.Success -> {
-                quotesFavouritesAdapter.submitList(companies.result) }
-            // is ViewState.Loading ->
-            is ViewState.Error -> {
-                quotesFavouritesAdapter.submitList(companies.oldvalue)
-                showError(companies.result ?: "Couldn't load companies", binding.root)
-            }
-        }
-    }
-
-    fun updateAllAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
-        when (companies) {
-            is ViewState.Success -> {
-                quotesAllAdapter.submitList(companies.result)
-                viewPagerAdapter.setRefreshing(false)
-            }
-            is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
-            is ViewState.Error -> {
-                quotesAllAdapter.submitList(companies.oldvalue)
-                showError(companies.result ?: "Couldn't load companies", binding.root)
-                viewPagerAdapter.setRefreshing(false)
-            }
-        }
-    }
-
-    fun updateTickers(tickers: ViewState<List<String>, String?>) {
-        when (tickers) {
-            is ViewState.Success -> {
-                viewModel.clearCompaniesList()
-                viewModel.getCompanies(10) // В первый раз загружаем 10 компаний
-            }
-            is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
-            is ViewState.Error -> {
-                showError(tickers.result ?: "Couldn't load tickers", binding.root)
-                viewPagerAdapter.setRefreshing(false)
-            }
-        }
     }
 
     fun setTextInTitles(currentTextView: TextView, anotherTextView: TextView) {
@@ -148,26 +152,13 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            if (!recyclerView.canScrollVertically(-1)) {
-                onScrolledToTop()
-            } else if (!recyclerView.canScrollVertically(1)) {
+            if (!recyclerView.canScrollVertically(1)) {
                 onScrolledToBottom()
-            } else if (dy < 0) {
-                onScrolledUp()
-            } else if (dy > 0) {
-                onScrolledDown()
             }
         }
 
-        fun onScrolledUp() {
-        }
 
-        fun onScrolledDown() {}
-
-        fun onScrolledToTop() {
-        }
-
-        fun onScrolledToBottom() {
+        private fun onScrolledToBottom() {
             viewModel.getCompanies(7)
         }
     }

@@ -46,14 +46,6 @@ class AppActivity : AppCompatActivity() {
         navigatorHolder.setNavigator(navigator)
     }
 
-    fun hideActionBar() {
-        getSupportActionBar()?.hide()
-    }
-
-    fun showActionBar() {
-        getSupportActionBar()?.show()
-    }
-
     override fun onBackPressed() {
         currentFragment?.onBackPressed() ?: super.onBackPressed()
     }

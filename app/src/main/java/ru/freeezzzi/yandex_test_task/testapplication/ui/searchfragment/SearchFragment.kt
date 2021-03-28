@@ -26,9 +26,6 @@ import ru.freeezzzi.yandex_test_task.testapplication.ui.BaseFragment
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
 import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAdapter
 
-// TODO прятать клавиатуру при нажатии
-// TODO сделать кнопки больше, а иконки оставить того же размера
-// TODO переделать сообщения в snackbar
 class SearchFragment : BaseFragment(R.layout.search_fragment) {
     private val binding by viewBinding(SearchFragmentBinding::bind)
 
@@ -77,68 +74,18 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
         super.initViews(view)
 
         viewModel.getRecentQueries()
-
         // cardview bindings
-        binding.searchBarArrowIcon.setOnClickListener { onBackPressed() }
-        binding.searchBarDeleteIcon.setOnClickListener {
-            binding.searchBarEditText.setText("")
-        }
-        binding.searchBarEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun afterTextChanged(p0: Editable?) {
-                if (p0?.length ?: 0 > 0 && binding.searchBarDeleteIcon.visibility == View.INVISIBLE) {
-                    binding.searchBarDeleteIcon.visibility = View.VISIBLE
-                } else if (p0?.length ?: 0 == 0) {
-                    binding.searchBarDeleteIcon.visibility = View.INVISIBLE
-                }
-            }
-        })
-
+        setUpCardView()
         // ViewPager
-        binding.searchViewpager.adapter = viewPagerAdapter
-        binding.searchViewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                when (position) {
-                    0 -> setTextInTitles(binding.queriesTextview, binding.stocksTextview2, binding.favouritesTextview2)
-                    1 -> setTextInTitles(binding.stocksTextview2, binding.favouritesTextview2, binding.queriesTextview)
-                    2 -> setTextInTitles(binding.favouritesTextview2, binding.stocksTextview2, binding.queriesTextview)
-                }
-                super.onPageSelected(position)
-            }
-        })
-
+        setUpViewPager()
         // set click listeners on labels
-        binding.queriesTextview.setOnClickListener {
-            binding.searchViewpager.setCurrentItem(0, true)
-        }
-        binding.stocksTextview2.setOnClickListener {
-            binding.searchViewpager.setCurrentItem(1, true)
-        }
-        binding.favouritesTextview2.setOnClickListener {
-            binding.searchViewpager.setCurrentItem(2, true)
-        }
-        binding.searchBarEditText.setOnKeyListener { view, i, keyEvent ->
-            if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
-                    (i == KeyEvent.KEYCODE_ENTER)
-            ) {
-                // Perform action on key press
-                    performSearch()
-                    true
-            }
-            false
-        }
-
+        setUpLabels()
         // observe
-        viewModel.companies.observe(viewLifecycleOwner, this::updateAllAdapter)
-        viewModel.tickersList.observe(viewLifecycleOwner, this::updateTickers)
-        viewModel.localCompanies.observe(viewLifecycleOwner, this::updateFavouritesAdapter)
-        viewModel.queriesList.observe(viewLifecycleOwner, this::updateQueries)
+        setUpObservers()
     }
 
-    fun updateFavouritesAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
+
+    private fun updateFavouritesAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
         when (companies) {
             is ViewState.Success -> {
                 quotesFavouritesAdapter.submitList(companies.result)
@@ -151,7 +98,7 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
         }
     }
 
-    fun updateAllAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
+    private fun updateAllAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
         when (companies) {
             is ViewState.Success -> {
                 quotesAllAdapter.submitList(companies.result)
@@ -166,7 +113,7 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
         }
     }
 
-    fun updateTickers(tickers: ViewState<List<String>, String?>) {
+    private fun updateTickers(tickers: ViewState<List<String>, String?>) {
         when (tickers) {
             is ViewState.Success -> {
                 viewModel.clearCompaniesList()
@@ -181,7 +128,7 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
         }
     }
 
-    fun updateQueries(queries: ViewState<List<String>, String?>) {
+    private fun updateQueries(queries: ViewState<List<String>, String?>) {
         when (queries) {
             is ViewState.Success -> {
                 viewPagerAdapter.submitQueries(queries.result)
@@ -203,7 +150,7 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
         anotherTextView2.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18F)
     }
 
-    fun performSearch() {
+    private fun performSearch() {
         view?.hideKeyboard()
         val symbol = binding.searchBarEditText.text.toString()
         if (symbol.isBlank()) {
@@ -216,30 +163,82 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
         viewModel.saveToRecentQueries(symbol)
     }
 
+    /**
+     * UI
+     */
+    private fun setUpObservers() {
+        viewModel.companies.observe(viewLifecycleOwner, this::updateAllAdapter)
+        viewModel.tickersList.observe(viewLifecycleOwner, this::updateTickers)
+        viewModel.localCompanies.observe(viewLifecycleOwner, this::updateFavouritesAdapter)
+        viewModel.queriesList.observe(viewLifecycleOwner, this::updateQueries)
+    }
+
+    private fun setUpLabels() {
+        binding.queriesTextview.setOnClickListener {
+            binding.searchViewpager.setCurrentItem(0, true)
+        }
+        binding.stocksTextview2.setOnClickListener {
+            binding.searchViewpager.setCurrentItem(1, true)
+        }
+        binding.favouritesTextview2.setOnClickListener {
+            binding.searchViewpager.setCurrentItem(2, true)
+        }
+        binding.searchBarEditText.setOnKeyListener { view, i, keyEvent ->
+            if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (i == KeyEvent.KEYCODE_ENTER)
+            ) {
+                // Perform action on key press
+                performSearch()
+                true
+            }
+            false
+        }
+    }
+
+    private fun setUpViewPager() {
+        binding.searchViewpager.adapter = viewPagerAdapter
+        binding.searchViewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                when (position) {
+                    0 -> setTextInTitles(binding.queriesTextview, binding.stocksTextview2, binding.favouritesTextview2)
+                    1 -> setTextInTitles(binding.stocksTextview2, binding.favouritesTextview2, binding.queriesTextview)
+                    2 -> setTextInTitles(binding.favouritesTextview2, binding.stocksTextview2, binding.queriesTextview)
+                }
+                super.onPageSelected(position)
+            }
+        })
+    }
+
+    private fun setUpCardView() {
+        binding.searchBarArrowIcon.setOnClickListener { onBackPressed() }
+        binding.searchBarDeleteIcon.setOnClickListener {
+            binding.searchBarEditText.setText("")
+        }
+        binding.searchBarEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(p0: Editable?) {
+                if (p0?.length ?: 0 > 0 && binding.searchBarDeleteIcon.visibility == View.INVISIBLE) {
+                    binding.searchBarDeleteIcon.visibility = View.VISIBLE
+                } else if (p0?.length ?: 0 == 0) {
+                    binding.searchBarDeleteIcon.visibility = View.INVISIBLE
+                }
+            }
+        })
+    }
+
     inner class OnVerticalScrollListener : RecyclerView.OnScrollListener() {
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            if (!recyclerView.canScrollVertically(-1)) {
-                onScrolledToTop()
-            } else if (!recyclerView.canScrollVertically(1)) {
+            if (!recyclerView.canScrollVertically(1)) {
                 onScrolledToBottom()
-            } else if (dy < 0) {
-                onScrolledUp()
-            } else if (dy > 0) {
-                onScrolledDown()
             }
         }
 
-        fun onScrolledUp() {
-        }
-
-        fun onScrolledDown() {}
-
-        fun onScrolledToTop() {
-        }
-
-        fun onScrolledToBottom() {
+        private fun onScrolledToBottom() {
             viewModel.getCompanies(7)
         }
     }

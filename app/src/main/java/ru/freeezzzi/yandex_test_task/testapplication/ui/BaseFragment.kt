@@ -12,7 +12,7 @@ abstract class BaseFragment(layoutResource: Int) : Fragment(layoutResource) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews(view)
-        (activity as AppCompatActivity)?.supportActionBar?.hide()
+        (activity as AppCompatActivity).supportActionBar?.hide()
     }
 
     open fun initViews(view: View) {}

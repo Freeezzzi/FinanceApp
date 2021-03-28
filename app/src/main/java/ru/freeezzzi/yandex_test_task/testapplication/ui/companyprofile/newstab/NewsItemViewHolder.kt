@@ -5,7 +5,6 @@ import com.squareup.picasso.Picasso
 import ru.freeezzzi.yandex_test_task.testapplication.R
 import ru.freeezzzi.yandex_test_task.testapplication.databinding.NewsItemBinding
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.News
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 class NewsItemViewHolder(
@@ -21,7 +20,7 @@ class NewsItemViewHolder(
         setPicture(news)
     }
 
-    fun setText(news: News) {
+    private fun setText(news: News) {
         binding.newsSource.text = news.source
         binding.newsSummary.text = news.summary
         binding.newsTitle.text = news.headline
@@ -30,7 +29,7 @@ class NewsItemViewHolder(
 
     private fun toTimeAgoFormat(time: Long): String {
         // Определим какие промежутки мы хотим отображать
-        val times: List<Long> = Arrays.asList(
+        val times: List<Long> = listOf(
             TimeUnit.DAYS.toSeconds(365),
             TimeUnit.DAYS.toSeconds(30),
             TimeUnit.DAYS.toSeconds(7),
@@ -39,27 +38,27 @@ class NewsItemViewHolder(
             TimeUnit.MINUTES.toSeconds(1),
             TimeUnit.SECONDS.toSeconds(1)
         )
-        val timesString = Arrays.asList("year", "month", "week", "day", "hour", "minute", "second")
+        val timesString = listOf("year", "month", "week", "day", "hour", "minute", "second")
 
-        var res = StringBuffer()
+        val res = StringBuffer()
 
-        for (i in 0..(times.size - 1)) {
-            val current = times.get(i)
+        for (i in times.indices) {
+            val current = times[i]
             val temp = time / current
             if (temp> 0) {
-                res.append(temp).append(" ").append(timesString.get(i)).append(if (temp > 1L) "s " else " ").append("ago")
+                res.append(temp).append(" ").append(timesString[i]).append(if (temp > 1L) "s " else " ").append("ago")
                 break
             }
         }
 
-        if ("".equals(res.toString())) {
-            return "0 seconds ago"
+        return if ("" == res.toString()) {
+            "0 seconds ago"
         } else {
-            return res.toString()
+            res.toString()
         }
     }
 
-    fun setPicture(news: News) {
+    private fun setPicture(news: News) {
         if (news.image.isNullOrEmpty()) {
             binding.newsImage.setImageResource(R.color.white)
         } else {

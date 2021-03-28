@@ -62,7 +62,7 @@ class NewsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
             }
         }
 
-        fun onScrolledToBottom() {
+        private fun onScrolledToBottom() {
             invokeGetNews(false)
         }
     }

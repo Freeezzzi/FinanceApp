@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.freeezzzi.yandex_test_task.testapplication.R
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
 import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAdapter
 import java.lang.IllegalArgumentException
 

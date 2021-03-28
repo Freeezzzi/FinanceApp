@@ -18,7 +18,7 @@ class ChipsTabViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
     ) {
         poplarQueries.forEach {
             val chip = Chip(itemView.context)
-            chip.setText(it)
+            chip.text = it
             chip.setChipBackgroundColorResource(R.color.light_blue)
             chip.setEnsureMinTouchTargetSize(false)
             chip.setOnClickListener {
