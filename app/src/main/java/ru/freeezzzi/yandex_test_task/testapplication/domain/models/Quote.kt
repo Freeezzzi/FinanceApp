@@ -1,6 +1,5 @@
 package ru.freeezzzi.yandex_test_task.testapplication.domain.models
 
-import com.squareup.moshi.Json
 import java.io.Serializable
 
 /**

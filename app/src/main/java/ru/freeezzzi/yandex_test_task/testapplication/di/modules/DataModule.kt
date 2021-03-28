@@ -13,8 +13,4 @@ internal abstract class DataModule {
     @Binds
     @Singleton
     abstract fun providesCompaniesRepository(companiesRepositoryImpl: CompaniesRepositoryImpl): CompaniesRepository
-
-    /*@Binds
-    @Singleton
-    abstract fun providesCompanyProfileDao(database: FavoriteCompaniesDatabase): CompanyProfileDao //= database.companyProfileDao()*/
 }

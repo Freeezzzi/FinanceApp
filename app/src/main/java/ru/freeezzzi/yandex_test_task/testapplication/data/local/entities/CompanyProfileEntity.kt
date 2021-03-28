@@ -8,9 +8,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.domain.models.Quote
 
 /**
  *
- * @param country Country of company's headquarter.
  * @param currency Currency used in company filings.
- * @param exchange Listed exchange.
  * @param name Company name.
  * @param ticker Company symbol/ticker as used on the listed exchange.
  * @param ipo IPO date.
@@ -59,16 +57,3 @@ fun CompanyProfileEntity.toCompanyProfile(): CompanyProfile =
         )
     )
 
-/*
-@ColumnInfo(name = "ipo") val ipo: String?,
-@ColumnInfo(name = "marketCapitalization") val marketCapitalization: Float?,
-@ColumnInfo(name = "shareOutstanding") val shareOutstanding: Float?,
-@ColumnInfo(name = "phone") val phone: String?,
-@ColumnInfo(name = "weburl") val weburl: String?,
-@ColumnInfo(name = "finnhubIndustry") val finnhubIndustry: String?,
-ipo = ipo,
-marketCapitalization = marketCapitalization,
-shareOutstanding = shareOutstanding,
-phone = phone,
-weburl = weburl,
-finnhubIndustry = finnhubIndustry,*/
