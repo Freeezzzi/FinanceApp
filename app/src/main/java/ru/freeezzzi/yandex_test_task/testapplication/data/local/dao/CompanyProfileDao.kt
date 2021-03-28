@@ -25,12 +25,12 @@ interface CompanyProfileDao {
     @Query("SELECT * FROM Queries")
     suspend fun getQueries(): List<RecentQueryEntity>
 
-    @Query("SELECT * FROM Favorite_companies WHERE ticker LIKE :symbol")
+    @Query("SELECT * FROM Favorite_companies WHERE ticker LIKE :symbol OR name LIKE :symbol")
     suspend fun findInFavouritesCompanies(symbol: String): List<CompanyProfileEntity>
 
     /**
      * @param symbol для поиска частичного совпадения(например символ внутри тикера компании, а не весь тикер) при передаче аргумента передать %symbol%
      */
-    @Query("SELECT EXISTS (SELECT 1 FROM FAVORITE_COMPANIES WHERE ticker = :symbol OR name = :symbol)")
+    @Query("SELECT EXISTS (SELECT 1 FROM FAVORITE_COMPANIES WHERE ticker = :symbol)")
     suspend fun isCompanyInFavorite(symbol: String): Boolean
 }

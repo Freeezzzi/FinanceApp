@@ -39,7 +39,6 @@ data class CompanyProfile(
 
 fun CompanyProfile.toCompanyProfileEntity(): CompanyProfileEntity =
     CompanyProfileEntity(
-        //id = null, //генерируется само
         currency = currency,
         name = name,
         ticker = ticker!!,
@@ -47,4 +46,10 @@ fun CompanyProfile.toCompanyProfileEntity(): CompanyProfileEntity =
         isFavorite = isFavorite,
         currentPrice = (quote?.c ?: 0F),
         previousPrice = (quote?.pc ?: 0F),
+            ipo = ipo,
+            marketCapitalization = marketCapitalization,
+            shareOutstanding = shareOutstanding,
+            phone = phone,
+            weburl = weburl,
+            finnhubIndustry = finnhubIndustry,
         )
