@@ -84,6 +84,15 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
         setUpObservers()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        //При вохврате из другого фрагмента обновим список
+        if (binding.searchBarEditText.text.toString().isNotBlank()){
+            viewModel.searchInFavourites(binding.searchBarEditText.text.toString())
+        }
+    }
+
 
     private fun updateFavouritesAdapter(companies: ViewState<List<CompanyProfile>, String?>) {
         when (companies) {
