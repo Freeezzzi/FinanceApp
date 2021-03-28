@@ -76,8 +76,8 @@ class SearchFragmentViewModel @Inject constructor(
     fun saveToRecentQueries(string: String) {
         viewModelScope.launch {
             database.companyProfileDao().insert(RecentQueryEntity(string))
+            getRecentQueries()
         }
-        getRecentQueries()
     }
 
     fun exitFragment() {
