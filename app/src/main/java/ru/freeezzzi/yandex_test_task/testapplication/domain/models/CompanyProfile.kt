@@ -35,21 +35,29 @@ data class CompanyProfile(
     val finnhubIndustry: String? = null,
     var isFavorite: Boolean = false,
     @Transient var quote: Quote? = null
-) : Serializable
+) : Serializable{
 
-fun CompanyProfile.toCompanyProfileEntity(): CompanyProfileEntity =
-    CompanyProfileEntity(
-        currency = currency,
-        name = name,
-        ticker = ticker!!,
-        logo = logo,
-        isFavorite = isFavorite,
-        currentPrice = (quote?.c ?: 0F),
-        previousPrice = (quote?.pc ?: 0F),
-            ipo = ipo,
-            marketCapitalization = marketCapitalization,
-            shareOutstanding = shareOutstanding,
-            phone = phone,
-            weburl = weburl,
-            finnhubIndustry = finnhubIndustry,
-        )
+        override fun equals(other: Any?): Boolean{
+                if (other == null) return false;
+                if (other !is CompanyProfile) return false
+                if (this.ticker == other.ticker) return true
+                return false
+        }
+
+        fun toCompanyProfileEntity(): CompanyProfileEntity =
+                CompanyProfileEntity(
+                        currency = currency,
+                        name = name,
+                        ticker = ticker!!,
+                        logo = logo,
+                        isFavorite = isFavorite,
+                        currentPrice = (quote?.c ?: 0F),
+                        previousPrice = (quote?.pc ?: 0F),
+                        ipo = ipo,
+                        marketCapitalization = marketCapitalization,
+                        shareOutstanding = shareOutstanding,
+                        phone = phone,
+                        weburl = weburl,
+                        finnhubIndustry = finnhubIndustry,
+                )
+}

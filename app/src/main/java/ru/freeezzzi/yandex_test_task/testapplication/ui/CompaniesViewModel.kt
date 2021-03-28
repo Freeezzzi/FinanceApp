@@ -8,7 +8,6 @@ import kotlinx.coroutines.launch
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompaniesDatabase
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.toCompanyProfileEntity
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
 
 /**
@@ -46,6 +45,29 @@ abstract class CompaniesViewModel constructor(
                     database.companyProfileDao().insert(companyProfile.toCompanyProfileEntity())
                 }
             }
+        }
+    }
+
+    /**
+     * Если такая компания(equals) содержится в списке компаний, то ее значение isFavourite устанавливается равным state
+     */
+    fun setFavouriteFlagInList(companyProfile: CompanyProfile, state:Boolean){
+        viewModelScope.launch {
+            //Добавим в список компаний новую или удалим
+            var companiesList: MutableList<CompanyProfile> = mutableListOf()
+            when (mutableCompanies.value) {
+                is ViewState.Success -> companiesList = (mutableCompanies.value as ViewState.Success<MutableList<CompanyProfile>>).result
+                is ViewState.Error -> companiesList = (mutableCompanies.value as ViewState.Error<MutableList<CompanyProfile>, String?>).oldvalue
+            }
+            // Здесь приходится копировать лист, т.к. если ссылка останется той же то submitList адаптера посчитает что они одинаковые и не обновит RecyclerView
+            companiesList = companiesList.toMutableList()
+
+            val index = companiesList.indexOf(companyProfile)
+            if (index != -1){
+                companiesList[index].isFavorite = state
+            }
+
+            mutableCompanies.value = ViewState.success(companiesList)
         }
     }
 

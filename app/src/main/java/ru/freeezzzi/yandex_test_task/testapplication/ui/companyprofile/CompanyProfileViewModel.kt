@@ -45,18 +45,20 @@ class CompanyProfileViewModel @Inject constructor(
     /**
      * CURRENT PROFILE ADD TO FAVORITES
      */
-    fun addToFavorites() {
+    override fun addToFavorites(companyProfile: CompanyProfile) {
         viewModelScope.launch {
-            when (companyProfile!!.isFavorite) {
+            when (companyProfile.isFavorite) {
                 true -> { // Нужно удалить
-                    database.companyProfileDao().delete(companyProfile!!.toCompanyProfileEntity())
-                    companyProfile!!.isFavorite = false
+                    database.companyProfileDao().delete(companyProfile.toCompanyProfileEntity())
+                    companyProfile.isFavorite = false
                 }
                 false -> {
-                    companyProfile!!.isFavorite = true
-                    database.companyProfileDao().insert(companyProfile!!.toCompanyProfileEntity())
+                    companyProfile.isFavorite = true
+                    database.companyProfileDao().insert(companyProfile.toCompanyProfileEntity())
                 }
             }
+            //Обновим компанию в листе компаний с сервера
+            super.setFavouriteFlagInList(companyProfile, companyProfile.isFavorite)
         }
     }
 

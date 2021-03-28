@@ -11,10 +11,8 @@ import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.RecentQ
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.toCompanyProfile
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.toCompanyProfileEntity
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
 import ru.freeezzzi.yandex_test_task.testapplication.ui.CompaniesViewModel
-import ru.freeezzzi.yandex_test_task.testapplication.ui.SingleLiveEvent
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
 import javax.inject.Inject
 
@@ -57,7 +55,11 @@ class SearchFragmentViewModel @Inject constructor(
                     database.companyProfileDao().insert(companyProfile.toCompanyProfileEntity())
                 }
             }
+            //сохраним новый список компаний
             mutableLocalCompanies.value = ViewState.success(companiesList)
+
+            //Обновим компанию в листе компаний с сервера
+            super.setFavouriteFlagInList(companyProfile, companyProfile.isFavorite)
         }
     }
 

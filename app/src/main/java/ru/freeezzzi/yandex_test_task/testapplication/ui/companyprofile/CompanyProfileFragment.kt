@@ -288,7 +288,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
                 binding.profileStar.foreground = context?.getDrawable(R.drawable.ic_star_outline_24px)
             }
 
-            viewModel.addToFavorites()
+            viewModel.addToFavorites(viewModel.companyProfile!!)
         }
         binding.profileArrowback.setOnClickListener { onBackPressed() }
 

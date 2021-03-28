@@ -11,7 +11,6 @@ import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompanie
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.toCompanyProfile
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
-import ru.freeezzzi.yandex_test_task.testapplication.domain.models.toCompanyProfileEntity
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
 import ru.freeezzzi.yandex_test_task.testapplication.ui.CompaniesViewModel
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
@@ -38,7 +37,7 @@ class QuotesListViewModel @Inject constructor(
      */
     override fun addToFavorites(companyProfile: CompanyProfile) {
         viewModelScope.launch {
-            //Добавим в список компаний новую или удалим
+            //скопируем лист компаний на устройстве, чтобы потом его заново отправить в адаптер
             var companiesList: MutableList<CompanyProfile> = mutableListOf()
             when (mutableLocalCompanies.value) {
                 is ViewState.Success -> companiesList = (mutableLocalCompanies.value as ViewState.Success<MutableList<CompanyProfile>>).result
@@ -46,6 +45,8 @@ class QuotesListViewModel @Inject constructor(
             }
             // Здесь приходится копировать лист, т.к. если ссылка останется той же то submitList адаптера посчитает что они одинаковые и не обновит RecyclerView
             companiesList = companiesList.toMutableList()
+
+
             when (companyProfile.isFavorite) {
                 true -> { // Нужно удалить
                     database.companyProfileDao().delete(companyProfile.toCompanyProfileEntity())
@@ -59,6 +60,9 @@ class QuotesListViewModel @Inject constructor(
                 }
             }
             mutableLocalCompanies.value = ViewState.success(companiesList)
+
+            //Обновим компанию в листе компаний с сервера
+            super.setFavouriteFlagInList(companyProfile, companyProfile.isFavorite)
         }
     }
 
