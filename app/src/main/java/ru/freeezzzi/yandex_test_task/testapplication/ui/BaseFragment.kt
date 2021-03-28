@@ -25,9 +25,10 @@ abstract class BaseFragment(layoutResource: Int) : Fragment(layoutResource) {
             "HTTP 429 " -> errorMsg = getString(R.string.limit_error)
             "Tickers loading.Try again!" -> return // В этом случае просто ждем
             "HTTP 403 " -> errorMsg = getString(R.string.access_denied)
-            "Unable to resolve host \"finnhub.io\": No address associated with hostname" -> errorMsg = getString(R.string.internet_issues)
+            "Unable to resolve host \"finnhub.io\": No address associated with hostname" ->
+                errorMsg = getString(R.string.internet_issues)
         }
-        val snackbar = Snackbar.make(view, errorMsg, Snackbar.LENGTH_LONG)
+        val snackbar = Snackbar.make(view, "$errorMsg. Swipe to refresh", Snackbar.LENGTH_LONG)
         snackbar.view.setOnClickListener { snackbar.dismiss() }
         snackbar.show()
     }
