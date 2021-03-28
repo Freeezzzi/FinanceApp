@@ -31,6 +31,9 @@ abstract class CompaniesViewModel constructor(
 
     protected var numberOfCompanies = 0 // сколько компаний получили с сервера
 
+    /**
+     * Добавляет или удаляет переданную компанию в локальной бд
+     */
     open fun addToFavorites(companyProfile: CompanyProfile) {
         viewModelScope.launch {
             when (companyProfile.isFavorite) {

@@ -35,6 +35,32 @@ class SearchFragmentViewModel @Inject constructor(
     private var mutableQueriesList: MutableLiveData<ViewState<List<String>, String?>> = MutableLiveData<ViewState<List<String>, String?>>()
     val queriesList: LiveData<ViewState<List<String>, String?>> get() = mutableQueriesList
 
+    override fun addToFavorites(companyProfile: CompanyProfile) {
+        viewModelScope.launch {
+            //Добавим в список компаний новую или удалим
+            var companiesList: MutableList<CompanyProfile> = mutableListOf()
+            when (mutableLocalCompanies.value) {
+                is ViewState.Success -> companiesList = (mutableLocalCompanies.value as ViewState.Success<MutableList<CompanyProfile>>).result
+                is ViewState.Error -> companiesList = (mutableLocalCompanies.value as ViewState.Error<MutableList<CompanyProfile>, String?>).oldvalue
+            }
+            // Здесь приходится копировать лист, т.к. если ссылка останется той же то submitList адаптера посчитает что они одинаковые и не обновит RecyclerView
+            companiesList = companiesList.toMutableList()
+            when (companyProfile.isFavorite) {
+                true -> { // Нужно удалить
+                    database.companyProfileDao().delete(companyProfile.toCompanyProfileEntity())
+                    companiesList.remove(companyProfile)
+                    companyProfile.isFavorite = false
+                }
+                false -> { //Нужно добавить
+                    companyProfile.isFavorite = true
+                    companiesList.add(companyProfile)
+                    database.companyProfileDao().insert(companyProfile.toCompanyProfileEntity())
+                }
+            }
+            mutableLocalCompanies.value = ViewState.success(companiesList)
+        }
+    }
+
     fun searchAction(symbol: String) {
         if (symbol == "") return
         viewModelScope.launch {

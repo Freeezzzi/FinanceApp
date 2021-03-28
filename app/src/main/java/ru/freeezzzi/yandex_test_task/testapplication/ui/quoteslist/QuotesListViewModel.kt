@@ -11,6 +11,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.data.local.FavoriteCompanie
 import ru.freeezzzi.yandex_test_task.testapplication.data.local.entities.toCompanyProfile
 import ru.freeezzzi.yandex_test_task.testapplication.domain.OperationResult
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
+import ru.freeezzzi.yandex_test_task.testapplication.domain.models.toCompanyProfileEntity
 import ru.freeezzzi.yandex_test_task.testapplication.domain.repositories.CompaniesRepository
 import ru.freeezzzi.yandex_test_task.testapplication.ui.CompaniesViewModel
 import ru.freeezzzi.yandex_test_task.testapplication.ui.ViewState
@@ -32,10 +33,32 @@ class QuotesListViewModel @Inject constructor(
         router.navigateTo(Screens.searchFragment(), true)
     }
 
+    /**
+     * Добавляет
+     */
     override fun addToFavorites(companyProfile: CompanyProfile) {
         viewModelScope.launch {
-            super.addToFavorites(companyProfile)
-            showFavourites()
+            //Добавим в список компаний новую или удалим
+            var companiesList: MutableList<CompanyProfile> = mutableListOf()
+            when (mutableLocalCompanies.value) {
+                is ViewState.Success -> companiesList = (mutableLocalCompanies.value as ViewState.Success<MutableList<CompanyProfile>>).result
+                is ViewState.Error -> companiesList = (mutableLocalCompanies.value as ViewState.Error<MutableList<CompanyProfile>, String?>).oldvalue
+            }
+            // Здесь приходится копировать лист, т.к. если ссылка останется той же то submitList адаптера посчитает что они одинаковые и не обновит RecyclerView
+            companiesList = companiesList.toMutableList()
+            when (companyProfile.isFavorite) {
+                true -> { // Нужно удалить
+                    database.companyProfileDao().delete(companyProfile.toCompanyProfileEntity())
+                    companiesList.remove(companyProfile)
+                    companyProfile.isFavorite = false
+                }
+                false -> {
+                    companyProfile.isFavorite = true
+                    companiesList.add(companyProfile)
+                    database.companyProfileDao().insert(companyProfile.toCompanyProfileEntity())
+                }
+            }
+            mutableLocalCompanies.value = ViewState.success(companiesList)
         }
     }
 

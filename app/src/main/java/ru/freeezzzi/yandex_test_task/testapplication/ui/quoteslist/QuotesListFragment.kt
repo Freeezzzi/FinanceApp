@@ -60,6 +60,7 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
         super.initViews(view)
 
         setUpClickListeners()
+        viewModel.showFavourites()
 
         // observe
         viewModel.companies.removeObservers(viewLifecycleOwner)
