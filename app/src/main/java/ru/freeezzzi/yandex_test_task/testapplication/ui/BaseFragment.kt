@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import ru.freeezzzi.yandex_test_task.testapplication.R
 
 abstract class BaseFragment(layoutResource: Int) : Fragment(layoutResource) {
@@ -19,14 +20,15 @@ abstract class BaseFragment(layoutResource: Int) : Fragment(layoutResource) {
 
     open fun onBackPressed() {}
 
-    open fun showError(msg: String) {
+    open fun showError(msg: String, view: View) {
         var errorMsg = msg
         when (errorMsg) {
             "HTTP 429 " -> errorMsg = getString(R.string.limit_error)
             "Tickers loading.Try again!" -> return // В этом случае просто ждем
             "HTTP 403 " -> errorMsg = getString(R.string.access_denied)
         }
-        Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT)
-            .show()
+        val snackbar = Snackbar.make(view, errorMsg, Snackbar.LENGTH_LONG)
+        snackbar.view.setOnClickListener { snackbar.dismiss() }
+        snackbar.show()
     }
 }

@@ -146,7 +146,7 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
             // is ViewState.Loading ->
             is ViewState.Error -> {
                 quotesFavouritesAdapter.submitList(companies.oldvalue)
-                showError(companies.result ?: "Couldn't load companies from local storage")
+                showError(companies.result ?: "Couldn't load companies from local storage", binding.root)
             }
         }
     }
@@ -160,7 +160,7 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
             is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
             is ViewState.Error -> {
                 quotesAllAdapter.submitList(companies.oldvalue)
-                showError(companies.result ?: "Couldn't load companies")
+                showError(companies.result ?: "Couldn't load companies", binding.root)
                 viewPagerAdapter.setRefreshing(false)
             }
         }
@@ -175,7 +175,7 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
             }
             is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
             is ViewState.Error -> {
-                showError(tickers.result ?: "Couldn't load tickers")
+                showError(tickers.result ?: "Couldn't load tickers",binding.root)
                 viewPagerAdapter.setRefreshing(false)
             }
         }
@@ -187,7 +187,7 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
                 viewPagerAdapter.submitQueries(queries.result)
             }
             is ViewState.Error -> {
-                showError(queries.result ?: "Couldn't load recent queries")
+                showError(queries.result ?: "Couldn't load recent queries", binding.root)
             }
         }
     }

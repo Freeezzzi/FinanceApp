@@ -99,7 +99,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             }
             is ViewState.Loading -> companyProfileAdapter.candleSetRefreshing(true)
             is ViewState.Error -> {
-                showError(candle.result ?: "Couldn't load candle data")
+                showError(candle.result ?: "Couldn't load candle data", binding.root)
                 companyProfileAdapter.candleSetRefreshing(false)
             }
         }
@@ -139,7 +139,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             is ViewState.Loading -> companyProfileAdapter.newsSetRefreshing(true)
             is ViewState.Error -> {
                 newsListAdapter.submitList(news.oldvalue)
-                showError(news.result ?: "Couldn't load news")
+                showError(news.result ?: "Couldn't load news", binding.root)
                 companyProfileAdapter.newsSetRefreshing(false)
             }
         }
@@ -157,7 +157,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             is ViewState.Loading -> companyProfileAdapter.forecastsSetRefreshing(true)
             is ViewState.Error -> {
                 companyProfileAdapter.forecastsSetData(trends = trends.oldvalue)
-                showError(trends.result ?: "Couldn't load news")
+                showError(trends.result ?: "Couldn't load news", binding.root)
                 companyProfileAdapter.forecastsSetRefreshing(false)
             }
         }
@@ -174,7 +174,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             }
             is ViewState.Loading -> companyProfileAdapter.setPeersRefreshing(true)
             is ViewState.Error -> {
-                showError(tickers.result ?: "Couldn't load peers tickers")
+                showError(tickers.result ?: "Couldn't load peers tickers", binding.root)
                 companyProfileAdapter.setPeersRefreshing(false)
             }
         }
@@ -189,7 +189,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             is ViewState.Loading -> companyProfileAdapter.setPeersRefreshing(true)
             is ViewState.Error -> {
                 peersAdapter.submitList(peersList.oldvalue)
-                showError(peersList.result ?: "Couldn't load peers list")
+                showError(peersList.result ?: "Couldn't load peers list", binding.root)
                 companyProfileAdapter.setPeersRefreshing(false)
             }
         }

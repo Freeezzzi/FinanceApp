@@ -98,7 +98,7 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
             // is ViewState.Loading ->
             is ViewState.Error -> {
                 quotesFavouritesAdapter.submitList(companies.oldvalue)
-                showError(companies.result ?: "Couldn't load companies")
+                showError(companies.result ?: "Couldn't load companies", binding.root)
             }
         }
     }
@@ -112,7 +112,7 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
             is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
             is ViewState.Error -> {
                 quotesAllAdapter.submitList(companies.oldvalue)
-                showError(companies.result ?: "Couldn't load companies")
+                showError(companies.result ?: "Couldn't load companies", binding.root)
                 viewPagerAdapter.setRefreshing(false)
             }
         }
@@ -126,7 +126,7 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
             }
             is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
             is ViewState.Error -> {
-                showError(tickers.result ?: "Couldn't load tickers")
+                showError(tickers.result ?: "Couldn't load tickers", binding.root)
                 viewPagerAdapter.setRefreshing(false)
             }
         }
