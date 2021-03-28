@@ -97,15 +97,20 @@
     <TextView
         android:id="@+id/summary_weburl_value"
         style="@style/summary_values"
-        app:layout_constraintTop_toBottomOf="@+id/summary_sharedoutstanding_value"
+        android:autoLink="web"
+        android:textColorLink="#2196F3"
+        android:textIsSelectable="true"
         app:layout_constraintEnd_toEndOf="@id/guideline9"
-        tools:layout_editor_absoluteX="199dp" />
+        app:layout_constraintTop_toBottomOf="@+id/summary_sharedoutstanding_value" />
 
     <TextView
         android:id="@+id/summary_phone_value"
         style="@style/summary_values"
-        app:layout_constraintTop_toBottomOf="@+id/summary_weburl_value"
+        android:autoLink="phone"
+        android:linksClickable="true"
+        android:textColorLink="#2196F3"
+        android:textIsSelectable="true"
         app:layout_constraintEnd_toEndOf="@id/guideline9"
-        tools:layout_editor_absoluteX="199dp" />
+        app:layout_constraintTop_toBottomOf="@+id/summary_weburl_value" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

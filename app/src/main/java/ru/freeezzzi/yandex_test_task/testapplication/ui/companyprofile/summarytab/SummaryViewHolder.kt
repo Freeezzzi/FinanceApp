@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.TextView
 import ru.freeezzzi.yandex_test_task.testapplication.R
 import ru.freeezzzi.yandex_test_task.testapplication.domain.models.CompanyProfile
+import ru.freeezzzi.yandex_test_task.testapplication.extensions.getCurrencySymbol
 import ru.freeezzzi.yandex_test_task.testapplication.ui.tabs.ViewPagerViewHodler
 
 class SummaryViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
@@ -20,7 +21,7 @@ class SummaryViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         companyProfile.let {
             industry.text = it.finnhubIndustry
             ipo.text = it.ipo
-            capitalization.text = it.marketCapitalization.toString()
+            capitalization.text = "${it.currency?.getCurrencySymbol()}${it.marketCapitalization.toString()}"
             sharedOutstanding.text = it.shareOutstanding.toString()
             webUrl.text = it.weburl
             phone.text = it.phone
