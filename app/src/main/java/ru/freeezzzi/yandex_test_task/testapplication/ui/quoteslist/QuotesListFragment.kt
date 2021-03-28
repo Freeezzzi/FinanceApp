@@ -53,7 +53,6 @@ class QuotesListFragment : BaseFragment(R.layout.quotes_list_fragment) {
         super.onCreate(savedInstanceState)
 
         viewModel.getTickers()
-        viewModel.showFavourites()
     }
 
     override fun initViews(view: View) {
