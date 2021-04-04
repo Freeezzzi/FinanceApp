@@ -25,6 +25,7 @@ abstract class BaseFragment(layoutResource: Int) : Fragment(layoutResource) {
             "HTTP 429 " -> errorMsg = getString(R.string.limit_error)
             "Tickers loading.Try again!" -> return // В этом случае просто ждем
             "HTTP 403 " -> errorMsg = getString(R.string.access_denied)
+            "HTTP 502 " -> errorMsg = getString(R.string.error_502)
             "Unable to resolve host \"finnhub.io\": No address associated with hostname" ->
                 errorMsg = getString(R.string.internet_issues)
         }

@@ -47,7 +47,7 @@
     <string name="industry">Industry:</string>
     <string name="Reload">Reload</string>
     <string name="internet_issues">Check your internet connection</string>
-    <string name="swipe_to_refresh_message">Swipe to refresh</string>
+    <string name="swipe_to_refresh_message">Swipe down to refresh</string>
     <string name="plural_ending">s</string>
     <string name="load_error_msg">Couldn\'t load %1s</string>
     <string name="candle_data">candle data</string>
@@ -59,4 +59,5 @@
     <string name="hold">Hold</string>
     <string name="buy">Buy</string>
     <string name="strong_buy">Strong buy</string>
+    <string name="error_502">Api error</string>
 </resources>
