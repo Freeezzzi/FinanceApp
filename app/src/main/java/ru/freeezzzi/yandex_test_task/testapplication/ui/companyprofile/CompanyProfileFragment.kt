@@ -99,7 +99,8 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             }
             is ViewState.Loading -> companyProfileAdapter.candleSetRefreshing(true)
             is ViewState.Error -> {
-                showError(candle.result ?: "Couldn't load candle data", binding.root)
+                val errorMsg = getString(R.string.load_error_msg, getString(R.string.candle_data))
+                showError(candle.result ?: errorMsg, binding.root)
                 companyProfileAdapter.candleSetRefreshing(false)
             }
         }
@@ -109,7 +110,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
      * Возвращает пару значений: цену и изменение цены
      */
     fun getPrices(): Pair<String, String> {
-        var price = String.format("${viewModel.companyProfile?.currency?.getCurrencySymbol()}%.2f", viewModel.companyProfile?.quote?.c ?: 0F)
+        val price = String.format("${viewModel.companyProfile?.currency?.getCurrencySymbol()}%.2f", viewModel.companyProfile?.quote?.c ?: 0F)
 
         // В зависимости от изменения цены изменяем поле
         var priceChangeString = ""
@@ -120,7 +121,9 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             priceChangeString += "-"
             priceChange = -priceChange }
         // У некоторых компаний там 0, поэтмоу ставим в знаменатель единицу
-        val percentPriceChange = priceChange / (if (viewModel.companyProfile?.quote?.pc ?: 1.0F == 0F) 1.0F else viewModel.companyProfile?.quote?.pc ?: 1.0F) * 100
+        val percentPriceChange = priceChange /
+                (if (viewModel.companyProfile?.quote?.pc ?: 1.0F == 0F) 1.0F
+                else viewModel.companyProfile?.quote?.pc ?: 1.0F) * 100
 
         priceChangeString += viewModel.companyProfile?.currency?.getCurrencySymbol()
         priceChangeString += "%.2f (%.2f%%)"
@@ -139,7 +142,8 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             is ViewState.Loading -> companyProfileAdapter.newsSetRefreshing(true)
             is ViewState.Error -> {
                 newsListAdapter.submitList(news.oldvalue)
-                showError(news.result ?: "Couldn't load news", binding.root)
+                val errorMsg = getString(R.string.load_error_msg, getString(R.string.news_title))
+                showError(news.result ?: errorMsg, binding.root)
                 companyProfileAdapter.newsSetRefreshing(false)
             }
         }
@@ -157,7 +161,8 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             is ViewState.Loading -> companyProfileAdapter.forecastsSetRefreshing(true)
             is ViewState.Error -> {
                 companyProfileAdapter.forecastsSetData(trends = trends.oldvalue)
-                showError(trends.result ?: "Couldn't load news", binding.root)
+                val errorMsg = getString(R.string.load_error_msg, getString(R.string.recommendation_trend))
+                showError(trends.result ?: errorMsg, binding.root)
                 companyProfileAdapter.forecastsSetRefreshing(false)
             }
         }
@@ -166,7 +171,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
     /**
      * PEERS TAB
      */
-    fun updatePeersTickers(tickers: ViewState<List<String>, String?>) {
+    private fun updatePeersTickers(tickers: ViewState<List<String>, String?>) {
         when (tickers) {
             is ViewState.Success -> {
                 viewModel.clearCompaniesList()
@@ -174,7 +179,8 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             }
             is ViewState.Loading -> companyProfileAdapter.setPeersRefreshing(true)
             is ViewState.Error -> {
-                showError(tickers.result ?: "Couldn't load peers tickers", binding.root)
+                val errorMsg = getString(R.string.load_error_msg, getString(R.string.peers_tickers))
+                showError(tickers.result ?: errorMsg, binding.root)
                 companyProfileAdapter.setPeersRefreshing(false)
             }
         }
@@ -189,7 +195,8 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             is ViewState.Loading -> companyProfileAdapter.setPeersRefreshing(true)
             is ViewState.Error -> {
                 peersAdapter.submitList(peersList.oldvalue)
-                showError(peersList.result ?: "Couldn't load peers list", binding.root)
+                val errorMsg = getString(R.string.load_error_msg, getString(R.string.peers_list))
+                showError(peersList.result ?: errorMsg, binding.root)
                 companyProfileAdapter.setPeersRefreshing(false)
             }
         }
@@ -330,7 +337,7 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
             binding.root.context,
             Intent.createChooser(
                 newsIntent,
-                binding.root.context.getString(R.string.choose_news_opener)
+                getString(R.string.choose_news_opener)
             ),
             null
         )
@@ -340,27 +347,9 @@ class CompanyProfileFragment : BaseFragment(R.layout.company_profile_fragment) {
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            if (!recyclerView.canScrollVertically(-1)) {
-                onScrolledToTop()
-            } else if (!recyclerView.canScrollVertically(1)) {
-                onScrolledToBottom()
-            } else if (dy < 0) {
-                onScrolledUp()
-            } else if (dy > 0) {
-                onScrolledDown()
+            if (!recyclerView.canScrollVertically(1)) {
+                viewModel.getCompanies(7)
             }
-        }
-
-        fun onScrolledUp() {
-        }
-
-        fun onScrolledDown() {}
-
-        fun onScrolledToTop() {
-        }
-
-        fun onScrolledToBottom() {
-            viewModel.getCompanies(7)
         }
     }
 

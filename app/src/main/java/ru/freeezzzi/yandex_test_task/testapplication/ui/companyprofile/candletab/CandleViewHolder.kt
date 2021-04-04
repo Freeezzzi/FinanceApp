@@ -51,9 +51,8 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         refreshLayout?.setOnRefreshListener { getCandleFunc() }
 
         // здесь можно было бы понять какой чип по id чипа, но для краткости я использовал ту же функцию
-        chipGroup.setOnCheckedChangeListener { group, checkedId -> getCandleFunc() }
+        chipGroup.setOnCheckedChangeListener { _, _ -> getCandleFunc() }
 
-        val to = System.currentTimeMillis() / 1000
         getCandleFunc.invoke()
         val prices = getPrices.invoke()
         setPrices(prices.first, prices.second)
@@ -71,7 +70,7 @@ class CandleViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
             stockCandle.o?.size ?: 0, stockCandle.t?.size ?: 0)
         if (minValue == 0) return
         // Возьмем минимальную длину из полученных массивов(на всякий случай)
-        for (i in 0..(minValue - 1)) {
+        for (i in 0 until minValue) {
             valsCandleStick.add(
                 CandleEntry(
                     i.toFloat(),

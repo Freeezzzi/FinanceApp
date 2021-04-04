@@ -28,7 +28,8 @@ abstract class BaseFragment(layoutResource: Int) : Fragment(layoutResource) {
             "Unable to resolve host \"finnhub.io\": No address associated with hostname" ->
                 errorMsg = getString(R.string.internet_issues)
         }
-        val snackbar = Snackbar.make(view, "$errorMsg. Swipe to refresh", Snackbar.LENGTH_LONG)
+        val snackbar = Snackbar.make(view, "$errorMsg.\n${getString(R.string.swipe_to_refresh_message)}",
+                Snackbar.LENGTH_LONG)
         snackbar.view.setOnClickListener { snackbar.dismiss() }
         snackbar.show()
     }

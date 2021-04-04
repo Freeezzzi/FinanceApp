@@ -15,4 +15,26 @@
         <item>"Buy"</item>
         <item>"Strong buy"</item>
     </string-array>
+
+    <string-array name="news_ago_dimensions">
+        "year", "month", "week", "day", "hour", "minute", "second"
+        <item>"year"</item>
+        <item>"month"</item>
+        <item>"week"</item>
+        <item>"day"</item>
+        <item>"hour"</item>
+        <item>"minute"</item>
+        <item>"second"</item>
+    </string-array>
+
+    <string-array name="popular_queries_array">
+        <item>"Nvidia"</item>
+        <item>"Apple"</item>
+        <item>"Amazon"</item>
+        <item>"Google"</item>
+        <item>"Tesla"</item>
+        <item>"Alibaba"</item>
+        <item>"Facebook"</item>
+        <item>"Visa"</item>
+    </string-array>
 </resources>

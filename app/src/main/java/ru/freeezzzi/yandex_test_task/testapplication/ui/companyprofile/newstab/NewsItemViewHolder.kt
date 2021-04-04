@@ -1,5 +1,6 @@
 package ru.freeezzzi.yandex_test_task.testapplication.ui.companyprofile.newstab
 
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import ru.freeezzzi.yandex_test_task.testapplication.R
@@ -38,7 +39,9 @@ class NewsItemViewHolder(
             TimeUnit.MINUTES.toSeconds(1),
             TimeUnit.SECONDS.toSeconds(1)
         )
-        val timesString = listOf("year", "month", "week", "day", "hour", "minute", "second")
+        val timesString = binding.root.context.resources.getStringArray(R.array.news_ago_dimensions)
+        val agoString = binding.root.context.getString(R.string.ago)
+        val pluralEnding = binding.root.context.getString(R.string.plural_ending)
 
         val res = StringBuffer()
 
@@ -46,16 +49,12 @@ class NewsItemViewHolder(
             val current = times[i]
             val temp = time / current
             if (temp> 0) {
-                res.append(temp).append(" ").append(timesString[i]).append(if (temp > 1L) "s " else " ").append("ago")
+                res.append("$temp ${timesString[i]}${if (temp > 1L) pluralEnding else ""} $agoString")
                 break
             }
         }
 
-        return if ("" == res.toString()) {
-            "0 seconds ago"
-        } else {
-            res.toString()
-        }
+        return res.toString()
     }
 
     private fun setPicture(news: News) {
@@ -69,7 +68,6 @@ class NewsItemViewHolder(
                 .error(R.color.white)
                 .fit()
                 .centerInside()
-                // .centerCrop()
                 .into(binding.newsImage)
         }
     }

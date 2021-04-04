@@ -29,7 +29,7 @@ import ru.freeezzzi.yandex_test_task.testapplication.ui.quoteslist.QuotesListAda
 class SearchFragment : BaseFragment(R.layout.search_fragment) {
     private val binding by viewBinding(SearchFragmentBinding::bind)
 
-    private var popularQueries: List<String> = listOf("Nvidia", "Apple", "Amazon", "Google", "Tesla", "Alibaba", "Facebook", "Visa")
+    private var popularQueries: List<String> = context?.resources?.getStringArray(R.array.popular_queries_array)?.toList() ?: listOf()
 
     private val viewModel: SearchFragmentViewModel by viewModels(
             factoryProducer = { SearchFragmentViewModelFactory() }
@@ -102,7 +102,8 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
             // is ViewState.Loading ->
             is ViewState.Error -> {
                 quotesFavouritesAdapter.submitList(companies.oldvalue)
-                showError(companies.result ?: "Couldn't load companies from local storage", binding.root)
+                val errorMsg = getString(R.string.load_error_msg, getString(R.string.companies_from_local_storage))
+                showError(companies.result ?: errorMsg, binding.root)
             }
         }
     }
@@ -116,7 +117,8 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
             is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
             is ViewState.Error -> {
                 quotesAllAdapter.submitList(companies.oldvalue)
-                showError(companies.result ?: "Couldn't load companies", binding.root)
+                val errorMsg = getString(R.string.load_error_msg, getString(R.string.companies))
+                showError(companies.result ?: errorMsg, binding.root)
                 viewPagerAdapter.setRefreshing(false)
             }
         }
@@ -131,7 +133,8 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
             }
             is ViewState.Loading -> viewPagerAdapter.setRefreshing(true)
             is ViewState.Error -> {
-                showError(tickers.result ?: "Couldn't load tickers",binding.root)
+                val errorMsg = getString(R.string.load_error_msg, getString(R.string.ticker))
+                showError(tickers.result ?: errorMsg,binding.root)
                 viewPagerAdapter.setRefreshing(false)
             }
         }
@@ -143,7 +146,8 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
                 viewPagerAdapter.submitQueries(queries.result)
             }
             is ViewState.Error -> {
-                showError(queries.result ?: "Couldn't load recent queries", binding.root)
+                val errorMsg = getString(R.string.load_error_msg, getString(R.string.recent_queries))
+                showError(queries.result ?: errorMsg, binding.root)
             }
         }
     }
@@ -239,16 +243,11 @@ class SearchFragment : BaseFragment(R.layout.search_fragment) {
     }
 
     inner class OnVerticalScrollListener : RecyclerView.OnScrollListener() {
-
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             if (!recyclerView.canScrollVertically(1)) {
-                onScrolledToBottom()
+                viewModel.getCompanies(7)
             }
-        }
-
-        private fun onScrolledToBottom() {
-            viewModel.getCompanies(7)
         }
     }
 

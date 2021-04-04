@@ -124,6 +124,7 @@ abstract class CompaniesViewModel constructor(
                             is OperationResult.Error -> state = ViewState.Error(companiesList, companiesResult.data)
                         }
                     }
+
                     mutableCompanies.value = state
                 }
                 is ViewState.Error -> mutableCompanies.value = ViewState.error(companiesList, (tickersList.value as ViewState.Error<List<String>, String?>).result)

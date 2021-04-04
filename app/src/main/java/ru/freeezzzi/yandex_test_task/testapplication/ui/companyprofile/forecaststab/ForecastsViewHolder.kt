@@ -27,8 +27,6 @@ class ForecastsViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
         if (recommendationTrends.isEmpty()) return
 
         val barEntries = mutableListOf<BarEntry>() // Для каждого измерения
-        val dateEntries = mutableListOf<String>() // Даты для каждого столбца
-        val label = recommendationTrends.get(0).symbol ?: "" + " " + itemView.context.getString(R.string.recommendation_trend)
 
         barEntries.add(BarEntry(
             0F,
@@ -41,23 +39,6 @@ class ForecastsViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
             ),
             recommendationTrends.get(0).period ?: ""
         ))
-        /*recommendationTrends.forEachIndexed { index, recommendationTrend ->
-            if (index <= 3) barEntries.add(
-                BarEntry(
-                    index.toFloat(),
-                    floatArrayOf(
-                        recommendationTrend.strongSell?.toFloat() ?: 0F,
-                        recommendationTrend.sell?.toFloat() ?: 0F,
-                        recommendationTrend.hold?.toFloat() ?: 0F,
-                        recommendationTrend.buy?.toFloat() ?: 0F,
-                        recommendationTrend.strongBuy?.toFloat() ?: 0F,
-                    ),
-                    recommendationTrend.period ?: ""
-                )
-            )
-            dateEntries.add(recommendationTrend.period ?: "")
-        }*/
-
 
         barChart.data = setUpBar(barEntries)
         barChart.invalidate()
@@ -70,17 +51,17 @@ class ForecastsViewHolder(itemView: View) : ViewPagerViewHodler(itemView) {
 
         // scaling and dragging
         barChart.isDragEnabled = false
-        barChart?.setScaleEnabled(false)
+        barChart.setScaleEnabled(false)
 
         // hidfe background grids
         barChart.setDrawBorders(false)
         barChart.setDrawGridBackground(false)
 
-        val yAxis = barChart?.axisLeft
-        val rightAxis = barChart?.axisRight
+        val yAxis = barChart.axisLeft
+        val rightAxis = barChart.axisRight
         yAxis?.setDrawGridLines(true) //
         rightAxis?.setDrawGridLines(false)
-        val xAxis = barChart?.xAxis
+        val xAxis = barChart.xAxis
         xAxis?.setDrawGridLines(false)
         xAxis?.setDrawLabels(false) //
         yAxis?.setDrawLabels(true) //
