@@ -54,4 +54,9 @@
     <string name="companies">companies</string>
     <string name="companies_from_local_storage">companies from local storage</string>
     <string name="recent_queries">recent queries</string>
+    <string name="strong_sell">Strong sell</string>
+    <string name="sell">Sell</string>
+    <string name="hold">Hold</string>
+    <string name="buy">Buy</string>
+    <string name="strong_buy">Strong buy</string>
 </resources>

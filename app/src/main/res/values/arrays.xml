@@ -9,22 +9,21 @@
     </integer-array>
 
     <string-array name="bar_chart_labels">
-        <item>"Strong sell"</item>
-        <item>"Sell"</item>
-        <item>"Hold"</item>
-        <item>"Buy"</item>
-        <item>"Strong buy"</item>
+        <item>@string/strong_sell</item>
+        <item>@string/sell</item>
+        <item>@string/hold</item>
+        <item>@string/buy</item>
+        <item>@string/strong_buy</item>
     </string-array>
 
     <string-array name="news_ago_dimensions">
-        "year", "month", "week", "day", "hour", "minute", "second"
-        <item>"year"</item>
-        <item>"month"</item>
-        <item>"week"</item>
-        <item>"day"</item>
-        <item>"hour"</item>
-        <item>"minute"</item>
-        <item>"second"</item>
+        <item>@string/year</item>
+        <item>@string/month</item>
+        <item>@string/week</item>
+        <item>@string/day</item>
+        <item>@string/hour</item>
+        <item>@string/minute</item>
+        <item>@string/second</item>
     </string-array>
 
     <string-array name="popular_queries_array">
